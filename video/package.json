@@ -1,0 +1,31 @@
+{
+  "name": "relay-capture-video",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "remotion preview src/index.ts",
+    "build": "remotion render src/index.ts MainDemo out/relay-demo.mp4 --codec=h264",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.280",
+    "@remotion/media-utils": "4.0.280",
+    "@remotion/tailwind": "4.0.280",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.546.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "4.0.280",
+    "tailwind-merge": "^3.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.14",
+    "typescript": "~5.8.2"
+  }
+}

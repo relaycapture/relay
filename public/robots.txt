@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /checkout/
+
+# AI Discovery Specification
+Sitemap: https://relaycapture.com/sitemap.xml

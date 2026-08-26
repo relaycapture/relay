@@ -1,0 +1,58 @@
+import { ProtocolEnforcementEvent } from '../types';
+
+export const PROTOCOL_EVENTS: ProtocolEnforcementEvent[] = [
+  {
+    id: 'ev-1',
+    date: '2024-06-01',
+    authority: 'Google Workspace Security',
+    title: 'One-Click Unsubscribe & Strict DMARC Quarantine Enforcement',
+    description: 'Mandatory RFC 8058 List-Unsubscribe headers enforced. Senders with unaligned SPF/DKIM identifiers face automatic transient 421/450 reject loops and domain reputation score throttling.',
+    impactLevel: 'Mandatory',
+    rfcOrPolicy: 'RFC 8058 / Postmaster Policy',
+  },
+  {
+    id: 'ev-2',
+    date: '2024-02-01',
+    authority: 'Google & Yahoo Postmaster',
+    title: '5,000/day Bulk Sender DMARC Mandate',
+    description: 'All senders transmitting >5,000 daily messages to Gmail and Yahoo Mail must publish valid SPF and DKIM, enforce DMARC (p=none minimum), and maintain spam rates below 0.3%. Messages failing alignment are rejected or sent to spam.',
+    impactLevel: 'Mandatory',
+    rfcOrPolicy: 'Google Postmaster Guidelines / Yahoo Policy 2024',
+  },
+  {
+    id: 'ev-3',
+    date: '2023-09-20',
+    authority: 'Apple Mail Privacy Protection (MPP)',
+    title: 'iCloud Private Relay & Mail Authentication Rules',
+    description: 'Apple Mail clients route inbound SMTP traffic through encrypted relay caches. Inconsistent DKIM signatures trigger automated quarantine and junk placement on macOS and iOS devices.',
+    impactLevel: 'Critical',
+    rfcOrPolicy: 'Apple iCloud Postmaster Spec',
+  },
+  {
+    id: 'ev-4',
+    date: '2023-04-12',
+    authority: 'Microsoft 365 Defender',
+    title: 'Strict High-Confidence Phish & Sender ID Quarantine',
+    description: 'Microsoft Exchange Online Protection (EOP) treats SPF neutral (~all) with missing DKIM as suspicious, bypassing inbox junk rules straight to tenant quarantine.',
+    impactLevel: 'Standard',
+    rfcOrPolicy: 'MSFT Security Bulletin 2023-04',
+  },
+  {
+    id: 'ev-5',
+    date: '2022-08-01',
+    authority: 'AuthIndicators Working Group',
+    title: 'BIMI & Verified Mark Certificates (VMC)',
+    description: 'Brand Indicators for Message Identification requires DMARC policy at strict enforcement (p=quarantine pct=100 or p=reject) to render verified sender logos in mobile inboxes.',
+    impactLevel: 'Standard',
+    rfcOrPolicy: 'BIMI RFC Draft / VMC CA/B',
+  },
+  {
+    id: 'ev-6',
+    date: '2015-03-18',
+    authority: 'IETF RFC 7489',
+    title: 'Domain-based Message Authentication (DMARC)',
+    description: 'Standardization of policy reporting and conformance. Enforces how receiving mail transfer agents (MTAs) handle authentication failures (p=none, p=quarantine, p=reject) with aggregate (RUA) and forensic (RUF) telemetry.',
+    impactLevel: 'Critical',
+    rfcOrPolicy: 'RFC 7489',
+  },
+];
