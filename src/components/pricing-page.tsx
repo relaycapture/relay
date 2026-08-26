@@ -149,15 +149,16 @@ export function PricingPage({
               isLightMode ? 'text-[#1d1d1f]' : 'text-white'
             }`}
           >
-            Transparent pricing.
+            Zero subscriptions.
+            <span className="block">One-time flat fee.</span>
           </h1>
 
           <p
-            className={`text-xs sm:text-base md:text-lg font-normal leading-relaxed ${
+            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed ${
               isLightMode ? 'text-neutral-600' : 'text-neutral-400'
             }`}
           >
-            Eliminate inbox quarantine, prevent sender domain forging, and guarantee compliance with major receiving providers.
+            We audit, flatten, align, and authenticate. You own the verified DNS records forever.
           </p>
         </div>
 
