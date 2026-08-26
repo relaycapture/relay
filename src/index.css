@@ -1,208 +1,209 @@
-@import " tailwindcss\;
+@import "tailwindcss";
 
 @layer base {
- :root {
- --font-sans: 'Geist', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
- --font-mono: 'JetBrains Mono', monospace;
- --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
- --ease-teleport: cubic-bezier(0.83, 0, 0.17, 1);
- }
+  :root {
+    --font-sans: 'Geist', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-teleport: cubic-bezier(0.83, 0, 0.17, 1);
+  }
 
- html,
- body,
- button,
- a,
- input,
- select,
- textarea,
- [role=\button\],
- iframe,
- * {
- cursor: none !important;
- }
+  html,
+  body,
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  iframe,
+  * {
+    cursor: none !important;
+  }
 
- @media (hover: none) and (pointer: coarse) {
- html,
- body,
- button,
- a,
- input,
- select,
- textarea,
- [role=\button\],
- iframe,
- * {
- cursor: auto !important;
- }
- }
+  @media (hover: none) and (pointer: coarse) {
+    html,
+    body,
+    button,
+    a,
+    input,
+    select,
+    textarea,
+    [role="button"],
+    iframe,
+    * {
+      cursor: auto !important;
+    }
+  }
 
- html {
- font-family: var(--font-sans);
- scroll-behavior: smooth;
- overflow-x: hidden;
- }
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
 
- /* When reduced motion is requested */
- @media (prefers-reduced-motion: reduce) {
- html {
- scroll-behavior: auto;
- }
- *, *::before, *::after {
- animation-duration: 0.01ms !important;
- animation-iteration-count: 1 !important;
- transition-duration: 0.01ms !important;
- }
- }
+  /* When reduced motion is requested */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 
- /* On mobile touch devices, restore standard cursor */
- @media (pointer: coarse) {
- html, body, button, a, input, select, textarea, [role=\button\], iframe, * {
- cursor: auto !important;
- }
- }
+  /* On mobile touch devices, restore standard cursor */
+  @media (pointer: coarse) {
+    html, body, button, a, input, select, textarea, [role="button"], iframe, * {
+      cursor: auto !important;
+    }
+  }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
- width: 6px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
- background: #121212;
+  background: #08080a;
 }
 ::-webkit-scrollbar-thumb {
- background: rgba(255, 255, 255, 0.15);
- border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
- background: rgba(34, 211, 238, 0.4);
+  background: rgba(34, 211, 238, 0.4);
 }
 
 /* CCTV Grain In-Place Noise Jitter */
 @keyframes rc-grain {
- 0% { background-position: 0px 0px; }
- 10% { background-position: -24px 36px; }
- 20% { background-position: 48px -18px; }
- 30% { background-position: -36px -42px; }
- 40% { background-position: 18px 48px; }
- 50% { background-position: -48px 12px; }
- 60% { background-position: 32px -36px; }
- 70% { background-position: -16px 28px; }
- 80% { background-position: 40px -24px; }
- 90% { background-position: -28px -16px; }
- 100% { background-position: 0px 0px; }
+  0% { background-position: 0px 0px; }
+  10% { background-position: -24px 36px; }
+  20% { background-position: 48px -18px; }
+  30% { background-position: -36px -42px; }
+  40% { background-position: 18px 48px; }
+  50% { background-position: -48px 12px; }
+  60% { background-position: 32px -36px; }
+  70% { background-position: -16px 28px; }
+  80% { background-position: 40px -24px; }
+  90% { background-position: -28px -16px; }
+  100% { background-position: 0px 0px; }
 }
 
 @keyframes scan-line {
- 0% { transform: translateY(-100%); opacity: 0; }
- 15% { opacity: 0.8; }
- 85% { opacity: 0.8; }
- 100% { transform: translateY(1000%); opacity: 0; }
+  0% { transform: translateY(-100%); opacity: 0; }
+  15% { opacity: 0.8; }
+  85% { opacity: 0.8; }
+  100% { transform: translateY(1000%); opacity: 0; }
 }
 
 @keyframes pulse-subtle {
- 0%, 100% { opacity: 0.4; transform: scale(1); }
- 50% { opacity: 0.7; transform: scale(1.04); }
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.04); }
 }
 
 .animate-scan-line {
- animation: scan-line 6s linear infinite;
+  animation: scan-line 6s linear infinite;
 }
 
 .animate-pulse-subtle {
- animation: pulse-subtle 4s ease-in-out infinite;
+  animation: pulse-subtle 4s ease-in-out infinite;
 }
 
 /* Tactile Grain / Roughness texture overlay for buttons, boxes, and cards */
 .rc-grain-surface {
- position: relative;
+  position: relative;
 }
 
 .rc-grain-surface::before {
- content: \\;
- position: absolute;
- inset: 0;
- border-radius: inherit;
- pointer-events: none;
- opacity: 0.045;
- background-image: url(\data:image/svg+xml,%3Csvg viewBox=0 0 200 200 xmlns=http://www.w3.org/2000/svg%3E%3Cfilter id=noiseFilter%3E%3CfeTurbulence type=fractalNoise baseFrequency=0.85 numOctaves=3 stitchTiles=stitch/%3E%3C/filter%3E%3Crect width=100%25 height=100%25 filter=url(%23noiseFilter)/%3E%3C/svg%3E\);
- background-size: 140px 140px;
- mix-blend-mode: overlay;
- z-index: 1;
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+  mix-blend-mode: overlay;
+  z-index: 1;
 }
 
 @keyframes slide-in-right {
- 0% {
- opacity: 0;
- transform: translateX(40px);
- }
- 100% {
- opacity: 1;
- transform: translateX(0);
- }
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .animate-slide-in-right {
- animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
- 0% {
- opacity: 0;
- transform: translateY(4px);
- }
- 100% {
- opacity: 1;
- transform: translateY(0);
- }
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
- animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Glass panel utility */
 .glass-panel {
- background: rgba(18, 18, 18, 0.6);
- backdrop-filter: blur(20px) saturate(180%);
- -webkit-backdrop-filter: blur(20px) saturate(180%);
- border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 10, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-panel-light {
- background: rgba(244, 244, 242, 0.65);
- backdrop-filter: blur(20px) saturate(180%);
- -webkit-backdrop-filter: blur(20px) saturate(180%);
- border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(244, 244, 242, 0.65);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* Off-screen layout skipping for below-the-fold sections */
 .section-content-auto {
- content-visibility: auto;
- contain-intrinsic-size: 1px 800px;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
 }
 
 /* Mobile & low-power device blur optimizations to avoid fill-rate bottlenecks */
 @media (max-width: 768px) {
- .glass-panel,
- .glass-panel-light {
- backdrop-filter: blur(10px) saturate(140%) !important;
- -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
- }
+  .glass-panel,
+  .glass-panel-light {
+    backdrop-filter: blur(10px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+  }
 }
 
-/* Homepage & Pricing Page #121212 with tactile organic grain */
-.rc-page-grain-121212 {
- background-color: #121212 !important;
- position: relative;
+/* Landing Page, Pricing Page, Refunds Page, Terms Page, Privacy Page #08080a with subtle but visible premium-grade grain */
+.rc-page-grain-08080a {
+  background-color: #08080a !important;
+  position: relative;
 }
 
-.rc-page-grain-121212::before {
- content: \\;
- position: fixed;
- inset: 0;
- pointer-events: none;
- opacity: 0.06;
- background-image: url(\data:image/svg+xml,%3Csvg viewBox=0 0 200 200 xmlns=http://www.w3.org/2000/svg%3E%3Cfilter id=noiseFilter%3E%3CfeTurbulence type=fractalNoise baseFrequency=0.85 numOctaves=3 stitchTiles=stitch/%3E%3C/filter%3E%3Crect width=100%25 height=100%25 filter=url(%23noiseFilter)/%3E%3C/svg%3E\);
- background-size: 150px 150px;
- z-index: 1;
+.rc-page-grain-08080a::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: screen;
+  z-index: 1;
 }

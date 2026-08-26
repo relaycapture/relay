@@ -276,9 +276,9 @@ export default function App() {
       className={`min-h-screen transition-colors duration-300 ${
         isLightMode
           ? 'bg-[#F4F4F2] text-[#0A0A0C] light'
-          : (currentView === 'landing' || currentView === 'pricing')
-          ? 'bg-[#121212] rc-page-grain-121212 text-[#F4F4F2] dark'
-          : 'bg-[#0A0A0C] text-[#F4F4F2] dark'
+          : (currentView === 'landing' || currentView === 'pricing' || currentView === 'terms' || currentView === 'privacy' || currentView === 'refunds')
+          ? 'bg-[#08080a] rc-page-grain-08080a text-[#F4F4F2] dark'
+          : 'bg-[#08080a] text-[#F4F4F2] dark'
       }`}
     >
       {/* Custom Refractive Cursor */}

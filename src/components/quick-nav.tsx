@@ -555,6 +555,15 @@ function ScaledLiveSectionRenderer({
             isLivePreview={true}
           />
         );
+      case 'three-cards-section':
+        return (
+          <ThreeCards
+            onSelectTier={() => {}}
+            onOpenSampleModal={() => {}}
+            isLightMode={!!isLightMode}
+            isLivePreview={true}
+          />
+        );
       case 'faq-section':
         return <FaqSection isLightMode={!!isLightMode} />;
       case 'contact-section':

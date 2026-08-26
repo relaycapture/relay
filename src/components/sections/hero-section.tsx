@@ -22,7 +22,7 @@ export function HeroSection({
         isLivePreview
           ? 'py-6 px-8'
           : 'pt-32 sm:pt-36 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-8 md:px-12 lg:px-24'
-      } ${isLightMode ? 'bg-[#fbfbfd]' : 'bg-[#121212]'}`}
+      } ${isLightMode ? 'bg-[#fbfbfd]' : 'bg-[#08080a]'}`}
     >
       {/* Subtle Ambient Radial Lighting Gradient to blend seamlessly */}
       <div
@@ -31,7 +31,7 @@ export function HeroSection({
         style={{
           background: isLightMode
             ? 'radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.03) 0%, rgba(251, 251, 253, 0.8) 60%, #fbfbfd 100%)'
-            : 'radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.04) 0%, rgba(18, 18, 18, 0.85) 60%, #121212 100%)',
+            : 'radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.04) 0%, rgba(8, 8, 10, 0.85) 60%, #08080a 100%)',
         }}
       />
 
@@ -96,7 +96,7 @@ export function HeroSection({
         className={`absolute bottom-0 left-0 right-0 h-28 sm:h-36 pointer-events-none ${
           isLightMode
             ? 'bg-gradient-to-t from-[#fbfbfd] via-[#fbfbfd]/80 to-transparent'
-            : 'bg-gradient-to-t from-[#121212] via-[#121212]/80 to-transparent'
+            : 'bg-gradient-to-t from-[#08080a] via-[#08080a]/80 to-transparent'
         }`}
       />
     </section>

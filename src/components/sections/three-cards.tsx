@@ -1,10 +1,67 @@
 'use client'
 
-import { useState } from 'react';
-import { Check, ArrowRight, ShieldCheck, Zap, Sparkles } from 'lucide-react';
-import { NumberTicker } from '../number-ticker';
+import { useRef, useEffect, useState } from 'react';
+import { ArrowRight, Check } from 'lucide-react';
+import { ProductTier } from '../../types';
 import Silk from '../Silk';
+import { NumberTicker } from '../number-ticker';
 import { openPaddleCheckout, PADDLE_CONFIG } from '../../utils/paddle';
+
+const TIERS: ProductTier[] = [
+  {
+    id: 'tier-snapshot',
+    name: 'Self-Serve Blueprint',
+    price: '$247',
+    period: 'one-time deliverable',
+    tagline: 'For teams with an in-house engineer or technical founder.',
+    features: [
+      'Full-stack DNS deliverability & spoofing risk scorecard',
+      'Root SPF mechanism validation & 10-lookup limit audit',
+      'Authoritative DMARC policy check (p=quarantine / p=reject)',
+      'DKIM selector probing & syntax validation',
+      'Exact copy-paste DNS TXT records for your domain',
+      'Shareable confidential PDF + JSON bundle',
+    ],
+    omits: [
+      'Direct infrastructure setup & live hands-on DNS execution',
+      '14-day post-launch engineering verification & support',
+    ],
+    ctaLabel: 'Select Self-Serve Blueprint',
+  },
+  {
+    id: 'tier-audit',
+    name: 'Turnkey Remediation',
+    price: '$547',
+    period: 'complete one-time execution',
+    popular: true,
+    tagline: 'For founders who value their time and refuse to touch DNS records.',
+    features: [
+      'Everything in Self-Serve Blueprint',
+      'Fully automated DNS records configuration',
+      'Provider recipes (Google Workspace, M365, and more)',
+      'Subdomain inheritance policy hardening & alignment',
+      '14-day post-launch engineering support & verification check',
+      'Guaranteed 100% Google / Yahoo bulk sender compliance',
+    ],
+    ctaLabel: 'Get Turnkey Remediation',
+  },
+  {
+    id: 'tier-managed',
+    name: 'Managed Outbound Infrastructure',
+    price: '$1,247',
+    period: 'the enterprise anchor',
+    tagline: 'A fully scaled, dedicated cold email engine. We build, warm, manage, and maintain your sending architecture.',
+    features: [
+      '10 Dedicated Sending Domains',
+      '30 Authenticated Inboxes',
+      'Automated IP Warmup',
+      '24/7 Deliverability Monitoring',
+      'Continuous Drift & Reputation Protection',
+      'Full RFC 7489 Alignment & Zero-Touch Maintenance',
+    ],
+    ctaLabel: 'Deploy Managed Outbound',
+  },
+];
 
 interface ThreeCardsProps {
   onSelectTier?: (tierId: string) => void;
@@ -13,77 +70,79 @@ interface ThreeCardsProps {
   isLivePreview?: boolean;
 }
 
-interface Tier {
-  id: string;
-  name: string;
-  tagline: string;
-  price: string;
-  period: string;
-  ctaLabel: string;
-  popular?: boolean;
-  features: string[];
-}
-
-const TIERS: Tier[] = [
-  {
-    id: 'tier-self',
-    name: 'Self-Serve Blueprint',
-    tagline: 'Automated diagnostic with step-by-step remediation instructions.',
-    price: '$247',
-    period: 'Single Domain Scan',
-    ctaLabel: 'Get Instant Blueprint',
-    features: [
-      'Raw DNS syntax & lookup audit',
-      'Flattened SPF record generation',
-      'DKIM alignment & selector discovery',
-      'Instant JSON & Markdown export',
-      'Self-serve execution checklist',
-    ],
-  },
-  {
-    id: 'tier-audit',
-    name: 'Turnkey Remediation',
-    tagline: 'Full diagnostic + engineer-verified implementation & testing.',
-    price: '$997',
-    period: 'Core Sending Domain',
-    popular: true,
-    ctaLabel: 'Deploy Turnkey Fix',
-    features: [
-      'Everything in Self-Serve Blueprint',
-      'Engineer-crafted DNS records',
-      'Subdomain & secondary sender catalog',
-      '30-seed inbox placement validation',
-      'Direct email engineer support (30 days)',
-    ],
-  },
-  {
-    id: 'tier-managed',
-    name: 'Managed Infrastructure',
-    tagline: 'Multi-domain architecture, ongoing monitoring, and DMARC enforcement.',
-    price: '$1,850',
-    period: 'Up to 5 Sending Domains',
-    ctaLabel: 'Activate Managed Fleet',
-    features: [
-      'Everything in Turnkey Remediation',
-      'Multi-domain envelope alignment',
-      'Continuous DMARC failure monitoring',
-      'Rogue sender blocking (p=reject)',
-      'Dedicated engineering Slack channel',
-    ],
-  },
-];
-
 export function ThreeCards({
   onSelectTier,
   onOpenSampleModal,
   isLightMode,
   isLivePreview = false,
 }: ThreeCardsProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
-  const handleCheckout = (tier: Tier) => {
+  // Background: Floating dust-motes particle canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
+    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
+
+    // Dust particles
+    const particleCount = 28;
+    const particles = Array.from({ length: particleCount }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: Math.random() * 1.5 + 0.4,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: -Math.random() * 0.3 - 0.1,
+      opacity: Math.random() * 0.4 + 0.1,
+    }));
+
+    const handleResize = () => {
+      if (!canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.clientWidth;
+      height = canvas.height = canvas.parentElement.clientHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = isLightMode
+          ? `rgba(0, 0, 0, ${p.opacity * 0.35})`
+          : `rgba(255, 255, 255, ${p.opacity * 0.65})`;
+        ctx.fill();
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isLightMode]);
+
+  const handleCheckout = (tier: ProductTier) => {
     const priceMap: Record<string, string> = {
-      'tier-self': PADDLE_CONFIG.prices.selfServe,
+      'tier-snapshot': PADDLE_CONFIG.prices.selfServe,
       'tier-audit': PADDLE_CONFIG.prices.turnkey,
       'tier-managed': PADDLE_CONFIG.prices.managed,
     };
@@ -99,6 +158,13 @@ export function ThreeCards({
           : 'py-24 sm:py-28 md:py-36'
       }`}
     >
+      {/* Background canvas for dust motes */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none opacity-40 z-0"
+        aria-hidden="true"
+      />
+
       {/* Background Soft Glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
         <div
@@ -139,14 +205,14 @@ export function ThreeCards({
                 key={tier.id}
                 onMouseEnter={() => setHoveredCard(tier.id)}
                 onMouseLeave={() => setHoveredCard(null)}
-                className={`rc-grain-surface relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl ${
+                className={`rc-grain-surface relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl opacity-100 ${
                   isPopular
                     ? isLightMode
                       ? 'bg-white/95 border-2 border-black/80 shadow-2xl shadow-black/10 text-black'
-                      : 'bg-[#18181f]/90 border border-white/20 shadow-2xl shadow-black/50 text-white'
+                      : 'bg-[#121216]/95 border border-white/25 shadow-2xl shadow-black/60 text-white'
                     : isLightMode
-                    ? 'bg-white/60 border border-black/10 opacity-80 hover:opacity-100 hover:border-black/20 shadow-sm text-black'
-                    : 'bg-[#121216]/30 border border-white/5 opacity-60 hover:opacity-100 hover:border-white/15 shadow-none text-white'
+                    ? 'bg-white/80 border border-black/10 hover:border-black/25 shadow-sm text-black'
+                    : 'bg-[#121216]/75 border border-white/10 hover:border-white/20 shadow-md text-white'
                 }`}
                 style={{
                   transform: isHovered
@@ -156,7 +222,7 @@ export function ThreeCards({
                   zIndex: isHovered ? 20 : isPopular ? 10 : 5,
                 }}
               >
-                {/* Popular Card Animated Faint Grainy Dark Veil Background */}
+                {/* $547 Popular Card Animated Faint Grainy Dark Veil Background */}
                 {tier.id === 'tier-audit' && (
                   <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-0">
                     <div className="absolute inset-0 opacity-30 mix-blend-screen">
