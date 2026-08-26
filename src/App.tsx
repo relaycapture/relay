@@ -277,8 +277,8 @@ export default function App() {
         isLightMode
           ? 'bg-[#F4F4F2] text-[#0A0A0C] light'
           : (currentView === 'landing' || currentView === 'pricing' || currentView === 'terms' || currentView === 'privacy' || currentView === 'refunds')
-          ? 'bg-[#08080a] rc-page-grain-08080a text-[#F4F4F2] dark'
-          : 'bg-[#08080a] text-[#F4F4F2] dark'
+          ? 'bg-[#0f0d13] rc-page-grain-0f0d13 text-[#F4F4F2] dark'
+          : 'bg-[#0f0d13] text-[#F4F4F2] dark'
       }`}
     >
       {/* Custom Refractive Cursor */}

@@ -67,7 +67,7 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0c;
+  background: #0f0d13;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
@@ -161,7 +161,7 @@
 
 /* Glass panel utility */
 .glass-panel {
-  background: rgba(10, 10, 12, 0.55);
+  background: rgba(15, 13, 19, 0.55);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -189,14 +189,13 @@
   }
 }
 
-
-/* Homepage & Pricing Page #151515 with tactile organic grain */
-.rc-page-grain-151515 {
-  background-color: #151515 !important;
+/* Homepage & Pricing Page #0f0d13 with tactile organic grain */
+.rc-page-grain-0f0d13 {
+  background-color: #0f0d13 !important;
   position: relative;
 }
 
-.rc-page-grain-151515::before {
+.rc-page-grain-0f0d13::before {
   content: "";
   position: fixed;
   inset: 0;

@@ -111,7 +111,7 @@ export function PricingPage({
     <div
       id="dedicated-pricing-page"
       className={`min-h-screen pt-28 sm:pt-32 pb-28 sm:pb-36 px-4 sm:px-8 md:px-12 lg:px-24 transition-colors duration-300 ${
-        isLightMode ? 'bg-[#fbfbfd] text-[#1d1d1f]' : 'bg-[#08080a] rc-page-grain-08080a text-[#F4F4F2]'
+        isLightMode ? 'bg-[#fbfbfd] text-[#1d1d1f]' : 'bg-[#0f0d13] rc-page-grain-0f0d13 text-[#F4F4F2]'
       }`}
     >
       <div className="max-w-6xl mx-auto">
@@ -427,7 +427,7 @@ export function PricingPage({
           </div>
 
           <div className={`rounded-2xl border overflow-hidden shadow-2xl max-w-5xl mx-auto ${
-            isLightMode ? 'bg-white border-black/10' : 'bg-[#0C0C10] border-white/10'
+            isLightMode ? 'bg-white border-black/10' : 'bg-[#14121a] border-white/10'
           }`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">

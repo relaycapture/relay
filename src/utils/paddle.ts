@@ -3,21 +3,20 @@
 /**
  * Paddle Checkout Configuration & Helper
  *
- * Replace "YOUR_PADDLE_KEY_HERE" with your live/sandbox Paddle client token.
- * Or set environment variables:
+ * Placeholder token: "YOUR_PADDLE_KEY_HERE"
+ * Place your live/sandbox Paddle client token or set environment variables:
  * NEXT_PUBLIC_PADDLE_CLIENT_TOKEN
  * NEXT_PUBLIC_PADDLE_PRICE_SELF_SERVE
  * NEXT_PUBLIC_PADDLE_PRICE_TURNKEY
  * NEXT_PUBLIC_PADDLE_PRICE_MANAGED
  */
 export const PADDLE_CONFIG = {
-  // Placeholder client token: replace with your actual Paddle token
   clientToken: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || 'YOUR_PADDLE_KEY_HERE',
   environment: (process.env.NEXT_PUBLIC_PADDLE_ENV as 'sandbox' | 'production') || 'production',
   prices: {
-    selfServe: process.env.NEXT_PUBLIC_PADDLE_PRICE_SELF_SERVE || 'YOUR_PADDLE_PRICE_ID_SELF_SERVE',
-    turnkey: process.env.NEXT_PUBLIC_PADDLE_PRICE_TURNKEY || 'YOUR_PADDLE_PRICE_ID_TURNKEY',
-    managed: process.env.NEXT_PUBLIC_PADDLE_PRICE_MANAGED || 'YOUR_PADDLE_PRICE_ID_MANAGED',
+    selfServe: process.env.NEXT_PUBLIC_PADDLE_PRICE_SELF_SERVE || 'YOUR_PADDLE_KEY_HERE',
+    turnkey: process.env.NEXT_PUBLIC_PADDLE_PRICE_TURNKEY || 'YOUR_PADDLE_KEY_HERE',
+    managed: process.env.NEXT_PUBLIC_PADDLE_PRICE_MANAGED || 'YOUR_PADDLE_KEY_HERE',
   },
 };
 
@@ -37,7 +36,7 @@ export function openPaddleCheckout(
     try {
       if (win.Paddle && typeof win.Paddle.Checkout?.open === 'function') {
         win.Paddle.Checkout.open({
-          items: [{ priceId, quantity: 1 }],
+          items: [{ priceId: priceId || 'YOUR_PADDLE_KEY_HERE', quantity: 1 }],
           customData,
           settings: {
             displayMode: 'overlay',
@@ -54,9 +53,9 @@ export function openPaddleCheckout(
       alert(
         '[Paddle Direct Checkout]' +
         '\n\nPlan: ' + (planName || 'Deliverability Plan') +
-        '\nPrice ID: ' + priceId +
+        '\nPrice Key: ' + (priceId || 'YOUR_PADDLE_KEY_HERE') +
         '\nClient Token: ' + PADDLE_CONFIG.clientToken +
-        '\n\n(Direct checkout opened. Replace "YOUR_PADDLE_KEY_HERE" in src/utils/paddle.ts to process live card & bank payments).'
+        '\n\n(Direct checkout triggered. Replace "YOUR_PADDLE_KEY_HERE" in src/utils/paddle.ts with your actual Paddle keys when ready).'
       );
     }
   };
