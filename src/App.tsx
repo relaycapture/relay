@@ -276,6 +276,8 @@ export default function App() {
       className={`min-h-screen transition-colors duration-300 ${
         isLightMode
           ? 'bg-[#F4F4F2] text-[#0A0A0C] light'
+          : (currentView === 'landing' || currentView === 'pricing')
+          ? 'bg-[#151515] rc-page-grain-151515 text-[#F4F4F2] dark'
           : 'bg-[#0A0A0C] text-[#F4F4F2] dark'
       }`}
     >
