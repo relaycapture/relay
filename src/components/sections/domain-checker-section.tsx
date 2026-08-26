@@ -54,7 +54,8 @@ export function DomainCheckerSection({
             isLightMode ? 'text-neutral-600' : 'text-neutral-400'
           }`}
         >
-          <span className="block">Enter a domain to query root nameservers directly via Cloudflare DNS-over-HTTPS.</span>
+          <span className="block">Enter a domain to query root nameservers directly</span>
+          <span className="block">via Cloudflare DNS-over-HTTPS.</span>
         </p>
 
         {/* The Domain Checker Input and Live Scorecard */}
@@ -66,13 +67,13 @@ export function DomainCheckerSection({
           />
         </div>
 
-        {/* ZERO CREDENTIAL ACCESS ARCHITECTURE as a small note line under the domain checker */}
+        {/* Human Language Security Note */}
         <p
           className={`text-center font-mono text-[11px] sm:text-xs tracking-wider uppercase mt-8 select-none transition-colors ${
             isLightMode ? 'text-neutral-500' : 'text-neutral-400'
           }`}
         >
-          ZERO CREDENTIAL ACCESS ARCHITECTURE • 100% PUBLIC DNS NAMESERVERS • NO API KEYS OR INBOX PERMISSIONS REQUIRED
+          PUBLIC DNS ONLY · NO CREDENTIALS REQUIRED · NO MAILBOX ACCESS
         </p>
       </div>
     </section>

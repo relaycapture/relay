@@ -106,16 +106,15 @@ export function LiveProtocolFeed({
               isLightMode ? 'text-[#1d1d1f]' : 'text-white'
             }`}
           >
-            <span className="block">Global mail standard</span>
-            <span className="block">enforcement stream.</span>
+            <span className="block">Provider requirements change.</span>
+            <span className="block">Your infrastructure still has to keep up.</span>
           </h2>
           <p
             className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto text-center ${
               isLightMode ? 'text-neutral-600' : 'text-neutral-400'
             }`}
           >
-            <span className="block">Major inbox providers mandate automated protocol compliance.</span>
-            <span className="block">Ongoing transport policy enforcement stream.</span>
+            <span className="block">Actual authentication, DMARC, and DNS requirements enforced by major mailbox providers.</span>
           </p>
         </div>
       </div>

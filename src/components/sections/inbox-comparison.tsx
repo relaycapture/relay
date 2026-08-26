@@ -1406,7 +1406,7 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
         {/* Deliverability Reality Subtext */}
         <div className="mt-4 text-center">
           <p className={`text-xs sm:text-sm font-mono tracking-tight ${isLightMode ? 'text-neutral-500' : 'text-neutral-400'}`}>
-            Authenticated against the exact checks Gmail and Outlook run before deciding Inbox vs. Spam.
+            Checks the DNS and authentication controls that influence mailbox-provider filtering.
           </p>
         </div>
       </div>

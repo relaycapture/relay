@@ -9,7 +9,7 @@ export default function PricingRoute() {
   return (
     <PricingPage
       onBackToHome={() => router.push('/')}
-      onOpenCheckout={() => {}}
+      onOpenCheckout={() => { }}
     />
   );
 }

@@ -375,11 +375,10 @@ function SmartleadMockup() {
           {/* 2nd Icon: Flying Paper Airplane -> Switches to Screenshot 4 (Campaigns) */}
           <div
             onClick={() => setSmartleadView('campaigns')}
-            className={`p-1 rounded cursor-pointer transition-colors ${
-              smartleadView === 'campaigns'
+            className={`p-1 rounded cursor-pointer transition-colors ${smartleadView === 'campaigns'
                 ? 'bg-[#6366f1]/10 text-[#6366f1]'
                 : 'hover:text-[#6366f1] text-[#94a3b8]'
-            }`}
+              }`}
             title="Campaigns (Flying Paper Airplane)"
           >
             <Send className="w-4 h-4 transform -rotate-45" />
@@ -388,11 +387,10 @@ function SmartleadMockup() {
           {/* 4th Icon: Mail -> Switches to Accounts View */}
           <div
             onClick={() => setSmartleadView('accounts')}
-            className={`p-1 rounded cursor-pointer transition-colors ${
-              smartleadView === 'accounts' || smartleadView === 'detail'
+            className={`p-1 rounded cursor-pointer transition-colors ${smartleadView === 'accounts' || smartleadView === 'detail'
                 ? 'bg-[#6366f1]/10 text-[#6366f1]'
                 : 'hover:text-[#6366f1] text-[#94a3b8]'
-            }`}
+              }`}
             title="Email Accounts"
           >
             <Mail className="w-4 h-4" />
@@ -1002,11 +1000,10 @@ export function DeliverabilitySimulator({ isLightMode }: { isLightMode?: boolean
           <button
             key={slide.id}
             onClick={() => setActiveSlide(index)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
-              activeSlide === index
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${activeSlide === index
                 ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm font-semibold'
                 : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300'
-            }`}
+              }`}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-current" />
             <span>{slide.name}</span>

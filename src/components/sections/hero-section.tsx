@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { openPaddleCheckout, PADDLE_CONFIG } from '../../utils/paddle';
 
 interface HeroSectionProps {
@@ -29,7 +29,7 @@ export function HeroSection({
           : 'pt-32 sm:pt-36 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-8 md:px-12 lg:px-24'
       } bg-transparent`}
     >
-      {/* Subtle Ambient Radial Lighting Gradient matching #0f0d13 perfectly */}
+      {/* Subtle Ambient Radial Lighting Gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden="true"
@@ -42,15 +42,27 @@ export function HeroSection({
 
       {/* Hero Content Overlay */}
       <div className="relative z-10 max-w-5xl mx-auto w-full flex flex-col items-center justify-center text-center my-auto">
+        {/* Human Language Tagline Badge */}
+        <div
+          className={`rc-grain-surface inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-[11px] sm:text-xs tracking-wider uppercase mb-6 sm:mb-8 border backdrop-blur-md ${
+            isLightMode
+              ? 'bg-black/[0.03] border-black/10 text-neutral-700'
+              : 'bg-white/[0.04] border-white/10 text-neutral-300'
+          }`}
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+          <span>PUBLIC DNS ONLY · NO CREDENTIALS · NO MAILBOX ACCESS</span>
+        </div>
+
         {/* Staggered Apple-Inspired Typography */}
         <h1
           className={`font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.15] mb-4 sm:mb-6 text-center ${
             isLightMode ? 'text-[#1d1d1f]' : 'text-white'
           }`}
         >
-          <span className="block">Your domain is speaking.</span>
+          <span className="block">Is your outbound email</span>
           <span className={`block ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
-            Do you know what it says?
+            actually authenticated?
           </span>
         </h1>
 
@@ -60,8 +72,7 @@ export function HeroSection({
             isLightMode ? 'text-neutral-600' : 'text-neutral-400'
           }`}
         >
-          <span className="block">Since 2024, if your domain pisses off Google or Microsoft.</span>
-          <span className="block">They grab it to a dark corner and beat it to death.</span>
+          Check your configuration before mailbox providers do it for you.
         </p>
 
         {/* Centralized Action CTAs */}
@@ -76,7 +87,7 @@ export function HeroSection({
                 : 'bg-white/90 hover:bg-white text-[#0a0a0c] border-white/30 shadow-white/5'
             }`}
           >
-            <span>Scan Your Domain</span>
+            <span>Check Deliverability</span>
             <ArrowDown className="w-4 h-4" />
           </button>
 
@@ -90,7 +101,7 @@ export function HeroSection({
                 : 'bg-white/[0.05] hover:bg-white/[0.1] text-neutral-200 border-white/10'
             }`}
           >
-            <span>One-Time Pricing</span>
+            <span>View Pricing</span>
             <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
           </button>
         </div>

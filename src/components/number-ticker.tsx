@@ -14,7 +14,7 @@ interface NumberTickerProps {
 
 export function NumberTicker({
   value,
-  duration = 1200,
+  duration = 1500,
   prefix = '',
   suffix = '',
   decimals = 0,
@@ -37,12 +37,12 @@ export function NumberTicker({
     const startAnimation = () => {
       const startVal = prevValueRef.current;
       const endVal = value;
-      
+
       const animate = (timestamp: number) => {
         if (!startTime) startTime = timestamp;
         const elapsed = timestamp - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         // easeOutCubic: 1 - Math.pow(1 - progress, 3)
         const ease = 1 - Math.pow(1 - progress, 3);
         const current = startVal + (endVal - startVal) * ease;

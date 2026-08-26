@@ -250,25 +250,22 @@ export function FinancialLeakage({
   return (
     <section
       id="financial-leakage"
-      className={`relative px-4 sm:px-8 md:px-12 lg:px-24 overflow-hidden z-10 ${
-        isLivePreview ? 'py-6' : 'py-20 sm:py-28 md:py-36 section-content-auto'
-      }`}
+      className={`relative px-4 sm:px-8 md:px-12 lg:px-24 overflow-hidden z-10 ${isLivePreview ? 'py-6' : 'py-20 sm:py-28 md:py-36 section-content-auto'
+        }`}
     >
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
           <h2
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.15] mb-4 text-center ${
-              isLightMode ? 'text-[#1d1d1f]' : 'text-white'
-            }`}
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.15] mb-4 text-center ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+              }`}
           >
-            <span className="block">Email risk rarely</span>
+            <span className="block">Email risk <i>rarely</i></span>
             <span className="block">arrives with a warning.</span>
           </h2>
           <p
-            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto text-center ${
-              isLightMode ? 'text-neutral-600' : 'text-neutral-400'
-            }`}
+            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto text-center ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'
+              }`}
           >
             <span className="block">It appears as lost replies, rejected invoices, impersonated executives,</span>
             <span className="block">and a sender reputation that takes months to rebuild.</span>
@@ -283,18 +280,16 @@ export function FinancialLeakage({
             <div className="flex flex-wrap sm:flex-nowrap items-end justify-between gap-2 px-0 -mb-[1px] relative z-20">
               {/* Attached Browser Tab (Wider, fits any URL length, matching graph box surface) */}
               <div
-                className={`rc-grain-surface border-t border-l border-r border-b-0 px-4 sm:px-6 py-2 sm:py-2.5 rounded-tl-2xl sm:rounded-tl-3xl rounded-tr-xl sm:rounded-tr-2xl flex items-center gap-2.5 shadow-sm transition-all duration-300 relative z-20 backdrop-blur-xl shrink min-w-0 ${
-                  isLightMode
+                className={`rc-grain-surface border-t border-l border-r border-b-0 px-4 sm:px-6 py-2 sm:py-2.5 rounded-tl-2xl sm:rounded-tl-3xl rounded-tr-xl sm:rounded-tr-2xl flex items-center gap-2.5 shadow-sm transition-all duration-300 relative z-20 backdrop-blur-xl shrink min-w-0 ${isLightMode
                     ? 'bg-black/[0.015] border-black/[0.08] text-black'
                     : 'bg-white/[0.02] border-white/[0.08] text-white'
-                }`}
+                  }`}
               >
                 {currentDomain || scanResult?.domain ? (
                   <>
                     <div
-                      className={`w-4 h-4 sm:w-4.5 sm:h-4.5 rounded flex items-center justify-center overflow-hidden shrink-0 ${
-                        isLightMode ? 'bg-neutral-100' : 'bg-white/10'
-                      }`}
+                      className={`w-4 h-4 sm:w-4.5 sm:h-4.5 rounded flex items-center justify-center overflow-hidden shrink-0 ${isLightMode ? 'bg-neutral-100' : 'bg-white/10'
+                        }`}
                     >
                       <DomainFavicon
                         domain={currentDomain || scanResult?.domain || ''}
@@ -341,11 +336,10 @@ export function FinancialLeakage({
 
             {/* Main Display Card Body: Seamlessly attached to tab at top-left */}
             <div
-              className={`rc-grain-surface p-1 sm:p-2.5 md:p-3 rounded-b-2xl sm:rounded-b-3xl rounded-tr-2xl sm:rounded-tr-3xl rounded-tl-none border backdrop-blur-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between flex-1 shadow-xl ${
-                isLightMode
+              className={`rc-grain-surface p-1 sm:p-2.5 md:p-3 rounded-b-2xl sm:rounded-b-3xl rounded-tr-2xl sm:rounded-tr-3xl rounded-tl-none border backdrop-blur-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between flex-1 shadow-xl ${isLightMode
                   ? 'bg-black/[0.015] border-black/[0.08]'
                   : 'bg-white/[0.02] border-white/[0.08]'
-              }`}
+                }`}
             >
               {/* 12-Node High-Precision Reference Topology Polyline SVG (Full-Bleed Wide & Tall) */}
               <div className="w-full relative flex-1 flex items-center justify-center my-0">
@@ -389,11 +383,10 @@ export function FinancialLeakage({
                           x={padding.left - 6}
                           y={yPos + 4.5}
                           textAnchor="end"
-                          className={`font-mono ${
-                            tick.isSpecial
+                          className={`font-mono ${tick.isSpecial
                               ? 'text-[14px] sm:text-[15px] font-bold'
                               : 'text-[12.5px] sm:text-[13.5px] font-semibold'
-                          }`}
+                            }`}
                           fill={
                             tick.isSpecial
                               ? isLightMode ? '#000000' : '#ffffff'
@@ -578,18 +571,18 @@ export function FinancialLeakage({
                 {/* Metric 1: Annualized Risk (Dynamically Colored & Enlarged) */}
                 <div className="px-2 sm:px-4 flex flex-col items-center">
                   <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-bold ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'}`}>
-                    Annualized Risk
+                    Estimated Pipeline Impact
                   </span>
                   <span className="font-black text-lg sm:text-2xl md:text-3xl tracking-tight mt-1" style={{ color: themeColor.stroke }}>
                     <NumberTicker value={annualLeakage} prefix="$" duration={900} />
-                    <span className={`text-xs sm:text-sm font-normal ml-0.5 ${isLightMode ? 'text-neutral-500' : 'text-neutral-400'}`}>/yr</span>
+                    <span className={`text-xs sm:text-sm font-normal ml-0.5 ${isLightMode ? 'text-neutral-500' : 'text-neutral-400'}`}>/yr (Scenario Model)</span>
                   </span>
                 </div>
 
                 {/* Metric 2: Quarantined Outbound (Enlarged) */}
                 <div className="px-2 sm:px-4 flex flex-col items-center">
                   <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-bold ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'}`}>
-                    Quarantined Outbound
+                    Est. Undelivered Messages
                   </span>
                   <span className={`font-black text-lg sm:text-2xl md:text-3xl tracking-tight mt-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
                     ~<NumberTicker value={quarantinedMessages} duration={900} />
@@ -606,20 +599,18 @@ export function FinancialLeakage({
             <div className="grid grid-cols-2 lg:grid-cols-1 gap-2.5 sm:gap-3 flex-1">
               {/* Box 1: Monthly Outbound */}
               <div
-                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-                  isLightMode
+                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
                     ? 'bg-black/[0.015] border-black/[0.08]'
                     : 'bg-white/[0.02] border-white/[0.08]'
-                }`}
+                  }`}
               >
                 <div className="flex justify-between items-center text-xs font-mono mb-1.5">
                   <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
                     Monthly Outbound
                   </span>
                   <span
-                    className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${
-                      isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
-                    }`}
+                    className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
+                      }`}
                   >
                     {outboundVolume.toLocaleString()}
                   </span>
@@ -632,9 +623,8 @@ export function FinancialLeakage({
                     step={1000}
                     value={outboundVolume}
                     onChange={(e) => setOutboundVolume(Number(e.target.value))}
-                    className={`w-full h-1 appearance-none cursor-pointer rounded-full ${
-                      isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
-                    }`}
+                    className={`w-full h-1 appearance-none cursor-pointer rounded-full ${isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
+                      }`}
                   />
                   <div className="flex justify-between text-[9px] font-mono text-neutral-400 mt-1">
                     <span>1k</span>
@@ -645,11 +635,10 @@ export function FinancialLeakage({
 
               {/* Box 2: Quarantine / Spam Rate */}
               <div
-                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-                  isLightMode
+                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
                     ? 'bg-black/[0.015] border-black/[0.08]'
                     : 'bg-white/[0.02] border-white/[0.08]'
-                }`}
+                  }`}
               >
                 <div className="flex justify-between items-center text-xs font-mono mb-1.5">
                   <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
@@ -685,20 +674,18 @@ export function FinancialLeakage({
 
               {/* Box 3: Value per Deal */}
               <div
-                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-                  isLightMode
+                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
                     ? 'bg-black/[0.015] border-black/[0.08]'
                     : 'bg-white/[0.02] border-white/[0.08]'
-                }`}
+                  }`}
               >
                 <div className="flex justify-between items-center text-xs font-mono mb-1.5">
                   <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
                     Deal Value
                   </span>
                   <span
-                    className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${
-                      isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
-                    }`}
+                    className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
+                      }`}
                   >
                     ${dealValue.toLocaleString()}
                   </span>
@@ -711,9 +698,8 @@ export function FinancialLeakage({
                     step={100}
                     value={dealValue}
                     onChange={(e) => setDealValue(Number(e.target.value))}
-                    className={`w-full h-1 appearance-none cursor-pointer rounded-full ${
-                      isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
-                    }`}
+                    className={`w-full h-1 appearance-none cursor-pointer rounded-full ${isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
+                      }`}
                   />
                   <div className="flex justify-between text-[9px] font-mono text-neutral-400 mt-1">
                     <span>$100</span>
@@ -722,22 +708,20 @@ export function FinancialLeakage({
                 </div>
               </div>
 
-              {/* Box 4: Lost Opportunities */}
+              {/* Box 4: Assumed Reply-to-Deal Rate */}
               <div
-                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-                  isLightMode
+                className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
                     ? 'bg-black/[0.015] border-black/[0.08]'
                     : 'bg-white/[0.02] border-white/[0.08]'
-                }`}
+                  }`}
               >
                 <div className="flex justify-between items-center text-xs font-mono mb-1.5">
                   <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
-                    Lost Opportunities
+                    Assumed Reply-to-Deal Rate
                   </span>
                   <span
-                    className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${
-                      isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
-                    }`}
+                    className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
+                      }`}
                   >
                     {conversionRatePct}%
                   </span>
@@ -750,9 +734,8 @@ export function FinancialLeakage({
                     step={0.01}
                     value={conversionRatePct}
                     onChange={(e) => setConversionRatePct(Number(Number(e.target.value).toFixed(2)))}
-                    className={`w-full h-1 appearance-none cursor-pointer rounded-full ${
-                      isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
-                    }`}
+                    className={`w-full h-1 appearance-none cursor-pointer rounded-full ${isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
+                      }`}
                   />
                   <div className="flex justify-between text-[9px] font-mono text-neutral-400 mt-1">
                     <span>0.05%</span>
@@ -766,7 +749,7 @@ export function FinancialLeakage({
             <div className="px-1 flex items-start gap-1.5 text-[9px] sm:text-[9.5px] font-mono leading-relaxed text-neutral-500 dark:text-white/40">
               <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-neutral-400 dark:text-neutral-500" />
               <span>
-                Model assumes <strong>{conversionRatePct}%</strong> lost opportunities on quarantined sends (Loss = Quarantined × {conversionRatePct}% × Deal Value).
+                * Scenario sensitivity model based on user-adjustable conversion & volume assumptions to illustrate potential pipeline impact when deliverability degrades.
               </span>
             </div>
           </div>

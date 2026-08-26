@@ -80,7 +80,7 @@ export function PricingPage({
         spread: 60,
         origin: { y: 0.8 },
       });
-    } catch (_) {}
+    } catch (_) { }
     openPaddleCheckout(priceId, tierName);
   };
 
@@ -110,9 +110,8 @@ export function PricingPage({
   return (
     <div
       id="dedicated-pricing-page"
-      className={`min-h-screen pt-28 sm:pt-32 pb-28 sm:pb-36 px-4 sm:px-8 md:px-12 lg:px-24 transition-colors duration-300 ${
-        isLightMode ? 'bg-[#fbfbfd] text-[#1d1d1f]' : 'bg-[#0f0d13] rc-page-grain-0f0d13 text-[#F4F4F2]'
-      }`}
+      className={`min-h-screen pt-28 sm:pt-32 pb-28 sm:pb-36 px-4 sm:px-8 md:px-12 lg:px-24 transition-colors duration-300 ${isLightMode ? 'bg-[#fbfbfd] text-[#1d1d1f]' : 'bg-[#0f0d13] rc-page-grain-0f0d13 text-[#F4F4F2]'
+        }`}
     >
       <div className="max-w-6xl mx-auto">
         {/* Back navigation */}
@@ -120,45 +119,39 @@ export function PricingPage({
           <button
             onClick={onBackToHome}
             data-cursor="grow"
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full font-mono text-xs transition-colors border min-h-[40px] ${
-              isLightMode
-                ? 'bg-black/5 hover:bg-black/10 text-neutral-700 hover:text-black border-black/10'
-                : 'bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border-white/10'
-            }`}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full font-mono text-xs transition-colors border min-h-[40px] ${isLightMode
+              ? 'bg-black/5 hover:bg-black/10 text-neutral-700 hover:text-black border-black/10'
+              : 'bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border-white/10'
+              }`}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>← Return to Diagnostic Scanner</span>
+            <span>← Return to Homepage</span>
           </button>
         </div>
 
         {/* Hero header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
           <div
-            className={`rc-grain-surface inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider mb-4 border backdrop-blur-md min-h-[32px] ${
-              isLightMode
-                ? 'bg-black/[0.03] border-black/10 text-neutral-700'
-                : 'bg-white/[0.04] border-white/10 text-neutral-300'
-            }`}
+            className={`rc-grain-surface inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider mb-4 border backdrop-blur-md min-h-[32px] ${isLightMode
+              ? 'bg-black/[0.03] border-black/10 text-neutral-700'
+              : 'bg-white/[0.04] border-white/10 text-neutral-300'
+              }`}
           >
             <ShieldCheck className="w-4 h-4" />
             <span>COMMERCIAL ENGAGEMENT SPECIFICATION</span>
           </div>
 
           <h1
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold font-sans tracking-tight leading-[1.15] mb-4 ${
-              isLightMode ? 'text-[#1d1d1f]' : 'text-white'
-            }`}
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold font-sans tracking-tight leading-[1.15] mb-4 ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+              }`}
           >
-            Zero subscriptions.
-            <span className="block">One-time flat fee.</span>
+            <span className="block">Transparent Pricing.</span>
           </h1>
-
           <p
-            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed ${
-              isLightMode ? 'text-neutral-600' : 'text-neutral-400'
-            }`}
+            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed text-center ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'
+              }`}
           >
-            We audit, flatten, align, and authenticate. You own the verified DNS records forever.
+            Because <b>&quot;Sent to Spam&quot;</b> is a <i>very</i> expensive way to say hello.
           </p>
         </div>
 
@@ -168,11 +161,10 @@ export function PricingPage({
           <div
             id="pricing-card-tier-snapshot"
             data-cursor="grow"
-            className={`rc-grain-surface relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl overflow-hidden opacity-100 ${
-              isLightMode
-                ? 'bg-white/80 border border-black/10 hover:border-black/20 shadow-sm text-[#1d1d1f]'
-                : 'bg-[#121216]/80 border border-white/10 hover:border-white/20 shadow-md text-white'
-            }`}
+            className={`rc-grain-surface relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl overflow-hidden opacity-100 ${isLightMode
+              ? 'bg-white/80 border border-black/10 hover:border-black/20 shadow-sm text-[#1d1d1f]'
+              : 'bg-[#121216]/80 border border-white/10 hover:border-white/20 shadow-md text-white'
+              }`}
           >
             <div>
               <div className="font-mono text-xs text-neutral-500 uppercase tracking-wider mb-1">
@@ -186,9 +178,8 @@ export function PricingPage({
               </p>
 
               <div
-                className={`flex items-baseline gap-2 pb-6 mb-6 border-b ${
-                  isLightMode ? 'border-black/10' : 'border-white/10'
-                }`}
+                className={`flex items-baseline gap-2 pb-6 mb-6 border-b ${isLightMode ? 'border-black/10' : 'border-white/10'
+                  }`}
               >
                 <span className={`font-mono text-5xl font-bold ${isLightMode ? 'text-black' : 'text-white'}`}>
                   <NumberTicker value={247} prefix="$" duration={900} />
@@ -232,11 +223,10 @@ export function PricingPage({
             <button
               onClick={() => handleSelectTier('Self-Serve Blueprint', PADDLE_CONFIG.prices.selfServe)}
               data-cursor="grow"
-              className={`w-full py-3.5 px-4 rounded-xl font-sans font-medium text-xs tracking-wide transition-colors border min-h-[48px] ${
-                isLightMode
-                  ? 'bg-neutral-100 hover:bg-neutral-200 text-black border-black/10'
-                  : 'bg-white/10 hover:bg-white/20 text-white border-white/10'
-              }`}
+              className={`w-full py-3.5 px-4 rounded-xl font-sans font-medium text-xs tracking-wide transition-colors border min-h-[48px] ${isLightMode
+                ? 'bg-neutral-100 hover:bg-neutral-200 text-black border-black/10'
+                : 'bg-white/10 hover:bg-white/20 text-white border-white/10'
+                }`}
             >
               Order Self-Serve Blueprint ($247)
             </button>
@@ -246,11 +236,10 @@ export function PricingPage({
           <div
             id="pricing-card-tier-audit"
             data-cursor="grow"
-            className={`rc-grain-surface relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl overflow-hidden opacity-100 ${
-              isLightMode
-                ? 'bg-white/95 border-2 border-black/90 shadow-[0_20px_50px_rgba(0,0,0,0.09)] text-[#1d1d1f]'
-                : 'bg-[#121216]/95 border-2 border-white/90 shadow-[0_20px_60px_rgba(255,255,255,0.07)] text-white'
-            }`}
+            className={`rc-grain-surface relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl overflow-hidden opacity-100 ${isLightMode
+              ? 'bg-white/95 border-2 border-black/90 shadow-[0_20px_50px_rgba(0,0,0,0.09)] text-[#1d1d1f]'
+              : 'bg-[#121216]/95 border-2 border-white/90 shadow-[0_20px_60px_rgba(255,255,255,0.07)] text-white'
+              }`}
           >
             {/* Animated Faint Grainy Silk Background */}
             <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-0">
@@ -263,18 +252,16 @@ export function PricingPage({
                   rotation={0}
                 />
               </div>
-              <div className={`absolute inset-0 pointer-events-none ${
-                isLightMode ? 'bg-white/40' : 'bg-[#121216]/60'
-              }`} />
+              <div className={`absolute inset-0 pointer-events-none ${isLightMode ? 'bg-white/40' : 'bg-[#121216]/60'
+                }`} />
             </div>
 
             {/* Recommended Pill */}
             <div
-              className={`absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider backdrop-blur-md z-10 ${
-                isLightMode
-                  ? 'bg-black/90 text-white shadow-sm'
-                  : 'bg-white/95 text-black shadow-md'
-              }`}
+              className={`absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider backdrop-blur-md z-10 ${isLightMode
+                ? 'bg-black/90 text-white shadow-sm'
+                : 'bg-white/95 text-black shadow-md'
+                }`}
             >
               RECOMMENDED
             </div>
@@ -291,9 +278,8 @@ export function PricingPage({
               </p>
 
               <div
-                className={`flex items-baseline gap-2 pb-6 mb-6 border-b ${
-                  isLightMode ? 'border-black/10' : 'border-white/10'
-                }`}
+                className={`flex items-baseline gap-2 pb-6 mb-6 border-b ${isLightMode ? 'border-black/10' : 'border-white/10'
+                  }`}
               >
                 <span className={`font-mono text-5xl font-bold ${isLightMode ? 'text-black' : 'text-white'}`}>
                   <NumberTicker value={547} prefix="$" duration={900} />
@@ -330,11 +316,10 @@ export function PricingPage({
               <button
                 onClick={() => handleSelectTier('Turnkey Remediation', PADDLE_CONFIG.prices.turnkey)}
                 data-cursor="grow"
-                className={`w-full py-4 px-4 rounded-xl font-sans font-medium text-xs tracking-wide transition-all shadow-md min-h-[48px] ${
-                  isLightMode
-                    ? 'bg-black text-white hover:bg-neutral-800'
-                    : 'bg-white text-black hover:bg-neutral-200'
-                }`}
+                className={`w-full py-4 px-4 rounded-xl font-sans font-medium text-xs tracking-wide transition-all shadow-md min-h-[48px] ${isLightMode
+                  ? 'bg-black text-white hover:bg-neutral-800'
+                  : 'bg-white text-black hover:bg-neutral-200'
+                  }`}
               >
                 Order Turnkey Remediation ($547)
               </button>
@@ -345,15 +330,14 @@ export function PricingPage({
           <div
             id="pricing-card-tier-managed"
             data-cursor="grow"
-            className={`rc-grain-surface relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl overflow-hidden opacity-100 ${
-              isLightMode
-                ? 'bg-white/80 border border-black/10 hover:border-black/20 shadow-sm text-[#1d1d1f]'
-                : 'bg-[#121216]/80 border border-white/10 hover:border-white/20 shadow-md text-white'
-            }`}
+            className={`rc-grain-surface relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 backdrop-blur-xl overflow-hidden opacity-100 ${isLightMode
+              ? 'bg-white/80 border border-black/10 hover:border-black/20 shadow-sm text-[#1d1d1f]'
+              : 'bg-[#121216]/80 border border-white/10 hover:border-white/20 shadow-md text-white'
+              }`}
           >
             <div>
               <div className="font-mono text-xs text-neutral-500 uppercase tracking-wider mb-1">
-                Dedicated Cold Email Engine
+                Managed Infrastructure
               </div>
               <h2 className={`text-2xl font-semibold mb-2 ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'}`}>
                 Managed Outbound Infrastructure
@@ -363,9 +347,8 @@ export function PricingPage({
               </p>
 
               <div
-                className={`flex items-baseline gap-2 pb-6 mb-6 border-b ${
-                  isLightMode ? 'border-black/10' : 'border-white/10'
-                }`}
+                className={`flex items-baseline gap-2 pb-6 mb-6 border-b ${isLightMode ? 'border-black/10' : 'border-white/10'
+                  }`}
               >
                 <span className={`font-mono text-5xl font-bold ${isLightMode ? 'text-black' : 'text-white'}`}>
                   <NumberTicker value={1247} prefix="$" duration={900} />
@@ -405,11 +388,10 @@ export function PricingPage({
             <button
               onClick={() => handleSelectTier('Managed Outbound Infrastructure', PADDLE_CONFIG.prices.managed)}
               data-cursor="grow"
-              className={`w-full py-3.5 px-4 rounded-xl font-sans font-medium text-xs tracking-wide transition-colors border min-h-[48px] ${
-                isLightMode
-                  ? 'bg-neutral-100 hover:bg-neutral-200 text-black border-black/10'
-                  : 'bg-white/10 hover:bg-white/20 text-white border-white/10'
-              }`}
+              className={`w-full py-3.5 px-4 rounded-xl font-sans font-medium text-xs tracking-wide transition-colors border min-h-[48px] ${isLightMode
+                ? 'bg-neutral-100 hover:bg-neutral-200 text-black border-black/10'
+                : 'bg-white/10 hover:bg-white/20 text-white border-white/10'
+                }`}
             >
               Order Managed Outbound ($1,247)
             </button>
@@ -427,9 +409,8 @@ export function PricingPage({
             </p>
           </div>
 
-          <div className={`rounded-2xl border overflow-hidden shadow-2xl max-w-5xl mx-auto ${
-            isLightMode ? 'bg-white border-black/10' : 'bg-[#14121a] border-white/10'
-          }`}>
+          <div className={`rounded-2xl border overflow-hidden shadow-2xl max-w-5xl mx-auto ${isLightMode ? 'bg-white border-black/10' : 'bg-[#14121a] border-white/10'
+            }`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -437,19 +418,16 @@ export function PricingPage({
                     <th className="p-4 sm:p-5 font-mono text-xs text-neutral-400 uppercase font-semibold">
                       Technical Capability
                     </th>
-                    <th className={`p-4 sm:p-5 font-mono text-xs text-center uppercase font-bold w-36 sm:w-44 ${
-                      isLightMode ? 'text-black' : 'text-white'
-                    }`}>
+                    <th className={`p-4 sm:p-5 font-mono text-xs text-center uppercase font-bold w-36 sm:w-44 ${isLightMode ? 'text-black' : 'text-white'
+                      }`}>
                       Blueprint ($247)
                     </th>
-                    <th className={`p-4 sm:p-5 font-mono text-xs text-center uppercase font-bold w-36 sm:w-44 ${
-                      isLightMode ? 'text-black bg-neutral-100' : 'text-white bg-white/5'
-                    }`}>
+                    <th className={`p-4 sm:p-5 font-mono text-xs text-center uppercase font-bold w-36 sm:w-44 ${isLightMode ? 'text-black bg-neutral-100' : 'text-white bg-white/5'
+                      }`}>
                       Turnkey ($547)
                     </th>
-                    <th className={`p-4 sm:p-5 font-mono text-xs text-center uppercase font-bold w-36 sm:w-44 ${
-                      isLightMode ? 'text-black' : 'text-white'
-                    }`}>
+                    <th className={`p-4 sm:p-5 font-mono text-xs text-center uppercase font-bold w-36 sm:w-44 ${isLightMode ? 'text-black' : 'text-white'
+                      }`}>
                       Managed ($1,247)
                     </th>
                   </tr>
@@ -471,9 +449,8 @@ export function PricingPage({
                           <span className="text-[11px] text-neutral-400">{feature.snapshot}</span>
                         )}
                       </td>
-                      <td className={`p-4 sm:p-5 text-center font-bold ${
-                        isLightMode ? 'bg-neutral-50/50 text-black' : 'bg-white/[0.02] text-white'
-                      }`}>
+                      <td className={`p-4 sm:p-5 text-center font-bold ${isLightMode ? 'bg-neutral-50/50 text-black' : 'bg-white/[0.02] text-white'
+                        }`}>
                         {typeof feature.audit === 'boolean' ? (
                           feature.audit ? (
                             <Check className="w-4 h-4 text-emerald-500 mx-auto" />
@@ -506,9 +483,8 @@ export function PricingPage({
         {/* Questions. Answered. FAQ Accordion */}
         <div className="max-w-3xl mx-auto mb-16 sm:mb-20">
           <h2
-            className={`text-xl sm:text-2xl font-bold font-sans tracking-tight text-center mb-8 ${
-              isLightMode ? 'text-[#1d1d1f]' : 'text-white'
-            }`}
+            className={`text-xl sm:text-2xl font-bold font-sans tracking-tight text-center mb-8 ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+              }`}
           >
             Questions. Answered.
           </h2>
@@ -519,15 +495,14 @@ export function PricingPage({
               return (
                 <div
                   key={index}
-                  className={`rounded-2xl border transition-all ${
-                    isLightMode
-                      ? isOpen
-                        ? 'bg-white border-black/15 shadow-sm'
-                        : 'bg-black/[0.01] border-black/5 hover:border-black/10'
-                      : isOpen
+                  className={`rounded-2xl border transition-all ${isLightMode
+                    ? isOpen
+                      ? 'bg-white border-black/15 shadow-sm'
+                      : 'bg-black/[0.01] border-black/5 hover:border-black/10'
+                    : isOpen
                       ? 'bg-white/[0.03] border-white/15 shadow-md'
                       : 'bg-white/[0.01] border-white/5 hover:border-white/10'
-                  }`}
+                    }`}
                 >
                   <button
                     onClick={() => toggleFaq(index)}
@@ -537,19 +512,17 @@ export function PricingPage({
                       {faq.q}
                     </span>
                     <ChevronDown
-                      className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'transform rotate-180 text-emerald-500' : 'text-neutral-400'
-                      }`}
+                      className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'transform rotate-180 text-emerald-500' : 'text-neutral-400'
+                        }`}
                     />
                   </button>
 
                   {isOpen && (
                     <div
-                      className={`px-4 sm:px-5 pb-4 sm:pb-5 text-xs sm:text-sm leading-relaxed border-t pt-3 ${
-                        isLightMode
-                          ? 'border-black/5 text-neutral-600'
-                          : 'border-white/5 text-neutral-400'
-                      }`}
+                      className={`px-4 sm:px-5 pb-4 sm:pb-5 text-xs sm:text-sm leading-relaxed border-t pt-3 ${isLightMode
+                        ? 'border-black/5 text-neutral-600'
+                        : 'border-white/5 text-neutral-400'
+                        }`}
                     >
                       {faq.a}
                     </div>
