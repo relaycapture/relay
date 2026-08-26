@@ -55,7 +55,6 @@ export function DomainCheckerSection({
           }`}
         >
           <span className="block">Enter a domain to query root nameservers directly via Cloudflare DNS-over-HTTPS.</span>
-          <span className="block">We inspect SPF syntax, probe DKIM selectors, and check DMARC enforcement.</span>
         </p>
 
         {/* The Domain Checker Input and Live Scorecard */}
@@ -67,7 +66,7 @@ export function DomainCheckerSection({
           />
         </div>
 
-        {/* ZERO CREDENTIAL ACCESS ARCHITECTURE as a small note line under the domain checker (no boxes, no icons) */}
+        {/* ZERO CREDENTIAL ACCESS ARCHITECTURE as a small note line under the domain checker */}
         <p
           className={`text-center font-mono text-[11px] sm:text-xs tracking-wider uppercase mt-8 select-none transition-colors ${
             isLightMode ? 'text-neutral-500' : 'text-neutral-400'

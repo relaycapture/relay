@@ -31,7 +31,7 @@ export function FooterContact({
     setSubmissionState('loading');
     setTimeout(() => {
       setSubmissionState('submitted');
-    }, 1600); // 1.6s smooth loading state
+    }, 1600);
   };
 
   return (
@@ -40,7 +40,7 @@ export function FooterContact({
       className="relative py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-24 z-10 transition-colors section-content-auto"
     >
       <div className="max-w-5xl mx-auto">
-        {/* Contact Section - Fully Integrated with Background (No Box) */}
+        {/* Contact Section - Fully Integrated with Background */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-start mb-16 sm:mb-24">
           {/* Left Info Column (5 Cols) */}
           <div className="lg:col-span-5 space-y-4 sm:space-y-6">
@@ -49,8 +49,7 @@ export function FooterContact({
                 isLightMode ? 'text-[#1d1d1f]' : 'text-white'
               }`}
             >
-              <span className="block">Speak directly with</span>
-              <span className="block">an email engineer.</span>
+              Get In Touch.
             </h3>
 
             <p
@@ -58,19 +57,18 @@ export function FooterContact({
                 isLightMode ? 'text-neutral-600' : 'text-neutral-400'
               }`}
             >
-              <span className="block">Have custom infrastructure with hybrid on-premise Exchange or multiple sub-brands?</span>
-              <span className="block">Send us your domain parameters for a tailored architectural roadmap.</span>
+              Have custom infrastructure with hybrid on-premise Exchange or multiple sub-brands? Send us your parameters for a tailored architectural roadmap.
             </p>
           </div>
 
-          {/* Right Form Column (7 Cols) - Smooth Transition Form / Loading / Sent Confirmation */}
+          {/* Right Form Column (7 Cols) */}
           <div className="lg:col-span-7">
             {submissionState === 'loading' && (
               <div
                 className={`p-10 sm:p-14 rounded-3xl border flex flex-col items-center justify-center text-center space-y-4 animate-fade-in transition-all ${
                   isLightMode
                     ? 'bg-white/60 border-black/10 shadow-lg'
-                    : 'bg-[#101014]/60 border-white/10 shadow-2xl'
+                    : 'bg-[#18181f]/60 border-white/10 shadow-2xl'
                 }`}
               >
                 <div className="relative">
@@ -78,7 +76,7 @@ export function FooterContact({
                   <div className="absolute inset-0 rounded-full blur-sm bg-emerald-500/20" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className={`text-base font-semibold ${isLightMode ? 'text-black' : 'text-white'}`}>
+                  <h4 className={`text-lg font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
                     Dispatching to Engineering Relay...
                   </h4>
                   <p className="text-xs font-mono text-neutral-400">
@@ -93,7 +91,7 @@ export function FooterContact({
                 className={`p-8 sm:p-12 rounded-3xl border text-center space-y-4 animate-fade-in transition-all ${
                   isLightMode
                     ? 'bg-white/80 border-black/10 shadow-lg'
-                    : 'bg-[#101014]/80 border-white/10 shadow-2xl'
+                    : 'bg-[#18181f]/80 border-white/10 shadow-2xl'
                 }`}
               >
                 <div
@@ -113,7 +111,7 @@ export function FooterContact({
                       isLightMode ? 'text-neutral-600' : 'text-neutral-400'
                     }`}
                   >
-                    We’ve received your domain audit request. Please <strong>check your inbox soon at {email}</strong> — an email engineer will review your DNS records and follow up shortly.
+                    We have received your request. An email engineer will review your DNS records and follow up shortly at <strong>{email}</strong>.
                   </p>
                 </div>
 
@@ -142,7 +140,7 @@ export function FooterContact({
                   className={`p-6 sm:p-8 rounded-3xl border space-y-4 transition-all ${
                     isLightMode
                       ? 'bg-white/60 border-black/10 shadow-sm'
-                      : 'bg-[#101014]/60 border-white/10 shadow-lg'
+                      : 'bg-[#18181f]/60 border-white/10 shadow-lg'
                   }`}
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

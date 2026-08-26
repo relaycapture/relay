@@ -29,11 +29,10 @@ const SECTIONS: QuickNavSection[] = [
   { id: 'domain-checker-section', label: '02 // Domain Audit' },
   { id: 'financial-leakage', label: '03 // Revenue Impact' },
   { id: 'inbox-comparison', label: '04 // Inbox Simulation' },
-  { id: 'demo-section', label: '05 // Demo' },
-  { id: 'protocol-feed', label: '06 // Protocol Stream' },
-  { id: 'three-cards-section', label: '07 // Deliverables' },
-  { id: 'faq-section', label: '08 // Architecture FAQ' },
-  { id: 'contact-section', label: '09 // Engineering Contact' },
+  { id: 'protocol-feed', label: '05 // Protocol Stream' },
+  { id: 'three-cards-section', label: '06 // Deliverables' },
+  { id: 'faq-section', label: '07 // Architecture FAQ' },
+  { id: 'contact-section', label: '08 // Engineering Contact' },
 ];
 
 export default function App() {
@@ -70,99 +69,118 @@ export default function App() {
 
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
       smoothWheel: true,
+      wheelMultiplier: 1,
       touchMultiplier: 2,
     });
+
     lenisRef.current = lenis;
-    let rafId = 0;
 
     function raf(time: number) {
       lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
+      requestAnimationFrame(raf);
     }
-    rafId = requestAnimationFrame(raf);
+
+    requestAnimationFrame(raf);
 
     return () => {
-      cancelAnimationFrame(rafId);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, [reducedMotion]);
 
-  // Lock scrolling when QuickNav is open
-  useEffect(() => {
-    if (isQuickNavOpen) {
-      lenisRef.current?.stop();
-      document.body.style.overflow = 'hidden';
-    } else {
-      lenisRef.current?.start();
-      document.body.style.overflow = '';
-    }
-  }, [isQuickNavOpen]);
-
-  // Initial boot sequence (hold ~800ms, then fade out smoothly)
+  // Page boot sequence
   useEffect(() => {
     const timer = setTimeout(() => {
       setPhase('idle');
-    }, 800);
+    }, 400);
     return () => clearTimeout(timer);
   }, []);
 
-  // Section Observer to track active section for QuickNav (RAF throttled)
+  // Proximity to top & bottom detection
   useEffect(() => {
-    if (currentView !== 'landing') return;
-
-    let ticking = false;
-    let rafId = 0;
-
     const handleScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        rafId = requestAnimationFrame(() => {
-          const scrollPos = window.scrollY + window.innerHeight * 0.35;
-          for (let i = SECTIONS.length - 1; i >= 0; i--) {
-            const el = document.getElementById(SECTIONS[i].id);
-            if (el && el.offsetTop <= scrollPos) {
-              setActiveSection(SECTIONS[i].id);
-              break;
-            }
-          }
-          ticking = false;
-        });
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      if (scrollY < 50) {
+        setShowNavbar(true);
+        setShowThemeToggle(true);
+      } else {
+        setShowNavbar(true);
+        setShowThemeToggle(true);
+      }
+
+      if (scrollY + windowHeight >= documentHeight - 100) {
+        setShowQuickNav(true);
+      } else {
+        setShowQuickNav(true);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Intersection Observer to track active section
+  useEffect(() => {
+    if (currentView !== 'landing') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-30% 0px -30% 0px',
+        threshold: 0,
+      }
+    );
+
+    SECTIONS.forEach((section) => {
+      const element = document.getElementById(section.id);
+      if (element) observer.observe(element);
+    });
+
+    return () => observer.disconnect();
   }, [currentView]);
 
-  // Teleport Navigation Handler with black grainy fade in/out and destination label
-  const triggerTeleportTransition = (destination: string, callback: () => void) => {
+  // Teleportation Transition Handler
+  const triggerTeleportTransition = (destinationName: string, onExecute: () => void) => {
+    if (reducedMotion) {
+      onExecute();
+      return;
+    }
+
+    setTeleportDestination(destinationName);
+    setPhase('covering');
+
+    setTimeout(() => {
+      onExecute();
+      setPhase('revealing');
+
+      setTimeout(() => {
+        setPhase('idle');
+        setTeleportDestination('');
+      }, 500);
+    }, 450);
+  };
+
+  // Navigation handlers
+  const handleNavigate = (target: string) => {
     setIsQuickNavOpen(false);
     document.body.style.overflow = '';
     lenisRef.current?.start();
 
-    setTeleportDestination(destination);
-    setPhase('covering');
-    setTimeout(() => {
-      callback();
-      // Hold on the black grainy screen with destination text for ~550ms
-      setTimeout(() => {
-        setPhase('revealing');
-        setTimeout(() => {
-          setPhase('idle');
-          setTeleportDestination('');
-        }, 500);
-      }, 550);
-    }, 380);
-  };
-
-  const handleNavigate = (target: 'home' | 'pricing' | 'contact' | 'checker' | 'terms' | 'privacy' | 'refunds') => {
     if (target === 'pricing') {
-      triggerTeleportTransition('Pricing', () => {
+      triggerTeleportTransition('One-Time Pricing', () => {
         setCurrentView('pricing');
         window.scrollTo({ top: 0, behavior: 'instant' });
       });
@@ -186,21 +204,6 @@ export default function App() {
         setCurrentView('landing');
         window.scrollTo({ top: 0, behavior: 'instant' });
       });
-    } else if (target === 'contact') {
-      if (currentView !== 'landing') {
-        triggerTeleportTransition('Engineering Contact', () => {
-          setCurrentView('landing');
-          setTimeout(() => {
-            const el = document.getElementById('contact-section');
-            el?.scrollIntoView({ behavior: 'instant' });
-          }, 20);
-        });
-      } else {
-        triggerTeleportTransition('Engineering Contact', () => {
-          const el = document.getElementById('contact-section');
-          el?.scrollIntoView({ behavior: 'instant' });
-        });
-      }
     } else if (target === 'checker') {
       if (currentView !== 'landing') {
         triggerTeleportTransition('Domain Checker', () => {
@@ -225,13 +228,10 @@ export default function App() {
     'domain-checker-section': 'Domain Audit',
     'financial-leakage': 'Revenue Impact',
     'inbox-comparison': 'Inbox Simulation',
-    'demo-section': 'Demo',
-    'demo': 'Demo',
     'protocol-feed': 'Protocol Stream',
     'three-cards-section': 'Deliverables',
     'faq-section': 'Architecture FAQ',
     'contact-section': 'Engineering Contact',
-    // Section ID aliases
     'financial-leakage-section': 'Revenue Impact',
     'inbox-comparison-section': 'Inbox Simulation',
     'protocol-feed-section': 'Protocol Stream',
@@ -277,7 +277,7 @@ export default function App() {
         isLightMode
           ? 'bg-[#F4F4F2] text-[#0A0A0C] light'
           : (currentView === 'landing' || currentView === 'pricing')
-          ? 'bg-[#151515] rc-page-grain-151515 text-[#F4F4F2] dark'
+          ? 'bg-[#121212] rc-page-grain-121212 text-[#F4F4F2] dark'
           : 'bg-[#0A0A0C] text-[#F4F4F2] dark'
       }`}
     >
@@ -352,10 +352,10 @@ export default function App() {
             isLightMode={isLightMode}
           />
 
-          {/* 5. Cloudflare DNS Zone Mockup Demo Tab */}
-          <DeliverabilitySimulator isLightMode={isLightMode} />
+          {/* 5. Cloudflare DNS Zone Mockup Demo Tab (Hidden per request, files kept intact) */}
+          {/* <DeliverabilitySimulator isLightMode={isLightMode} /> */}
 
-          {/* 6. Live Protocol Enforcement Feed (Moving Vertical Cards Stream) */}
+          {/* 5. Live Protocol Enforcement Feed (Moving Vertical Cards Stream) */}
           <LiveProtocolFeed isLightMode={isLightMode} />
 
           {/* 6. Three Structured Deliverables Cards */}
@@ -368,7 +368,7 @@ export default function App() {
           {/* 7. Technical Architecture & Questions Answered FAQ */}
           <FaqSection isLightMode={isLightMode} />
 
-          {/* 8. Direct Technical Contact Block (Integrated Background, sam@relaycapture.com) */}
+          {/* 8. Direct Technical Contact Block */}
           <FooterContact
             isLightMode={isLightMode}
             onNavigateToPricing={() => handleNavigate('pricing')}
