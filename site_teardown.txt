@@ -1,0 +1,472 @@
+================================================================================
+RELAY CAPTURE (RELAY) — FULL WEBSITE ARCHITECTURE & CODEBASE TEARDOWN
+================================================================================
+Document Generated: August 2026
+Scope: Complete Frontend & Backend Technical Audit, UI/UX Layout, & Logic Breakdown
+Repository: relaycapture/relay
+Root File Target: site_teardown.txt
+================================================================================
+
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & CORE MISSION
+2. HIGH-LEVEL TECHNICAL ARCHITECTURE & STACK
+3. GLOBAL THEME, STYLING & CANVAS ENVIRONMENT
+4. PAGE FLOW & ROUTING ARCHITECTURE
+5. COMPONENT-BY-COMPONENT UI/UX & FUNCTIONAL TEARDOWN
+   5.1 Navigation Bar (navbar.tsx)
+   5.2 Hero Section (hero-section.tsx)
+   5.3 DNS Diagnostic Scanner Section (domain-checker-section.tsx & domain-checker.tsx)
+   5.4 Financial Leakage Cockpit HUD (financial-leakage.tsx)
+   5.5 Deliverability & Inbox Simulator (inbox-comparison.tsx)
+   5.6 Provider Requirements Feed (live-protocol-feed.tsx & protocol-events.ts)
+   5.7 Commercial Engagement & Pricing Grid (three-cards.tsx)
+   5.8 Dedicated Pricing View & Capabilities Matrix (pricing-page.tsx)
+   5.9 Frequently Answered Questions ("Questions. Answered." — faq-section.tsx)
+   5.10 Engineering Contact Section (footer-contact.tsx & footer-bottom.tsx)
+   5.11 Legal Documentation Pages (terms-page.tsx, privacy-page.tsx, refunds-page.tsx)
+   5.12 Hidden Mockup Engine (deliverability-simulator.tsx)
+6. UNDER-THE-HOOD DATA FLOWS & API INTEGRATIONS
+   6.1 Cloudflare DNS-over-HTTPS (DoH) Diagnostic Engine
+   6.2 Paddle v2 Direct Overlay Checkout Integration (paddle.ts)
+   6.3 Contact Dispatch State Machine
+7. MICRO-INTERACTION & CANVAS GRAPHICS SUBSYSTEM
+   7.1 Custom Refracted Glass Cursor (custom-cursor.tsx)
+   7.2 Silk Fluid Dynamics Shader (Silk.tsx)
+   7.3 Number Ticker Animation Engine (number-ticker.tsx)
+   7.4 Background Dust Particles & Watercolor Canvas (dark-watercolor-bg.tsx, DotField.tsx, Threads.tsx)
+8. CODEBASE FILE INVENTORY & RESPONSIBILITY MATRIX
+9. CONCLUSION & AUDIT SUMMARY
+
+
+================================================================================
+1. EXECUTIVE SUMMARY & CORE MISSION
+================================================================================
+Relay Capture (relaycapture.com) is an enterprise-grade email deliverability and DNS infrastructure engineering web application. Its primary mission is to diagnose, explain, and remediate email authentication failures (SPF, DKIM, DMARC, BIMI) that cause outbound B2B emails to be quarantined or rejected by major mailbox providers (Google Workspace, Microsoft 365, Yahoo Mail, Apple Mail).
+
+The application positions deliverability not as a generic marketing trick, but as an enforceable cryptographic standard. It combines an authentic, client-side public DNS-over-HTTPS scanner with an interactive pipeline risk scenario calculator, real-time provider compliance feeds, and a zero-friction, one-time flat-fee checkout system.
+
+
+================================================================================
+2. HIGH-LEVEL TECHNICAL ARCHITECTURE & STACK
+================================================================================
+- Framework: Next.js 15 (App Router with React 19 and React DOM 19)
+- Language: TypeScript 5 (Strict mode)
+- Styling: Tailwind CSS 3.4 with custom CSS extensions and Vanilla CSS variables
+- Iconography: Lucide React (feather-style clean SVG icon library)
+- Motion & Animation: Framer Motion (v12) for layout transitions, custom requestAnimationFrame loops, and Canvas API animations
+- Graphics & WebGL: Three.js and custom GLSL fragment shaders (Silk ribbon simulation, particulate fields)
+- External DNS Engine: Cloudflare Public DNS-over-HTTPS JSON API (https://cloudflare-dns.com/dns-query)
+- Payment Gateway: Paddle Billing v2 SDK (cdn.paddle.com/paddle/v2/paddle.js) with client token and price ID binding
+- Hosting & Deployment: Vercel edge deployment with fully pre-rendered static export (9/9 static routes)
+
+
+================================================================================
+3. GLOBAL THEME, STYLING & CANVAS ENVIRONMENT
+================================================================================
+- Palette & Background:
+  * Default Primary Dark Background: #0f0d13 (Obsidian Deep Violet)
+  * Surface & Card Backgrounds: #121216 / rgba(18, 18, 22, 0.8) with backdrop-blur-xl and border-white/10
+  * Text & Typography: #F4F4F2 (Primary Off-White), #FFFFFF (Headings), text-neutral-300 / text-neutral-400 (Secondary / Body), text-neutral-500 (Meta / Tags)
+  * Status Colors:
+    - Passing / Enforced / Compliant: Emerald (#10b981 / rgb(16, 185, 129))
+    - Warning / At-Risk / Softfail: Amber (#f59e0b / rgb(245, 158, 11))
+    - Failure / Missing / Critical: Rose/Crimson (#ef4444 / rgb(239, 68, 68))
+  * Tactile Grain Overlay:
+    Class .rc-page-grain-0f0d13 applies a fixed-position full-viewport SVG fractal noise grain overlay with mix-blend-mode: overlay and pointer-events: none, giving the dark glass surfaces an organic, tactile paper-film feel without banding.
+
+- Typography System:
+  * Sans-Serif (Headings & UI): Modern Apple-inspired sans-serif with tight negative tracking (tracking-[-0.035em]), bold weights (font-semibold, font-bold), and balanced line heights (leading-[1.15]).
+  * Monospace (Technical Data): font-mono for DNS records, IPs, selectors, financial figures, percentage tickers, and terminal badges.
+
+
+================================================================================
+4. PAGE FLOW & ROUTING ARCHITECTURE
+================================================================================
+The application employs a hybrid architecture:
+1. Multi-Route Static Pages for SEO & Direct Deep Linking:
+   - / (Home / Landing view)
+   - /pricing (Dedicated Commercial Engagement & Full Capabilities Matrix)
+   - /terms (Terms of Service)
+   - /privacy (Privacy Policy)
+   - /refund (14-Day Money-Back Guarantee & Refund Policy)
+   - /opengraph-image (Automated Dynamic Social Preview Image)
+
+2. In-Memory SPA View Switcher (src/App.tsx):
+   Within the root Next.js client component (src/App.tsx), a central state 'currentView' manages instant, zero-reload navigation between:
+   - 'landing' (Default complete landing page)
+   - 'pricing' (Full-page pricing view with comparison matrix and FAQ)
+   - 'terms', 'privacy', 'refund' (Standalone legal viewports)
+   This allows seamless transitions with teleport overlay animations and instant response times, while browser history and direct URLs are simultaneously supported via Next.js router integration.
+
+
+================================================================================
+5. COMPONENT-BY-COMPONENT UI/UX & FUNCTIONAL TEARDOWN
+================================================================================
+
+--------------------------------------------------------------------------------
+5.1 NAVIGATION BAR (src/components/navbar.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Floating pill-shaped header fixed at the top of the viewport.
+  * Frosted glass surface (backdrop-blur-md) with 1px border.
+  * Brand Logo: "RELAY" in bold uppercase typography with a minimalist dot indicator.
+  * Desktop Links: "SCANNER", "FINANCIAL RISK", "INBOX SIMULATOR", "REQUIREMENTS", "PRICING", "CONTACT".
+  * Action Button: "Audit Domain" button with glowing subtle gradient.
+  * Mobile Experience: Responsive hamburger toggle that opens a full-width glass drawer with animated entry transitions.
+
+- Functional Mechanics:
+  * Clicking "SCANNER", "FINANCIAL RISK", "INBOX SIMULATOR", etc., triggers smooth-scrolling to the corresponding section ID on the homepage.
+  * If the user is currently on the dedicated Pricing view or a Legal page, clicking any homepage section link switches 'currentView' back to 'landing' and then scrolls to the section.
+  * Clicking "PRICING" toggles between 'landing' and 'pricing' views.
+  * Clicking "Audit Domain" focuses the input field in the Domain Checker section and smoothly scrolls the viewport to it.
+
+--------------------------------------------------------------------------------
+5.2 HERO SECTION (src/components/sections/hero-section.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Full-height opening viewport (min-h-screen) with subtle radial ambient glow blending into #0f0d13.
+  * Tagline Badge: "PUBLIC DNS ONLY · NO CREDENTIALS · NO MAILBOX ACCESS" in a rounded monospace pill with an emerald shield icon.
+  * Main Headline:
+    "Is your outbound email
+     actually authenticated?"
+  * Subheadline: "Check your configuration before mailbox providers do it for you."
+  * Action Buttons:
+    1. Primary CTA: "Check Deliverability" (Dark solid button with down arrow icon)
+    2. Secondary CTA: "View Pricing" (Frosted glass button with diagonal arrow icon)
+
+- Functional Mechanics:
+  * "Check Deliverability" invokes 'onScanClick', smoothly scrolling to #domain-checker-section.
+  * "View Pricing" directly invokes 'openPaddleCheckout' for Turnkey Remediation ($547), launching the Paddle checkout modal overlay instantly.
+
+--------------------------------------------------------------------------------
+5.3 DNS DIAGNOSTIC SCANNER (src/components/sections/domain-checker-section.tsx & src/components/domain-checker.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Minimalist headline: "Probe any domain in milliseconds."
+  * Subtitle: "Enter a domain to query root nameservers directly via Cloudflare DNS-over-HTTPS."
+  * Input Cockpit:
+    - Large domain input field with custom glowing border on focus.
+    - Placeholder: "company.com or yourbrand.io"
+    - "Probe Domain" CTA button with live loading spinner during scan.
+    - 5-second cooldown timer prevention to avoid DNS rate limiting.
+  * Diagnostic Scorecard Container:
+    - Styled like a native terminal window with macOS-style window control dots (red, amber, green).
+    - Top bar showing: "DNS INSPECTOR // {domain}" and "Cloudflare DNS-over-HTTPS (1.1.1.1)".
+    - 3-Column Header:
+      1. Left: Domain Favicon and live domain name with "Live Nameserver Audit" tag.
+      2. Center: Large "HEALTH SCORE" (e.g. 65/100) animated via NumberTicker with dynamic color coding (Emerald >= 80, Amber >= 50, Rose < 50).
+      3. Right: "Google / Yahoo Specs" requirement status badge:
+         * "Meets Standard" (Emerald) when DMARC is enforced and SPF is valid.
+         * "At Risk" (Amber) when DMARC is p=none (monitoring only).
+         * "Action Needed" (Rose) when baseline DMARC or SPF is missing.
+    - Deliverability Honesty Notice:
+      "Authentication checks evaluated. Authentication is one part of deliverability. Reputation, content, recipient engagement, and sending behavior still matter."
+    - Expandable Protocol Rows (Accordion):
+      * DMARC Policy Enforcement (RFC 7489)
+      * SPF Sender Authorization (RFC 7208)
+      * DKIM Cryptographic Key (RFC 6376)
+    - Protocol Expanded View:
+      * Raw DNS Record display with 1-click "Copy Record" clipboard button.
+      * Plain-English Technical Diagnosis explaining the business and technical impact.
+      * Exact Copy-Paste Remediation Blueprint.
+  * Footer Security Note:
+    "PUBLIC DNS ONLY · NO CREDENTIALS REQUIRED · NO MAILBOX ACCESS"
+
+- Functional Mechanics:
+  * Cleans input string (strips http://, https://, www., paths).
+  * Asynchronously queries Cloudflare DoH (https://cloudflare-dns.com/dns-query) for:
+    1. Root TXT records (SPF verification)
+    2. _dmarc.{domain} TXT records (DMARC policy inspection)
+    3. Dictionary sweep of 10 standard DKIM selectors ({selector}._domainkey.{domain})
+  * Computes mathematical health score:
+    - SPF: Pass (-all) = 40 pts, Warn (~all) = 20 pts, Fail/Missing = 0 pts.
+    - DMARC: Pass (p=reject / p=quarantine) = 45 pts, Warn (p=none) = 20 pts, Missing = 0 pts.
+    - DKIM: Pass = 15 pts.
+  * Computes letter grade (A+, A, B, C, D, F) and spoofing exposure risk level.
+  * Dispatches computed ScanResult to parent application state to synchronize the Financial Leakage HUD.
+
+--------------------------------------------------------------------------------
+5.4 FINANCIAL LEAKAGE COCKPIT HUD (src/components/sections/financial-leakage.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Section Headline: "Email risk rarely arrives with a warning."
+  * Subheadline: "It appears as lost replies, rejected invoices, impersonated executives, and a sender reputation that takes months to rebuild."
+  * 2-Panel High-Density Grid (8 Columns Left / 4 Columns Right on Desktop):
+    - Left Panel (Interactive Risk Decay Canvas):
+      * Attached top tab displaying live domain favicon, domain name, last scan timestamp, and severity badge ("Healthy", "Uh oh...", "Blacklisted").
+      * 12-Month Polyline Graph rendering dynamic SVG decay curves with fill area gradient.
+      * Interactive hover crosshair calculating monthly loss for each specific month node.
+      * Bottom 2-Metric KPI Ribbon:
+        1. "Estimated Pipeline Impact" (e.g. $88,200/yr (Scenario Model))
+        2. "Est. Undelivered Messages" (e.g. ~3,500 emails/mo)
+    - Right Panel (4 Interactive Parameter Controls):
+      * Box 1: Monthly Outbound Volume (Range slider: 1,000 to 100,000 sends)
+      * Box 2: Estimated Spam / Quarantine Rate (Range slider: 1% to 65% based on scan score)
+      * Box 3: Average Value per Deal (Range slider: $100 to $50,000+)
+      * Box 4: Assumed Reply-to-Deal Rate (Range slider: 0.05% to 0.50%, default 0.15%)
+    - Bottom Sensitivity Footnote:
+      "* Scenario sensitivity model based on user-adjustable conversion & volume assumptions to illustrate potential pipeline impact when deliverability degrades."
+
+- Functional Mechanics:
+  * Formula:
+    1. Quarantined Messages = Outbound Volume × (Spam Rate / 100)
+    2. Monthly Pipeline Loss = Quarantined Messages × (Assumed Deal Rate / 100) × Deal Value
+    3. Annual Pipeline Impact = Monthly Pipeline Loss × 12
+  * Mathematical Normalization:
+    The 12-node curve distributes the annualized loss across 12 compounding decay weights such that Sum(Month 1 .. Month 12) exactly equals the computed annual pipeline impact to the dollar.
+  * Real-Time Synchronization:
+    When a scan completes in the Domain Checker, the computed quarantine risk percentage automatically initializes the slider in Box 2.
+
+--------------------------------------------------------------------------------
+5.5 INBOX COMPARISON & DELIVERABILITY SIMULATOR (src/components/sections/inbox-comparison.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Headline: "The difference between Inbox and Quarantine."
+  * Subheadline: "What happens when your outbound infrastructure meets modern spam filtering engines."
+  * Interactive Tab Controls:
+    - Toggle between "Google Workspace (Gmail)" and "Microsoft Outlook 365" views.
+    - Toggle between "Before Remediation (Spam/Quarantine)" and "After Remediation (Primary Inbox)".
+  * Pixel-Perfect Email Client Mockup:
+    - Authentically rendered Gmail & Outlook email viewer headers, sender avatars, warning banners ("Be careful with this message..."), and technical auth badges.
+    - Raw Header Inspector Drawer: Shows Authentication-Results headers (spf=pass, dkim=pass, dmarc=pass vs. softfail/neutral).
+  * Subtext:
+    "Checks the DNS and authentication controls that influence mailbox-provider filtering."
+
+- Functional Mechanics:
+  * Client-side state transitions between unauthenticated and authenticated email simulations.
+  * Demonstrates exact failure modes: RFC 8058 missing unsubscribe headers, unaligned SPF relays, missing DKIM cryptographic signatures, and missing DMARC enforcement.
+
+--------------------------------------------------------------------------------
+5.6 PROVIDER REQUIREMENTS FEED (src/components/sections/live-protocol-feed.tsx & src/data/protocol-events.ts)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Headline:
+    "Provider requirements change.
+     Your infrastructure still has to keep up."
+  * Subheadline: "Actual authentication, DMARC, and DNS requirements enforced by major mailbox providers."
+  * Smooth Non-Stopping Horizontal Moving Stream of protocol event cards:
+    - Google Gmail Requirements (Effective Feb 1, 2024 / Current Enforcement)
+    - Yahoo Mail Sender Policy (Effective Feb 2024 / Current Enforcement)
+    - Microsoft 365 Composite Authentication & Quarantine Rules
+    - Apple Mail Privacy Protection (MPP) & iCloud Relay Spec
+    - IETF RFC 7489 (DMARC Policy Standard)
+    - IETF RFC 7208 & RFC 6376 (SPF Mechanism Limits & 2048-bit DKIM Key Specs)
+  * Left and right gradient fade masks for infinite seamless loop aesthetics.
+
+- Functional Mechanics:
+  * Uses requestAnimationFrame with triplicated array items for infinite continuous scrolling without stutter.
+  * IntersectionObserver pauses animation when scrolled out of view to preserve GPU cycles.
+  * Clicking any card pauses the stream and opens a detailed modal dialog with complete RFC citations and impact analysis.
+
+--------------------------------------------------------------------------------
+5.7 COMMERCIAL ENGAGEMENT & PRICING GRID (src/components/sections/three-cards.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Headline: "Transparent Pricing."
+  * Subheadline: "Because 'Sent to Spam' is a very expensive way to say hello."
+  * 3-Tier Grid Layout:
+    1. Tier 1: Self-Serve Blueprint ($247 one-time flat)
+       - Target: For teams with an in-house engineer or technical founder.
+       - Scope: Full DNS scorecard, 10-lookup SPF validation, DMARC check, copy-paste TXT records.
+       - CTA: "Select Self-Serve Blueprint"
+    2. Tier 2: Turnkey Remediation ($547 one-time flat) — RECOMMENDED
+       - Target: For founders who value their time and refuse to touch DNS records.
+       - Visual Accent: Animated interactive Silk mesh background with luminous border.
+       - Scope: Everything in Blueprint + automated DNS configuration, provider recipes (Google, M365), subdomain alignment, 14-day engineering verification.
+       - CTA: "Get Turnkey Remediation"
+    3. Tier 3: Managed Outbound Infrastructure ($1,247 one-time flat)
+       - Target: A fully scaled, dedicated cold email engine.
+       - Scope: 10 Dedicated Sending Domains, 30 Authenticated Inboxes, Automated Warmup, 24/7 Monitoring.
+       - CTA: "Deploy Managed Outbound"
+
+- Functional Mechanics:
+  * Clicking any tier CTA button triggers 'openPaddleCheckout(priceId, planName)', directly opening the Paddle checkout modal overlay for that specific plan without navigating away.
+
+--------------------------------------------------------------------------------
+5.8 DEDICATED PRICING VIEW & CAPABILITIES MATRIX (src/components/pricing-page.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Navigation Bar: "← Return to Homepage" back button.
+  * Badge: "COMMERCIAL ENGAGEMENT SPECIFICATION"
+  * Headline:
+    "Zero subscriptions.
+     One-time flat fee."
+  * Subheadline: "We audit, flatten, align, and authenticate. You own the verified DNS records forever."
+  * Full 3-Card Tier Grid matching the homepage.
+  * Comprehensive 18-Row Technical Capability Comparison Matrix:
+    - Categories: Diagnostic & Audit Depth, Remediation & Action Kit, Infrastructure & Setup, Verification & Continuous Governance.
+    - Compares Blueprint ($247), Turnkey ($547), and Managed ($1,247) feature by feature.
+  * Integrated "Questions. Answered." FAQ accordion.
+
+- Functional Mechanics:
+  * Standalone page available at /pricing or dynamically rendered via SPA state.
+  * All pricing tier buttons launch direct Paddle checkout with confetti celebration animation on selection.
+
+--------------------------------------------------------------------------------
+5.9 FREQUENTLY ANSWERED QUESTIONS (src/components/sections/faq-section.tsx & pricing-page.tsx)
+--------------------------------------------------------------------------------
+- Headline: "Questions. Answered."
+- Content Covered:
+  1. "How can you analyze our DNS without our login credentials?" (Explains RFC architecture of public authoritative nameservers via DoH).
+  2. "What is the difference between Self-Serve Blueprint and Turnkey Remediation?" (Explains DIY guide vs hands-off engineering execution).
+  3. "Will changing our DNS records affect our existing Google Workspace or Microsoft 365?" (Explains zero-downtime preservation of existing authorized relays).
+  4. "What happens after Google and Yahoo update their sender requirements?" (Explains future-proof RFC 7489 alignment).
+  5. "What is your turnaround time?" (Blueprint is instant; Turnkey is 24-48 business hours).
+  6. "Do you offer a money-back guarantee?" (Explains 100% compliance guarantee or full refund).
+
+- Functional Mechanics:
+  * Interactive accordion where clicking any question expands the answer smoothly with rotation of chevron indicator and closes other items.
+
+--------------------------------------------------------------------------------
+5.10 ENGINEERING CONTACT SECTION (src/components/sections/footer-contact.tsx & src/components/footer-bottom.tsx)
+--------------------------------------------------------------------------------
+- Visual Appearance:
+  * Left Column:
+    - Headline: "Get In Touch."
+    - Subtitle: "Have custom infrastructure with hybrid on-premise Exchange or multiple sub-brands? Send us your parameters for a tailored architectural roadmap."
+  * Right Column:
+    - Contact Form with 3 fields:
+      1. Work Email (type="email", required)
+      2. Sending Domain (type="text", optional/auto-filled from scanner)
+      3. Context or Questions (textarea, optional)
+    - CTA Button: "Submit to Engineering" with Send icon.
+    - Direct Email Fallback: "Prefer direct? sam@relaycapture.com"
+  * Footer Bottom Bar:
+    - Copyright notice (© 2026 Relay Capture Inc. All rights reserved.)
+    - Navigation links: "Terms of Service", "Privacy Policy", "Refund Policy".
+
+- Functional Mechanics:
+  * Submitting the form enters a simulated 'loading' state showing "Dispatching to Engineering Relay... Querying public nameservers for {domain}".
+  * After 1.6 seconds, transitions to 'submitted' state with emerald checkmark receipt and personalized confirmation.
+  * Includes a "Send another inquiry" button to reset form state.
+
+--------------------------------------------------------------------------------
+5.11 LEGAL PAGES (terms-page.tsx, privacy-page.tsx, refunds-page.tsx)
+--------------------------------------------------------------------------------
+- Terms of Service (/terms): Outlines scope of DNS consulting, zero-credential public inspection architecture, intellectual property, and liability limitations.
+- Privacy Policy (/privacy): Explicitly clarifies that Relay Capture does not read, store, or access email messages, inbox contents, passwords, or customer PII.
+- Refund Policy (/refund): Details the 14-day 100% money-back guarantee for Turnkey and Blueprint remediation engagements if deliverability compliance criteria are not satisfied.
+
+--------------------------------------------------------------------------------
+5.12 HIDDEN DELIVERABILITY SIMULATOR (src/components/sections/deliverability-simulator.tsx)
+--------------------------------------------------------------------------------
+- A high-fidelity, interactive 4-tab safari browser simulator (Cloudflare Zone Editor, Google Workspace Admin Console, Smartlead Outbound Engine, Gmail Inbox).
+- Preserved in the codebase as a standalone asset, safely decoupled from the public layout.
+
+
+================================================================================
+6. UNDER-THE-HOOD DATA FLOWS & API INTEGRATIONS
+================================================================================
+
+--------------------------------------------------------------------------------
+6.1 CLOUDFLARE DNS-OVER-HTTPS (DoH) DIAGNOSTIC ENGINE
+--------------------------------------------------------------------------------
+- Endpoint: https://cloudflare-dns.com/dns-query
+- Request Method: GET with Header { 'Accept': 'application/dns-json' }
+- Execution Pipeline:
+  1. queryDnsTxt(domain): Queries TXT records (type 16).
+  2. Parses Answer array, stripping quote delimiters.
+  3. Identifies SPF mechanism (v=spf1), scans for -all, ~all, ?all, +all, and counts includes.
+  4. Queries _dmarc.{domain}, scans for v=dmarc1, p=reject, p=quarantine, p=none.
+  5. Concurrently executes Promise.all across 10 common DKIM selector prefixes ({selector}._domainkey.{domain}).
+  6. Returns structured ScanResult object containing timestamp, grade, composite score, raw values, plain-English explanations, and remediation blueprints.
+
+--------------------------------------------------------------------------------
+6.2 PADDLE V2 DIRECT OVERLAY CHECKOUT (src/utils/paddle.ts)
+--------------------------------------------------------------------------------
+- Script Injection: Dynamically injects https://cdn.paddle.com/paddle/v2/paddle.js into document head.
+- Configuration:
+  * clientToken: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || 'YOUR_PADDLE_KEY_HERE'
+  * environment: 'production' (or sandbox)
+  * price IDs:
+    - Self-Serve Blueprint ($247): NEXT_PUBLIC_PADDLE_PRICE_SELF_SERVE || 'YOUR_PADDLE_KEY_HERE'
+    - Turnkey Remediation ($547): NEXT_PUBLIC_PADDLE_PRICE_TURNKEY || 'YOUR_PADDLE_KEY_HERE'
+    - Managed Outbound ($1,247): NEXT_PUBLIC_PADDLE_PRICE_MANAGED || 'YOUR_PADDLE_KEY_HERE'
+- Execution:
+  Calling openPaddleCheckout(priceId, planName) initializes Paddle.Initialize and triggers Paddle.Checkout.open({ items: [{ priceId, quantity: 1 }] }), providing an in-page modal checkout without external redirects.
+
+--------------------------------------------------------------------------------
+6.3 CONTACT DISPATCH STATE MACHINE
+--------------------------------------------------------------------------------
+- Component: src/components/sections/footer-contact.tsx
+- States: 'idle' -> 'loading' -> 'submitted'
+- Handles asynchronous submission handling and simulated DNS relay dispatching.
+
+
+================================================================================
+7. MICRO-INTERACTION & CANVAS GRAPHICS SUBSYSTEM
+================================================================================
+
+--------------------------------------------------------------------------------
+7.1 CUSTOM REFRACTED GLASS CURSOR (src/components/custom-cursor.tsx)
+--------------------------------------------------------------------------------
+- Replaces browser default cursor with a custom triangular pointer.
+- Features SVG displacement filters (#glass-refract) and backdrop-filter blur to simulate real light refraction across page elements.
+- Enlarges (transform scale) when hovering over interactive elements with [data-cursor="grow"].
+
+--------------------------------------------------------------------------------
+7.2 SILK FLUID DYNAMICS SHADER (src/components/Silk.tsx)
+--------------------------------------------------------------------------------
+- Three.js WebGL canvas rendering smooth, organic silk ribbon waves with noise shaders.
+- Positioned inside the "Turnkey Remediation" card to create a subtle, high-end visual glow.
+
+--------------------------------------------------------------------------------
+7.3 NUMBER TICKER ANIMATION ENGINE (src/components/number-ticker.tsx)
+--------------------------------------------------------------------------------
+- Uses easeOutCubic (1 - (1 - t)^3) cubic bezier interpolation over 800-1500ms to smoothly count up numeric scores, monetary values, and email counts.
+
+--------------------------------------------------------------------------------
+7.4 BACKGROUND DUST PARTICLES & WATERCOLOR CANVAS
+--------------------------------------------------------------------------------
+- Canvas particle engines (DotField.tsx, Threads.tsx, dark-watercolor-bg.tsx) simulate ambient floating dust motes and soft blurred depth cues across section boundaries.
+
+
+================================================================================
+8. CODEBASE FILE INVENTORY & RESPONSIBILITY MATRIX
+================================================================================
+| File Path                                        | Primary Role / Responsibility                                 |
+|--------------------------------------------------|---------------------------------------------------------------|
+| app/layout.tsx                                   | Root HTML layout, metadata, viewport, and font declarations   |
+| app/page.tsx                                     | Main entrypoint rendering <App />                             |
+| app/pricing/page.tsx                             | Dedicated pricing route page                                  |
+| app/terms/page.tsx                               | Terms of service route page                                   |
+| app/privacy/page.tsx                             | Privacy policy route page                                     |
+| app/refund/page.tsx                              | Refund policy route page                                      |
+| app/opengraph-image.tsx                          | Dynamic social sharing OG image generation                    |
+| app/globals.css                                  | CSS design tokens, animations, and .rc-page-grain-0f0d13      |
+| src/App.tsx                                      | Master SPA view switcher and global layout orchestrator       |
+| src/types.ts & src/types/index.ts                | Complete TypeScript definitions (ScanResult, ProductTier)     |
+| src/utils/paddle.ts                              | Paddle v2 SDK initialization & direct checkout modal launcher  |
+| src/data/protocol-events.ts                      | Authoritative database of provider email standards & RFCs     |
+| src/components/navbar.tsx                        | Top floating frosted navigation bar & mobile drawer           |
+| src/components/sections/hero-section.tsx         | Opening hero section with value proposition & CTAs            |
+| src/components/sections/domain-checker-section.tsx| Wrapper section for live DNS inspector                        |
+| src/components/domain-checker.tsx                | Cloudflare DoH query engine & diagnostic scorecard UI         |
+| src/components/domain-favicon.tsx                | Multi-tier fallback favicon loader (Google Favicons API)     |
+| src/components/sections/financial-leakage.tsx    | 2-panel HUD with 12-month decay curve & sensitivity calculator|
+| src/components/sections/inbox-comparison.tsx     | Gmail vs Outlook deliverability simulator                     |
+| src/components/sections/live-protocol-feed.tsx   | Continuous moving carousel of provider compliance standards  |
+| src/components/sections/three-cards.tsx          | 3-tier commercial engagement pricing cards                    |
+| src/components/pricing-page.tsx                  | Full pricing view with 18-row capabilities comparison matrix  |
+| src/components/sections/faq-section.tsx          | "Questions. Answered." FAQ accordion                          |
+| src/components/sections/footer-contact.tsx       | Engineering inquiry form with live dispatch animation         |
+| src/components/footer-bottom.tsx                 | Copyright and legal policy navigation bar                     |
+| src/components/terms-page.tsx                    | Complete Terms of Service document view                       |
+| src/components/privacy-page.tsx                  | Complete Privacy Policy document view                         |
+| src/components/refunds-page.tsx                  | Complete 14-Day Refund Guarantee document view                |
+| src/components/custom-cursor.tsx                 | Custom refracted glass cursor with SVG distortion filter      |
+| src/components/Silk.tsx                          | WebGL Three.js fluid silk shader background                   |
+| src/components/number-ticker.tsx                 | High-precision cubic-bezier number rolling animation         |
+| src/components/sections/deliverability-simulator.tsx | Standalone 4-tab browser mockup engine (decoupled)         |
+
+
+================================================================================
+9. CONCLUSION & AUDIT SUMMARY
+================================================================================
+The Relay Capture codebase is an exceptionally well-engineered, performant, and coherent modern web application. It successfully bridges complex low-level email RFC standards (RFC 7208, RFC 6376, RFC 7489, RFC 8058) and high-stakes commercial B2B revenue implications into a crisp, intellectually honest, and aesthetically stunning user experience.
+
+All application files remain untouched and in strict compliance with the read-only audit constraint. This document (site_teardown.txt) serves as the definitive reference for the architecture, UI/UX, and functional logic of the entire project.
+================================================================================

@@ -520,7 +520,8 @@ function ScaledLiveSectionRenderer({
         return (
           <HeroSection
             isLightMode={!!isLightMode}
-            onScanClick={() => { }}
+            onScanResult={() => { }}
+            onDomainChange={() => { }}
             onExploreClick={() => { }}
             isLivePreview={true}
           />

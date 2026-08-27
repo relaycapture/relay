@@ -570,13 +570,24 @@ export function FinancialLeakage({
               <div className="mt-3 sm:mt-4 pt-3 sm:pt-3.5 border-t border-black/[0.06] dark:border-white/[0.08] grid grid-cols-2 divide-x divide-black/[0.06] dark:divide-white/[0.08] items-center font-mono select-none text-center">
                 {/* Metric 1: Annualized Risk (Dynamically Colored & Enlarged) */}
                 <div className="px-2 sm:px-4 flex flex-col items-center">
-                  <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-bold ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'}`}>
+                  <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-bold mb-1 ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'}`}>
                     Estimated Pipeline Impact
                   </span>
-                  <span className="font-black text-lg sm:text-2xl md:text-3xl tracking-tight mt-1" style={{ color: themeColor.stroke }}>
-                    <NumberTicker value={annualLeakage} prefix="$" duration={900} />
-                    <span className={`text-xs sm:text-sm font-normal ml-0.5 ${isLightMode ? 'text-neutral-500' : 'text-neutral-400'}`}>/yr (Scenario Model)</span>
-                  </span>
+                  <div className="flex items-baseline justify-center gap-2 flex-wrap mt-0.5">
+                    <span className="font-black text-xl sm:text-2xl md:text-3xl tracking-tight" style={{ color: themeColor.stroke }}>
+                      <NumberTicker value={annualLeakage} prefix="$" duration={900} />
+                      <span className="text-sm sm:text-base font-bold opacity-80">/yr</span>
+                    </span>
+                    <span
+                      className={`font-black text-xs sm:text-sm md:text-base uppercase tracking-wider px-2 py-0.5 rounded border shadow-sm ${
+                        isLightMode
+                          ? 'bg-neutral-200/90 text-neutral-900 border-neutral-300'
+                          : 'bg-white/10 text-white border-white/20'
+                      }`}
+                    >
+                      Scenario Model
+                    </span>
+                  </div>
                 </div>
 
                 {/* Metric 2: Quarantined Outbound (Enlarged) */}

@@ -25,14 +25,13 @@ import { RefundsPage } from './components/refunds-page';
 import { PagePhase, CurrentView, ScanResult } from './types';
 
 const SECTIONS: QuickNavSection[] = [
-  { id: 'hero-section', label: '01 // Overview' },
-  { id: 'domain-checker-section', label: '02 // Domain Audit' },
-  { id: 'financial-leakage', label: '03 // Revenue Impact' },
-  { id: 'inbox-comparison', label: '04 // Inbox Simulation' },
-  { id: 'protocol-feed', label: '05 // Protocol Stream' },
-  { id: 'three-cards-section', label: '06 // Deliverables' },
-  { id: 'faq-section', label: '07 // Architecture FAQ' },
-  { id: 'contact-section', label: '08 // Engineering Contact' },
+  { id: 'hero-section', label: '01 // Domain Audit' },
+  { id: 'financial-leakage', label: '02 // Revenue Impact' },
+  { id: 'inbox-comparison', label: '03 // Inbox Simulation' },
+  { id: 'protocol-feed', label: '04 // Protocol Stream' },
+  { id: 'three-cards-section', label: '05 // Deliverables' },
+  { id: 'faq-section', label: '06 // Architecture FAQ' },
+  { id: 'contact-section', label: '07 // Engineering Contact' },
 ];
 
 export default function App() {
@@ -209,13 +208,13 @@ export default function App() {
         triggerTeleportTransition('Domain Checker', () => {
           setCurrentView('landing');
           setTimeout(() => {
-            const el = document.getElementById('domain-checker-section');
+            const el = document.getElementById('hero-section') || document.getElementById('domain-checker-section');
             el?.scrollIntoView({ behavior: 'instant' });
           }, 20);
         });
       } else {
         triggerTeleportTransition('Domain Checker', () => {
-          const el = document.getElementById('domain-checker-section');
+          const el = document.getElementById('hero-section') || document.getElementById('domain-checker-section');
           el?.scrollIntoView({ behavior: 'instant' });
         });
       }
@@ -319,15 +318,9 @@ export default function App() {
       {/* Views */}
       {currentView === 'landing' ? (
         <main className="relative w-full overflow-x-clip">
-          {/* 1. Hero Section */}
+          {/* 1. Hero Section with Embedded Live Domain Checker */}
           <HeroSection
             isLightMode={isLightMode}
-            onScanClick={() => handleNavigate('checker')}
-            onExploreClick={() => handleNavigate('pricing')}
-          />
-
-          {/* 2. Real-time Domain Checker Section with Zero Credential Note Line */}
-          <DomainCheckerSection
             onScanResult={(res) => {
               setScanResult(res);
               if (res.domain) {
@@ -335,7 +328,8 @@ export default function App() {
                 setLastScannedTime(new Date());
               }
             }}
-            isLightMode={isLightMode}
+            onDomainChange={(d) => setCurrentDomain(d)}
+            onExploreClick={() => handleNavigate('pricing')}
           />
 
           {/* 3. Financial Leakage Section */}

@@ -1,18 +1,23 @@
 'use client'
 
-import { ArrowDown, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { openPaddleCheckout, PADDLE_CONFIG } from '../../utils/paddle';
+import { DomainChecker } from '../domain-checker';
+import { ScanResult } from '../../types';
 
 interface HeroSectionProps {
   isLightMode: boolean;
-  onScanClick: () => void;
-  onExploreClick: () => void;
+  onScanResult?: (result: ScanResult) => void;
+  onDomainChange?: (domain: string) => void;
+  onScanClick?: () => void;
+  onExploreClick?: () => void;
   isLivePreview?: boolean;
 }
 
 export function HeroSection({
   isLightMode,
-  onScanClick,
+  onScanResult,
+  onDomainChange,
   onExploreClick,
   isLivePreview = false,
 }: HeroSectionProps) {
@@ -23,10 +28,10 @@ export function HeroSection({
   return (
     <section
       id="hero-section"
-      className={`relative w-full min-h-[90vh] sm:min-h-screen flex flex-col justify-center items-center text-center overflow-hidden z-10 select-none transition-colors duration-300 ${
+      className={`relative w-full min-h-[90vh] flex flex-col justify-center items-center text-center overflow-hidden z-10 select-none transition-colors duration-300 ${
         isLivePreview
-          ? 'py-6 px-8'
-          : 'pt-32 sm:pt-36 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-8 md:px-12 lg:px-24'
+          ? 'py-6 px-4 sm:px-8'
+          : 'pt-28 sm:pt-32 md:pt-36 pb-16 sm:pb-20 md:pb-28 px-4 sm:px-8 md:px-12 lg:px-24'
       } bg-transparent`}
     >
       {/* Subtle Ambient Radial Lighting Gradient */}
@@ -35,73 +40,63 @@ export function HeroSection({
         aria-hidden="true"
         style={{
           background: isLightMode
-            ? 'radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.02) 0%, transparent 70%)'
-            : 'radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.025) 0%, transparent 70%)',
+            ? 'radial-gradient(circle at 50% 25%, rgba(0, 0, 0, 0.02) 0%, transparent 70%)'
+            : 'radial-gradient(circle at 50% 25%, rgba(255, 255, 255, 0.025) 0%, transparent 70%)',
         }}
       />
 
       {/* Hero Content Overlay */}
       <div className="relative z-10 max-w-5xl mx-auto w-full flex flex-col items-center justify-center text-center my-auto">
-        {/* Human Language Tagline Badge */}
-        <div
-          className={`rc-grain-surface inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-[11px] sm:text-xs tracking-wider uppercase mb-6 sm:mb-8 border backdrop-blur-md ${
-            isLightMode
-              ? 'bg-black/[0.03] border-black/10 text-neutral-700'
-              : 'bg-white/[0.04] border-white/10 text-neutral-300'
-          }`}
-        >
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          <span>PUBLIC DNS ONLY · NO CREDENTIALS · NO MAILBOX ACCESS</span>
-        </div>
+        {/* Clean Text Tagline - No shield icon, no pill background */}
+        <p className={`font-mono text-[11px] sm:text-xs md:text-sm tracking-wider uppercase mb-4 sm:mb-6 select-none transition-colors ${
+          isLightMode ? 'text-neutral-500' : 'text-neutral-400'
+        }`}>
+          PUBLIC DNS ONLY · NO CREDENTIALS · NO MAILBOX ACCESS
+        </p>
 
-        {/* Staggered Apple-Inspired Typography */}
+        {/* Fact-Based Modern Headline */}
         <h1
           className={`font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.15] mb-4 sm:mb-6 text-center ${
             isLightMode ? 'text-[#1d1d1f]' : 'text-white'
           }`}
         >
-          <span className="block">Is your outbound email</span>
+          <span className="block">Every mail server already has</span>
           <span className={`block ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
-            actually authenticated?
+            an opinion about your domain.
           </span>
         </h1>
 
         {/* Subtitle Description */}
         <p
-          className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-12 text-center ${
+          className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10 text-center ${
             isLightMode ? 'text-neutral-600' : 'text-neutral-400'
           }`}
         >
-          Check your configuration before mailbox providers do it for you.
+          SPF, DKIM, and DMARC — Gmail and Outlook check all three before your email is even opened. See exactly what they see, using nothing but public DNS.
         </p>
 
-        {/* Centralized Action CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5 w-full max-w-xs sm:max-w-none">
-          <button
-            id="hero-scan-cta-btn"
-            data-cursor="grow"
-            onClick={onScanClick}
-            className={`rc-grain-surface w-full sm:w-auto px-6 sm:px-7 py-3.5 sm:py-4 rounded-full font-sans font-medium text-xs sm:text-sm transition-all duration-200 backdrop-blur-md border shadow-xl flex items-center justify-center gap-2 min-h-[48px] ${
-              isLightMode
-                ? 'bg-[#1d1d1f]/90 hover:bg-black text-white border-black/20 shadow-black/10'
-                : 'bg-white/90 hover:bg-white text-[#0a0a0c] border-white/30 shadow-white/5'
-            }`}
-          >
-            <span>Check Deliverability</span>
-            <ArrowDown className="w-4 h-4" />
-          </button>
+        {/* Real-time Domain Checker Input & Live Scorecard - Pulled Above The Fold */}
+        <div id="domain-checker-section" className="w-full max-w-4xl mx-auto mb-6 sm:mb-8">
+          <DomainChecker
+            onResultCalculated={onScanResult}
+            onDomainChange={onDomainChange}
+            isLightMode={isLightMode}
+          />
+        </div>
 
+        {/* Secondary Action - View Pricing */}
+        <div className="flex items-center justify-center gap-3">
           <button
             id="hero-explore-cta-btn"
             data-cursor="grow"
             onClick={handlePricingCheckout}
-            className={`rc-grain-surface w-full sm:w-auto px-5 sm:px-6 py-3.5 sm:py-4 rounded-full font-sans font-medium text-xs sm:text-sm transition-all duration-200 backdrop-blur-md flex items-center justify-center gap-1.5 border shadow-md min-h-[48px] ${
+            className={`rc-grain-surface px-4 sm:px-5 py-2.5 rounded-full font-sans font-medium text-xs sm:text-sm transition-all duration-200 backdrop-blur-md flex items-center justify-center gap-1.5 border shadow-sm min-h-[38px] ${
               isLightMode
                 ? 'bg-black/[0.04] hover:bg-black/[0.08] text-neutral-800 border-black/10'
                 : 'bg-white/[0.05] hover:bg-white/[0.1] text-neutral-200 border-white/10'
             }`}
           >
-            <span>View Pricing</span>
+            <span>One-Time Remediation ($247+)</span>
             <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
           </button>
         </div>
