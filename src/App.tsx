@@ -272,16 +272,15 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${
-        isLightMode
-          ? 'bg-[#F4F4F2] text-[#0A0A0C] light'
-          : (currentView === 'landing' || currentView === 'pricing' || currentView === 'terms' || currentView === 'privacy' || currentView === 'refunds')
+      className={`min-h-screen transition-colors duration-300 ${isLightMode
+        ? 'bg-[#F4F4F2] text-[#0A0A0C] light'
+        : (currentView === 'landing' || currentView === 'pricing' || currentView === 'terms' || currentView === 'privacy' || currentView === 'refunds')
           ? 'bg-[#0f0d13] rc-page-grain-0f0d13 text-[#F4F4F2] dark'
           : 'bg-[#0f0d13] text-[#F4F4F2] dark'
-      }`}
+        }`}
     >
-      {/* Custom Refractive Cursor */}
-      <CustomCursor />
+      {/* Custom Refractive Cursor. Hidden for now */}
+      {/* <CustomCursor /> */}
 
       {/* Teleport Black Grainy Fade Overlay with Destination Indicator */}
       <TeleportOverlay phase={phase} destination={teleportDestination} reducedMotion={reducedMotion} />
@@ -375,7 +374,7 @@ export default function App() {
         /* Dedicated Pricing Sub-page */
         <PricingPage
           onBackToHome={() => handleNavigate('home')}
-          onOpenCheckout={() => {}}
+          onOpenCheckout={() => { }}
           onOpenSampleModal={() => setIsSampleModalOpen(true)}
           onNavigateToTerms={() => handleNavigate('terms')}
           onNavigateToPrivacy={() => handleNavigate('privacy')}

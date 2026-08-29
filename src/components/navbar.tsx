@@ -97,8 +97,8 @@ export function Navbar({
             data-cursor="grow"
             onClick={handleLogoClick}
             className={`group flex items-center justify-center p-1.5 sm:p-2 rounded-full transition-all duration-200 focus:outline-none ${isScrolled && isDropdownOpen
-                ? isLightMode ? 'bg-black/10' : 'bg-white/15'
-                : 'hover:scale-105'
+              ? isLightMode ? 'bg-black/10' : 'bg-white/15'
+              : 'hover:scale-105'
               }`}
             aria-label={isScrolled ? "Open navigation menu" : "Relay Capture Home"}
             title={isScrolled ? "Menu" : "Relay Capture"}
@@ -161,8 +161,8 @@ export function Navbar({
                   data-cursor="grow"
                   onClick={() => onNavigate('contact')}
                   className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-colors duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center ${isLightMode
-                      ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
-                      : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
+                    ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
+                    : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
                     }`}
                   aria-label="Navigate to Contact"
                 >
@@ -175,12 +175,12 @@ export function Navbar({
                   data-cursor="grow"
                   onClick={() => onNavigate(currentView === 'pricing' ? 'home' : 'pricing')}
                   className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-colors duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-full flex items-center justify-center gap-1 whitespace-nowrap leading-none ${currentView === 'pricing'
-                      ? isLightMode
-                        ? 'text-black bg-black/10 font-bold'
-                        : 'text-white bg-white/15 font-bold'
-                      : isLightMode
-                        ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
-                        : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
+                    ? isLightMode
+                      ? 'text-black bg-black/10 font-bold'
+                      : 'text-white bg-white/15 font-bold'
+                    : isLightMode
+                      ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
+                      : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
                     }`}
                   aria-label="Navigate to Pricing"
                 >
@@ -196,8 +196,8 @@ export function Navbar({
             data-cursor="grow"
             onClick={() => onNavigate('checker')}
             className={`rc-grain-surface relative group px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-sans font-semibold text-[10.5px] sm:text-xs tracking-tight transition-all duration-200 flex items-center gap-1 shadow-sm whitespace-nowrap leading-none ${isLightMode
-                ? 'bg-[#1d1d1f] hover:bg-black text-white'
-                : 'bg-white hover:bg-neutral-100 text-[#0A0A0C]'
+              ? 'bg-[#1d1d1f] hover:bg-black text-white'
+              : 'bg-white hover:bg-neutral-100 text-[#0A0A0C]'
               }`}
             aria-label="Scan Domain CTA"
           >
@@ -216,8 +216,8 @@ export function Navbar({
               exit={{ opacity: 0, y: -6, scale: 0.95 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               className={`absolute top-full left-0 mt-2 min-w-[160px] p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl rc-grain-surface z-50 flex flex-col gap-0.5 select-none ${isLightMode
-                  ? 'bg-[#f4f4f2]/95 border-black/10 text-neutral-800'
-                  : 'bg-[#0e0e12]/95 border-white/10 text-neutral-200'
+                ? 'bg-[#f4f4f2]/95 border-black/10 text-neutral-800'
+                : 'bg-[#0e0e12]/95 border-white/10 text-neutral-200'
                 }`}
               style={{
                 boxShadow: isLightMode
@@ -233,8 +233,8 @@ export function Navbar({
                   onNavigate('contact');
                 }}
                 className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${isLightMode
-                    ? 'hover:bg-black/5 hover:text-black text-neutral-700'
-                    : 'hover:bg-white/10 hover:text-white text-neutral-300'
+                  ? 'hover:bg-black/5 hover:text-black text-neutral-700'
+                  : 'hover:bg-white/10 hover:text-white text-neutral-300'
                   }`}
               >
                 <span>CONTACT</span>
@@ -249,8 +249,8 @@ export function Navbar({
                   onNavigate(currentView === 'pricing' ? 'home' : 'pricing');
                 }}
                 className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${isLightMode
-                    ? 'hover:bg-black/5 hover:text-black text-neutral-700'
-                    : 'hover:bg-white/10 hover:text-white text-neutral-300'
+                  ? 'hover:bg-black/5 hover:text-black text-neutral-700'
+                  : 'hover:bg-white/10 hover:text-white text-neutral-300'
                   }`}
               >
                 <span>{currentView === 'pricing' ? 'OVERVIEW' : 'PRICING'}</span>

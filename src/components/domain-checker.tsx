@@ -43,12 +43,12 @@ export function DomainChecker({ initialToken, onResultCalculated, onDomainChange
     const spfStatus = res.records.spf.status;
 
     if (dmarcStatus === 'pass' && (spfStatus === 'pass' || spfStatus === 'warn')) {
-      return { label: 'Meets Standard', status: 'pass', subtext: 'DMARC enforced & aligned' };
+      return { label: 'DMARC enforced & aligned', status: 'pass' };
     }
     if (dmarcStatus === 'warn') {
-      return { label: 'At Risk', status: 'warn', subtext: 'p=none (monitoring only, not enforced)' };
+      return { label: 'p=none (monitoring only)', status: 'warn' };
     }
-    return { label: 'Action Needed', status: 'fail', subtext: 'Missing baseline DMARC policy' };
+    return { label: 'Missing baseline DMARC policy', status: 'fail' };
   };
 
   const googleYahooStatus = scanResult ? getGoogleYahooStatus(scanResult) : { label: 'Awaiting Scan', status: 'warn', subtext: 'Run scan to evaluate' };
@@ -473,7 +473,7 @@ export function DomainChecker({ initialToken, onResultCalculated, onDomainChange
             }}
             className={`mt-6 rounded-2xl border backdrop-blur-xl overflow-hidden transition-all duration-300 shadow-2xl ${isLightMode
               ? 'bg-white border-black/[0.08] shadow-black/5'
-              : 'bg-[#101014] border-white/[0.08] shadow-black/40'
+              : 'bg-[#101014] border-white/[0.08] shadow-white/10'
               }`}
           >
             {/* Desktop Window Title Bar */}
@@ -488,14 +488,12 @@ export function DomainChecker({ initialToken, onResultCalculated, onDomainChange
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
                 <span className="ml-2 font-mono text-[10.5px] sm:text-[11px] font-semibold tracking-wide">
-                  DNS INSPECTOR // {scanResult.domain}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1 text-[10px] text-emerald-500 font-mono font-medium">
-                  <Lock className="w-3 h-3" />
-                  Cloudflare DNS-over-HTTPS (1.1.1.1)
+                  Cloudflare DNS-over-HTTPS
                 </span>
               </div>
             </div>
@@ -553,7 +551,7 @@ export function DomainChecker({ initialToken, onResultCalculated, onDomainChange
                         : 'text-rose-400'
                     }`}
                 >
-                  <NumberTicker value={scanResult.score} duration={800} />
+                  <NumberTicker value={scanResult.score} duration={1000} />
                   <span className="text-sm sm:text-base font-normal opacity-50">/100</span>
                 </div>
               </div>
@@ -575,7 +573,7 @@ export function DomainChecker({ initialToken, onResultCalculated, onDomainChange
                         : isLightMode ? 'text-rose-700' : 'text-rose-400'
                       }`}
                   >
-                    {googleYahooStatus.subtext}
+
                   </span>
                 </div>
                 {googleYahooStatus.status === 'pass' ? (
@@ -823,7 +821,7 @@ export function DomainChecker({ initialToken, onResultCalculated, onDomainChange
                 }`}
             >
               <span>View Revenue Impact</span>
-              <span>↓</span>
+              <span>↗</span>
             </button>
           </motion.div>
         )}

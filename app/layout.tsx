@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://relaycapture.com'),
   title: 'Relay Capture — Email Authentication Intelligence & Deliverability Architecture',
   description:
-    'Diagnostic scanning of outbound email infrastructure (SPF, DKIM, DMARC, blacklist status, mail server config). Eliminate outbound pipeline decay and recover lost revenue.',
+    'Hardened outbound email infrastructure for lead generation agencies. 10-to-50 domain secondary clusters, 2048-bit DKIM, SPF flattening, and custom SSL tracking delivered in 48 hours.',
   keywords: [
     'email authentication',
     'DMARC alignment',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: 'Relay Capture',
     title: 'Relay Capture — Email Authentication Intelligence & Deliverability Architecture',
     description:
-      'Diagnostic scanning of outbound email infrastructure (SPF, DKIM, DMARC, blacklist status, mail server config). See what the internet sees and eliminate pipeline decay.',
+      'Hardened outbound email infrastructure for lead generation agencies. 10-to-50 domain secondary clusters, 2048-bit DKIM, SPF flattening, and custom SSL tracking delivered in 48 hours.',
     images: [
       {
         url: 'https://relaycapture.com/og-image.png',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Relay Capture — Email Authentication Intelligence & Deliverability Architecture',
     description:
-      'Diagnostic scanning of outbound email infrastructure (SPF, DKIM, DMARC, blacklist status, mail server config). Stop outbound pipeline decay.',
+      'Hardened outbound email infrastructure for lead generation agencies. 10-to-50 domain secondary clusters, 2048-bit DKIM, SPF flattening, and custom SSL tracking delivered in 48 hours.',
     images: ['https://relaycapture.com/og-image.png'],
   },
 };
@@ -76,7 +76,7 @@ const jsonLd = {
         '@id': 'https://relaycapture.com/#organization',
       },
       description:
-        'Diagnostic scanning of outbound email infrastructure (SPF, DKIM, DMARC, blacklist status, mail server config).',
+        'Hardened outbound email infrastructure for lead generation agencies. 10-to-50 domain secondary clusters, 2048-bit DKIM, SPF flattening, and custom SSL tracking delivered in 48 hours.',
     },
     {
       '@type': 'SoftwareApplication',

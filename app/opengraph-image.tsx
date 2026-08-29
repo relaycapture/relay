@@ -54,9 +54,9 @@ export default async function Image() {
             RELAY CAPTURE
           </div>
 
-          {/* Subtitle: High-Leverage Pipeline Infrastructure */}
+          {/* Subtitle: Whitelabel Email Infrastructure Architecture for Outbound Agencies */}
           <div tw="text-xl tracking-wider text-neutral-400 font-normal">
-            High-Leverage Pipeline Infrastructure
+            Whitelabel Email Infrastructure Architecture for Outbound Agencies
           </div>
         </div>
       </div>

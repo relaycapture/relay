@@ -8,20 +8,8 @@
     --ease-teleport: cubic-bezier(0.83, 0, 0.17, 1);
   }
 
-  html,
-  body,
-  button,
-  a,
-  input,
-  select,
-  textarea,
-  [role="button"],
-  iframe,
-  * {
-    cursor: none !important;
-  }
-
   @media (hover: none) and (pointer: coarse) {
+
     html,
     body,
     button,
@@ -47,7 +35,10 @@
     html {
       scroll-behavior: auto;
     }
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -56,7 +47,17 @@
 
   /* On mobile touch devices, restore standard cursor */
   @media (pointer: coarse) {
-    html, body, button, a, input, select, textarea, [role="button"], iframe, * {
+
+    html,
+    body,
+    button,
+    a,
+    input,
+    select,
+    textarea,
+    [role="button"],
+    iframe,
+    * {
       cursor: auto !important;
     }
   }
@@ -66,42 +67,99 @@
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #08080a;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(34, 211, 238, 0.4);
 }
 
 /* CCTV Grain In-Place Noise Jitter */
 @keyframes rc-grain {
-  0% { background-position: 0px 0px; }
-  10% { background-position: -24px 36px; }
-  20% { background-position: 48px -18px; }
-  30% { background-position: -36px -42px; }
-  40% { background-position: 18px 48px; }
-  50% { background-position: -48px 12px; }
-  60% { background-position: 32px -36px; }
-  70% { background-position: -16px 28px; }
-  80% { background-position: 40px -24px; }
-  90% { background-position: -28px -16px; }
-  100% { background-position: 0px 0px; }
+  0% {
+    background-position: 0px 0px;
+  }
+
+  10% {
+    background-position: -24px 36px;
+  }
+
+  20% {
+    background-position: 48px -18px;
+  }
+
+  30% {
+    background-position: -36px -42px;
+  }
+
+  40% {
+    background-position: 18px 48px;
+  }
+
+  50% {
+    background-position: -48px 12px;
+  }
+
+  60% {
+    background-position: 32px -36px;
+  }
+
+  70% {
+    background-position: -16px 28px;
+  }
+
+  80% {
+    background-position: 40px -24px;
+  }
+
+  90% {
+    background-position: -28px -16px;
+  }
+
+  100% {
+    background-position: 0px 0px;
+  }
 }
 
 @keyframes scan-line {
-  0% { transform: translateY(-100%); opacity: 0; }
-  15% { opacity: 0.8; }
-  85% { opacity: 0.8; }
-  100% { transform: translateY(1000%); opacity: 0; }
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.8;
+  }
+
+  85% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(1000%);
+    opacity: 0;
+  }
 }
 
 @keyframes pulse-subtle {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.04); }
+
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.04);
+  }
 }
 
 .animate-scan-line {
@@ -135,6 +193,7 @@
     opacity: 0;
     transform: translateX(40px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -150,6 +209,7 @@
     opacity: 0;
     transform: translateY(4px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -183,6 +243,7 @@
 
 /* Mobile & low-power device blur optimizations to avoid fill-rate bottlenecks */
 @media (max-width: 768px) {
+
   .glass-panel,
   .glass-panel-light {
     backdrop-filter: blur(10px) saturate(140%) !important;
