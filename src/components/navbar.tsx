@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 
 interface NavbarProps {
   currentView: string;
@@ -37,6 +37,19 @@ export function Navbar({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleCheckDomainClick = () => {
+    if (currentView !== 'landing') {
+      onNavigate('home');
+      setTimeout(() => {
+        const el = document.getElementById('domain-checker-section');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 120);
+    } else {
+      const el = document.getElementById('domain-checker-section');
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <header
       className={`fixed top-3 sm:top-5 left-3 sm:left-5 z-40 transition-all duration-300 ${
@@ -45,7 +58,7 @@ export function Navbar({
     >
       <div className="relative">
         <div
-          className={`rc-grain-surface flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 rounded-full border backdrop-blur-xl transition-all duration-300 shadow-md select-none ${
+          className={`rc-grain-surface flex items-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 rounded-full border backdrop-blur-xl transition-all duration-300 shadow-md select-none ${
             isLightMode
               ? 'bg-[#fbfbfd]/90 border-black/10 text-[#1d1d1f]'
               : 'bg-[#121216]/90 border-white/10 text-white'
@@ -110,7 +123,7 @@ export function Navbar({
             </motion.svg>
           </button>
 
-          {/* 2. [Contact] (Collapses smoothly on scroll) */}
+          {/* 2. Expanded Links Row: PRICING, CONTACT, and CHECK DOMAIN CTA */}
           <AnimatePresence initial={false}>
             {!isScrolled && (
               <motion.div
@@ -119,14 +132,33 @@ export function Navbar({
                 animate={{ opacity: 1, width: 'auto', scale: 1 }}
                 exit={{ opacity: 0, width: 0, scale: 0.95 }}
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-center gap-1 overflow-hidden pr-1.5"
+                className="flex items-center gap-1 sm:gap-1.5 overflow-hidden pr-1"
               >
+                {/* Pricing */}
+                <button
+                  id="nav-btn-pricing"
+                  data-cursor="grow"
+                  onClick={() => onNavigate('pricing')}
+                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-colors duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center ${
+                    currentView === 'pricing'
+                      ? isLightMode
+                        ? 'text-black bg-neutral-200/80 font-bold'
+                        : 'text-white bg-white/15 font-bold'
+                      : isLightMode
+                        ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
+                        : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
+                  }`}
+                  aria-label="Navigate to Pricing"
+                >
+                  PRICING
+                </button>
+
                 {/* Contact */}
                 <button
                   id="nav-btn-contact"
                   data-cursor="grow"
                   onClick={() => onNavigate('contact')}
-                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-colors duration-200 px-3 sm:px-4 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center ${
+                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-colors duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center ${
                     isLightMode
                       ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
                       : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
@@ -134,6 +166,22 @@ export function Navbar({
                   aria-label="Navigate to Contact"
                 >
                   CONTACT
+                </button>
+
+                {/* Check Domain CTA */}
+                <button
+                  id="nav-btn-check-domain"
+                  data-cursor="grow"
+                  onClick={handleCheckDomainClick}
+                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-3 sm:px-4 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center gap-1.5 font-semibold border shadow-sm ${
+                    isLightMode
+                      ? 'bg-[#1d1d1f] hover:bg-black text-white border-black/20'
+                      : 'bg-white hover:bg-neutral-200 text-[#0a0a0c] border-white/30'
+                  }`}
+                  aria-label="Check Domain CTA"
+                >
+                  <Search className="w-3 h-3" />
+                  <span>CHECK DOMAIN</span>
                 </button>
               </motion.div>
             )}
@@ -149,12 +197,28 @@ export function Navbar({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.95 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className={`absolute top-full left-0 mt-2 min-w-[140px] p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl rc-grain-surface z-50 flex flex-col gap-0.5 select-none ${
+              className={`absolute top-full left-0 mt-2 min-w-[170px] p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl rc-grain-surface z-50 flex flex-col gap-0.5 select-none ${
                 isLightMode
                   ? 'bg-[#f4f4f2]/95 border-black/10 text-neutral-800'
                   : 'bg-[#0e0e12]/95 border-white/10 text-neutral-200'
               }`}
             >
+              <button
+                id="nav-dropdown-pricing"
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  onNavigate('pricing');
+                }}
+                className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
+                  isLightMode
+                    ? 'hover:bg-black/5 hover:text-black text-neutral-700'
+                    : 'hover:bg-white/10 hover:text-white text-neutral-300'
+                }`}
+              >
+                <span>PRICING</span>
+                <ArrowRight className="w-3 h-3 opacity-40" />
+              </button>
+
               <button
                 id="nav-dropdown-contact"
                 onClick={() => {
@@ -169,6 +233,22 @@ export function Navbar({
               >
                 <span>CONTACT</span>
                 <ArrowRight className="w-3 h-3 opacity-40" />
+              </button>
+
+              <button
+                id="nav-dropdown-check-domain"
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  handleCheckDomainClick();
+                }}
+                className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider font-semibold transition-colors flex items-center justify-between mt-0.5 ${
+                  isLightMode
+                    ? 'bg-black text-white hover:bg-neutral-800'
+                    : 'bg-white text-black hover:bg-neutral-200'
+                }`}
+              >
+                <span>CHECK DOMAIN</span>
+                <ArrowRight className="w-3 h-3 opacity-70" />
               </button>
             </motion.div>
           )}
