@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { openPaddleCheckout, PADDLE_CONFIG } from '../utils/paddle';
 
 interface NavbarProps {
@@ -56,7 +56,7 @@ export function Navbar({
               : 'bg-[#121216]/90 border-white/10 text-white'
           }`}
         >
-          {/* 1. Geometric Logo (Toggles drop menu when scrolled) */}
+          {/* 1. Geometric Logo (Toggles dropdown menu when scrolled) */}
           <button
             data-cursor="grow"
             onClick={() => {
@@ -119,7 +119,7 @@ export function Navbar({
             </motion.svg>
           </button>
 
-          {/* 2. Expanded Links Row: PRICING, CONTACT, and DEPLOY BUILDOUT CTA */}
+          {/* 2. Secondary Links: PRICING & CONTACT (Collapse when scrolled) */}
           <AnimatePresence initial={false}>
             {!isScrolled && (
               <motion.div
@@ -127,8 +127,8 @@ export function Navbar({
                 initial={{ opacity: 0, width: 0, scale: 0.95 }}
                 animate={{ opacity: 1, width: 'auto', scale: 1 }}
                 exit={{ opacity: 0, width: 0, scale: 0.95 }}
-                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-center gap-1 sm:gap-1.5 overflow-hidden pr-1"
+                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                className="flex items-center gap-1 sm:gap-1.5 overflow-hidden"
               >
                 {/* Pricing */}
                 <button
@@ -163,28 +163,28 @@ export function Navbar({
                 >
                   CONTACT
                 </button>
-
-                {/* Deploy Buildout CTA */}
-                <button
-                  id="nav-btn-deploy-buildout"
-                  data-cursor="grow"
-                  onClick={handleDeployBuildout}
-                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-3.5 sm:px-4 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center gap-1.5 font-semibold border shadow-sm ${
-                    isLightMode
-                      ? 'bg-[#1d1d1f] hover:bg-black text-white border-black/20'
-                      : 'bg-white hover:bg-neutral-200 text-[#0a0a0c] border-white/30'
-                  }`}
-                  aria-label="Deploy Buildout CTA"
-                >
-                  <Zap className="w-3 h-3 text-amber-500 fill-amber-500" />
-                  <span>Deploy Buildout</span>
-                </button>
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* 3. Primary CTA: DEPLOY BUILDOUT (Always Visible in both Expanded and Collapsed states!) */}
+          <button
+            id="nav-btn-deploy-buildout"
+            data-cursor="grow"
+            onClick={handleDeployBuildout}
+            className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-3.5 sm:px-4 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center gap-1 font-semibold border shadow-sm ${
+              isLightMode
+                ? 'bg-[#1d1d1f] hover:bg-black text-white border-black/20'
+                : 'bg-white hover:bg-neutral-200 text-[#0a0a0c] border-white/30'
+            }`}
+            aria-label="Deploy Buildout CTA"
+          >
+            <span>Deploy Buildout</span>
+            <ArrowUpRight className="w-3 h-3 opacity-70" />
+          </button>
         </div>
 
-        {/* Small Minimalistic Dropdown Menu when scrolled */}
+        {/* Scrolled Dropdown Menu for secondary items when logo is clicked */}
         <AnimatePresence>
           {isScrolled && isDropdownOpen && (
             <motion.div
@@ -193,19 +193,35 @@ export function Navbar({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.95 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className={`absolute top-full left-0 mt-2 min-w-[170px] p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl rc-grain-surface z-50 flex flex-col gap-0.5 select-none ${
+              className={`absolute top-full left-0 mt-2 min-w-[150px] p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl rc-grain-surface z-50 flex flex-col gap-0.5 select-none ${
                 isLightMode
                   ? 'bg-[#f4f4f2]/95 border-black/10 text-neutral-800'
                   : 'bg-[#0e0e12]/95 border-white/10 text-neutral-200'
               }`}
             >
               <button
+                id="nav-dropdown-home"
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  onNavigate('home');
+                }}
+                className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
+                  isLightMode
+                    ? 'hover:bg-black/5 hover:text-black text-neutral-700'
+                    : 'hover:bg-white/10 hover:text-white text-neutral-300'
+                }`}
+              >
+                <span>HOME</span>
+                <ArrowRight className="w-3 h-3 opacity-40" />
+              </button>
+
+              <button
                 id="nav-dropdown-pricing"
                 onClick={() => {
                   setIsDropdownOpen(false);
                   onNavigate('pricing');
                 }}
-                className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
+                className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
                   isLightMode
                     ? 'hover:bg-black/5 hover:text-black text-neutral-700'
                     : 'hover:bg-white/10 hover:text-white text-neutral-300'
@@ -221,7 +237,7 @@ export function Navbar({
                   setIsDropdownOpen(false);
                   onNavigate('contact');
                 }}
-                className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
+                className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
                   isLightMode
                     ? 'hover:bg-black/5 hover:text-black text-neutral-700'
                     : 'hover:bg-white/10 hover:text-white text-neutral-300'
@@ -229,22 +245,6 @@ export function Navbar({
               >
                 <span>CONTACT</span>
                 <ArrowRight className="w-3 h-3 opacity-40" />
-              </button>
-
-              <button
-                id="nav-dropdown-deploy-buildout"
-                onClick={() => {
-                  setIsDropdownOpen(false);
-                  handleDeployBuildout();
-                }}
-                className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider font-semibold transition-colors flex items-center justify-between mt-0.5 ${
-                  isLightMode
-                    ? 'bg-black text-white hover:bg-neutral-800'
-                    : 'bg-white text-black hover:bg-neutral-200'
-                }`}
-              >
-                <span>Deploy Buildout</span>
-                <ArrowUpRight className="w-3 h-3 opacity-70" />
               </button>
             </motion.div>
           )}

@@ -375,11 +375,16 @@ export function DomainChecker({
     }
   };
 
+  const handleDomainExampleClick = (domain: string) => {
+    setDomainInput(domain);
+    executeScan(domain);
+  };
+
   const isButtonDisabled = loading || cooldown > 0;
 
   return (
     <div id="domain-checker-container" className="w-full max-w-4xl mx-auto">
-      {/* Minimal Apple-Inspired Input Bar */}
+      {/* Minimal Input Bar */}
       <form
         onSubmit={handleSubmit}
         className={`w-full p-1.5 sm:p-2 rounded-2xl border backdrop-blur-md transition-all duration-300 ${
@@ -451,7 +456,7 @@ export function DomainChecker({
         </div>
       </form>
 
-      {/* Direct 1-Click Sandbox Preset Tokens */}
+      {/* Quick Try Pills + View Revenue Impact Button */}
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 sm:px-2">
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <span
@@ -459,17 +464,17 @@ export function DomainChecker({
               isLightMode ? 'text-neutral-600 font-semibold' : 'text-neutral-400 font-medium'
             }`}
           >
-            Presets:
+            TRY:
           </span>
-          {Object.entries(KNOWN_TOKENS).map(([token, domain]) => (
+          {['airbnb.com', 'stripe.com', 'linear.app', 'github.com'].map((example) => (
             <button
-              key={token}
+              key={example}
               type="button"
               data-cursor="grow"
-              onClick={() => handleTokenClick(token)}
+              onClick={() => handleDomainExampleClick(example)}
               disabled={loading}
               className={`rc-grain-surface px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-mono transition-all duration-200 border shadow-xs disabled:opacity-50 disabled:cursor-not-allowed ${
-                domainInput.toLowerCase() === domain.toLowerCase()
+                domainInput.toLowerCase() === example.toLowerCase()
                   ? isLightMode
                     ? 'bg-black text-white border-black font-semibold shadow-xs'
                     : 'bg-white text-black border-white font-semibold shadow-xs'
@@ -478,12 +483,12 @@ export function DomainChecker({
                     : 'bg-white/[0.04] text-neutral-300 border-white/[0.08] hover:bg-white/[0.1] hover:text-white'
               }`}
             >
-              {token}
+              {example}
             </button>
           ))}
         </div>
 
-        {/* Prominent Always-Visible "View Revenue Impact" Trigger Button */}
+        {/* View Revenue Impact Trigger */}
         {onOpenRevenueImpact && (
           <button
             type="button"
