@@ -6,6 +6,7 @@ import { ScanResult } from '../../types';
 interface DomainCheckerSectionProps {
   onScanResult: (result: ScanResult) => void;
   onDomainChange?: (domain: string) => void;
+  onOpenRevenueImpact?: () => void;
   isLightMode: boolean;
   isLivePreview?: boolean;
 }
@@ -13,6 +14,7 @@ interface DomainCheckerSectionProps {
 export function DomainCheckerSection({
   onScanResult,
   onDomainChange,
+  onOpenRevenueImpact,
   isLightMode,
   isLivePreview = false,
 }: DomainCheckerSectionProps) {
@@ -58,6 +60,7 @@ export function DomainCheckerSection({
           <DomainChecker
             onResultCalculated={onScanResult}
             onDomainChange={onDomainChange}
+            onOpenRevenueImpact={onOpenRevenueImpact}
             isLightMode={isLightMode}
           />
         </div>

@@ -25,8 +25,8 @@ import { RefundsPage } from './components/refunds-page';
 import { PagePhase, CurrentView, ScanResult } from './types';
 
 const SECTIONS: QuickNavSection[] = [
-  { id: 'hero-section', label: '01 // Domain Audit' },
-  { id: 'financial-leakage', label: '02 // Revenue Impact' },
+  { id: 'hero-section', label: '01 // Overview' },
+  { id: 'domain-checker-section', label: '02 // Domain Audit' },
   { id: 'inbox-comparison', label: '03 // Inbox Simulation' },
   { id: 'protocol-feed', label: '04 // Protocol Stream' },
   { id: 'three-cards-section', label: '05 // Deliverables' },
@@ -44,6 +44,7 @@ export default function App() {
   const [lastScannedTime, setLastScannedTime] = useState<Date | null>(null);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [isSampleModalOpen, setIsSampleModalOpen] = useState(false);
+  const [isRevenueImpactOpen, setIsRevenueImpactOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [isQuickNavOpen, setIsQuickNavOpen] = useState(false);
 
@@ -317,9 +318,18 @@ export default function App() {
       {/* Views */}
       {currentView === 'landing' ? (
         <main className="relative w-full overflow-x-clip">
-          {/* 1. Hero Section with Embedded Live Domain Checker */}
+          {/* 1. Hero Section */}
           <HeroSection
             isLightMode={isLightMode}
+            onScanClick={() => {
+              const el = document.getElementById('domain-checker-section');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            onExploreClick={() => handleNavigate('pricing')}
+          />
+
+          {/* 2. Standalone Domain Checker Section */}
+          <DomainCheckerSection
             onScanResult={(res) => {
               setScanResult(res);
               if (res.domain) {
@@ -328,14 +338,7 @@ export default function App() {
               }
             }}
             onDomainChange={(d) => setCurrentDomain(d)}
-            onExploreClick={() => handleNavigate('pricing')}
-          />
-
-          {/* 3. Financial Leakage Section */}
-          <FinancialLeakage
-            scanResult={scanResult}
-            currentDomain={currentDomain}
-            lastScannedTime={lastScannedTime}
+            onOpenRevenueImpact={() => setIsRevenueImpactOpen(true)}
             isLightMode={isLightMode}
           />
 
@@ -409,6 +412,16 @@ export default function App() {
           isLightMode={isLightMode}
         />
       )}
+
+      {/* Interactive Revenue Impact Sensitivity Modal */}
+      <FinancialLeakage
+        isOpen={isRevenueImpactOpen}
+        onClose={() => setIsRevenueImpactOpen(false)}
+        scanResult={scanResult}
+        currentDomain={currentDomain}
+        lastScannedTime={lastScannedTime}
+        isLightMode={isLightMode}
+      />
 
       {/* Confidential Redacted Deliverable Sample Modal */}
       <SampleDeliverableModal

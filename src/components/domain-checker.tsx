@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScanResult, DnsCheckRecord } from '../types';
-import { Search, CheckCircle2, AlertTriangle, XCircle, Info, RefreshCw, Terminal, Lock, ChevronRight } from 'lucide-react';
+import {  Search, CheckCircle2, AlertTriangle, XCircle, Info, RefreshCw, Terminal, Lock, ChevronRight , TrendingUp } from 'lucide-react';
 import { NumberTicker } from './number-ticker';
 import { DomainFavicon } from '@/components/domain-favicon';
 
@@ -22,10 +22,17 @@ interface DomainCheckerProps {
   initialToken?: string;
   onResultCalculated?: (result: ScanResult) => void;
   onDomainChange?: (domain: string) => void;
+  onOpenRevenueImpact?: () => void;
   isLightMode?: boolean;
 }
 
-export function DomainChecker({ initialToken, onResultCalculated, onDomainChange, isLightMode }: DomainCheckerProps) {
+export function DomainChecker({
+  initialToken,
+  onResultCalculated,
+  onDomainChange,
+  onOpenRevenueImpact,
+  isLightMode = false,
+}: DomainCheckerProps) {
   const [domainInput, setDomainInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -610,15 +617,21 @@ export function DomainChecker({ initialToken, onResultCalculated, onDomainChange
               </div>
             </div>
 
-            {/* Deliverability Honesty Notice */}
+            {/* Deliverability Honesty Notice: STRICTLY FIXED TO 2 LINES ON ANY SCREEN SIZE */}
             <div
-              className={`px-3.5 sm:px-4 py-2 border-b flex items-start gap-2 text-[10.5px] sm:text-xs font-mono leading-relaxed ${isLightMode ? 'bg-black/[0.02] border-black/[0.05] text-neutral-600' : 'bg-white/[0.02] border-white/[0.05] text-neutral-400'
-                }`}
+              className={`px-3.5 sm:px-4 py-2 border-b flex items-start gap-2 text-[9.5px] xs:text-[10.5px] sm:text-[11.5px] font-mono leading-tight ${
+                isLightMode ? 'bg-black/[0.02] border-black/[0.05] text-neutral-600' : 'bg-white/[0.02] border-white/[0.05] text-neutral-400'
+              }`}
             >
               <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-neutral-400" />
-              <span>
-                <strong>Authentication</strong> is one part of deliverability. Reputation, content, recipient engagement, and sending behavior still matter.
-              </span>
+              <div className="flex flex-col text-left overflow-x-auto [scrollbar-width:none]">
+                <span className="block whitespace-nowrap font-medium">
+                  Authentication is one part of deliverability.
+                </span>
+                <span className="block whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+                  Reputation, content, recipient engagement, and sending behavior still matter.
+                </span>
+              </div>
             </div>
 
             {/* 3. The Protocol Accordion: SPF, DMARC, DKIM Interactive List */}
