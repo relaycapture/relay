@@ -617,21 +617,16 @@ export function DomainChecker({
               </div>
             </div>
 
-            {/* Deliverability Honesty Notice: STRICTLY FIXED TO 2 LINES ON ANY SCREEN SIZE */}
+            {/* Deliverability Reality Notice */}
             <div
-              className={`px-3.5 sm:px-4 py-2 border-b flex items-start gap-2 text-[9.5px] xs:text-[10.5px] sm:text-[11.5px] font-mono leading-tight ${
+              className={`px-3.5 sm:px-4 py-2.5 border-b flex items-start gap-2 text-[10px] sm:text-[11px] md:text-xs font-mono leading-relaxed ${
                 isLightMode ? 'bg-black/[0.02] border-black/[0.05] text-neutral-600' : 'bg-white/[0.02] border-white/[0.05] text-neutral-400'
               }`}
             >
               <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-neutral-400" />
-              <div className="flex flex-col text-left overflow-x-auto [scrollbar-width:none]">
-                <span className="block whitespace-nowrap font-medium">
-                  Authentication is one part of deliverability.
-                </span>
-                <span className="block whitespace-nowrap text-neutral-500 dark:text-neutral-400">
-                  Reputation, content, recipient engagement, and sending behavior still matter.
-                </span>
-              </div>
+              <span>
+                Authentication is one part of deliverability. Reputation, content, recipient engagement, and sending behavior still matter.
+              </span>
             </div>
 
             {/* 3. The Protocol Accordion: SPF, DMARC, DKIM Interactive List */}

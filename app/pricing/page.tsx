@@ -9,7 +9,9 @@ export default function PricingRoute() {
   return (
     <PricingPage
       onBackToHome={() => router.push('/')}
-      onOpenCheckout={() => { }}
+      onNavigateToTerms={() => router.push('/terms')}
+      onNavigateToPrivacy={() => router.push('/privacy')}
+      onNavigateToRefunds={() => router.push('/refund')}
     />
   );
 }

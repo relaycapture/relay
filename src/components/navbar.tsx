@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Zap } from 'lucide-react';
+import { openPaddleCheckout, PADDLE_CONFIG } from '../utils/paddle';
 
 interface NavbarProps {
   currentView: string;
@@ -37,17 +38,8 @@ export function Navbar({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleCheckDomainClick = () => {
-    if (currentView !== 'landing') {
-      onNavigate('home');
-      setTimeout(() => {
-        const el = document.getElementById('domain-checker-section');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      }, 120);
-    } else {
-      const el = document.getElementById('domain-checker-section');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleDeployBuildout = () => {
+    openPaddleCheckout(PADDLE_CONFIG.prices.turnkey, 'Turnkey Remediation ($547)');
   };
 
   return (
@@ -78,11 +70,15 @@ export function Navbar({
               isScrolled ? 'hover:scale-105 active:scale-95' : 'hover:scale-105'
             }`}
             aria-label={isScrolled ? 'Open navigation menu' : 'Relay Capture Home'}
-            title={isScrolled ? 'Menu' : 'Relay Capture'}
           >
+            {/* Minimal Double Chevron Geometric Icon */}
             <motion.svg
+              width="20"
+              height="20"
               viewBox="0 0 20 20"
-              className="w-5 h-5 sm:w-5.5 sm:h-5.5 overflow-visible"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4 sm:w-5 sm:h-5 block"
               animate={{
                 rotate: isScrolled ? 180 : isQuickNavOpen ? 0 : -14,
               }}
@@ -123,7 +119,7 @@ export function Navbar({
             </motion.svg>
           </button>
 
-          {/* 2. Expanded Links Row: PRICING, CONTACT, and CHECK DOMAIN CTA */}
+          {/* 2. Expanded Links Row: PRICING, CONTACT, and DEPLOY BUILDOUT CTA */}
           <AnimatePresence initial={false}>
             {!isScrolled && (
               <motion.div
@@ -168,20 +164,20 @@ export function Navbar({
                   CONTACT
                 </button>
 
-                {/* Check Domain CTA */}
+                {/* Deploy Buildout CTA */}
                 <button
-                  id="nav-btn-check-domain"
+                  id="nav-btn-deploy-buildout"
                   data-cursor="grow"
-                  onClick={handleCheckDomainClick}
-                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-3 sm:px-4 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center gap-1.5 font-semibold border shadow-sm ${
+                  onClick={handleDeployBuildout}
+                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-3.5 sm:px-4 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center gap-1.5 font-semibold border shadow-sm ${
                     isLightMode
                       ? 'bg-[#1d1d1f] hover:bg-black text-white border-black/20'
                       : 'bg-white hover:bg-neutral-200 text-[#0a0a0c] border-white/30'
                   }`}
-                  aria-label="Check Domain CTA"
+                  aria-label="Deploy Buildout CTA"
                 >
-                  <Search className="w-3 h-3" />
-                  <span>CHECK DOMAIN</span>
+                  <Zap className="w-3 h-3 text-amber-500 fill-amber-500" />
+                  <span>Deploy Buildout</span>
                 </button>
               </motion.div>
             )}
@@ -236,10 +232,10 @@ export function Navbar({
               </button>
 
               <button
-                id="nav-dropdown-check-domain"
+                id="nav-dropdown-deploy-buildout"
                 onClick={() => {
                   setIsDropdownOpen(false);
-                  handleCheckDomainClick();
+                  handleDeployBuildout();
                 }}
                 className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider font-semibold transition-colors flex items-center justify-between mt-0.5 ${
                   isLightMode
@@ -247,8 +243,8 @@ export function Navbar({
                     : 'bg-white text-black hover:bg-neutral-200'
                 }`}
               >
-                <span>CHECK DOMAIN</span>
-                <ArrowRight className="w-3 h-3 opacity-70" />
+                <span>Deploy Buildout</span>
+                <ArrowUpRight className="w-3 h-3 opacity-70" />
               </button>
             </motion.div>
           )}
