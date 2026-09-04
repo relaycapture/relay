@@ -68,6 +68,10 @@ export async function POST(request: NextRequest) {
               amount: totalCents.toString(),
               currency_code: 'USD',
             },
+            quantity: {
+              minimum: 1,
+              maximum: 1,
+            },
           },
         },
       ],
