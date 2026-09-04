@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { AmbientCanvasWrapper } from '@/components/ambient-canvas-wrapper';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://relaycapture.com'),
@@ -47,10 +48,17 @@ export const metadata: Metadata = {
       'Hardened outbound email infrastructure for lead generation agencies. 10-to-50 domain secondary clusters, 2048-bit DKIM, SPF flattening, and custom SSL tracking delivered in 48 hours.',
     images: ['https://relaycapture.com/og-image.png'],
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+    apple: '/favicon.svg',
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0A0A0C',
+  themeColor: '#08080a',
   width: 'device-width',
   initialScale: 1,
 };
@@ -110,12 +118,26 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="alternate icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Instantaneous unconditional cursor suppression on initial paint */}
+        <style
+          id="root-cursor-suppression"
+          dangerouslySetInnerHTML={{
+            __html: `
+              *, *::before, *::after, html, body, button, a, input, select, textarea, [role="button"], [data-cursor], .cursor-pointer, .cursor-default, .cursor-text, .cursor-move {
+                cursor: none !important;
+              }
+            `,
+          }}
+        />
       </head>
-      <body className="bg-[#0A0A0C] text-[#F4F4F2] selection:bg-[#22D3EE]/30 selection:text-[#22D3EE] overflow-x-hidden max-w-[100vw] w-full antialiased">
+      <body className="bg-[#08080a] text-[#F4F4F2] overflow-x-hidden max-w-[100vw] w-full antialiased">
         {/* SVG glass refraction filter for custom cursor */}
         <svg
           width="0"
@@ -140,7 +162,10 @@ export default function RootLayout({
             />
           </filter>
         </svg>
-        {children}
+
+        <AmbientCanvasWrapper>
+          {children}
+        </AmbientCanvasWrapper>
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -42,6 +42,20 @@ export function Navbar({
     openPaddleCheckout(PADDLE_CONFIG.prices.turnkey, 'Turnkey Remediation ($547)');
   };
 
+  const frostedGlassContainerStyle: React.CSSProperties = isLightMode
+    ? {
+        backgroundColor: 'rgba(255, 255, 255, 0.65)',
+        borderColor: 'rgba(0, 0, 0, 0.08)',
+        boxShadow:
+          '0 8px 30px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+      }
+    : {
+        backgroundColor: 'rgba(10, 10, 12, 0.55)',
+        borderColor: 'rgba(255, 255, 255, 0.12)',
+        boxShadow:
+          '0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+      };
+
   return (
     <header
       className={`fixed top-3 sm:top-5 left-3 sm:left-5 z-40 transition-all duration-300 ${
@@ -49,13 +63,14 @@ export function Navbar({
       }`}
     >
       <div className="relative">
+        {/* Blurry Frosted Glass Container */}
         <div
-          className={`rc-grain-surface flex items-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 rounded-full border backdrop-blur-xl transition-all duration-300 shadow-md select-none ${
-            isLightMode
-              ? 'bg-[#fbfbfd]/90 border-black/10 text-[#1d1d1f]'
-              : 'bg-[#121216]/90 border-white/10 text-white'
+          className={`relative flex items-stretch gap-1 sm:gap-1.5 p-1 rounded-[3px] border backdrop-blur-md sm:backdrop-blur-lg transition-all duration-300 select-none h-9 sm:h-10 ${
+            isLightMode ? 'text-[#1d1d1f]' : 'text-white'
           }`}
+          style={frostedGlassContainerStyle}
         >
+
           {/* 1. Geometric Logo (Toggles dropdown menu when scrolled) */}
           <button
             data-cursor="grow"
@@ -66,19 +81,17 @@ export function Navbar({
                 onNavigate('home');
               }
             }}
-            className={`group p-1.5 sm:p-2 rounded-full transition-transform ${
-              isScrolled ? 'hover:scale-105 active:scale-95' : 'hover:scale-105'
-            }`}
+            className="group relative z-10 p-1.5 sm:p-2 rounded-[2px] transition-all hover:bg-white/[0.1] active:scale-95 cursor-pointer flex items-center justify-center"
             aria-label={isScrolled ? 'Open navigation menu' : 'Relay Capture Home'}
           >
-            {/* Minimal Double Chevron Geometric Icon */}
+            {/* Minimal Double Chevron Geometric Icon (Slightly larger) */}
             <motion.svg
-              width="20"
-              height="20"
+              width="24"
+              height="24"
               viewBox="0 0 20 20"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4 sm:w-5 sm:h-5 block"
+              className="w-5 h-5 sm:w-6 sm:h-6 block"
               animate={{
                 rotate: isScrolled ? 180 : isQuickNavOpen ? 0 : -14,
               }}
@@ -124,25 +137,25 @@ export function Navbar({
             {!isScrolled && (
               <motion.div
                 key="expanded-nav-links"
-                initial={{ opacity: 0, width: 0, scale: 0.95 }}
+                initial={{ opacity: 0, width: 0, scale: 0.98 }}
                 animate={{ opacity: 1, width: 'auto', scale: 1 }}
-                exit={{ opacity: 0, width: 0, scale: 0.95 }}
-                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-center gap-1 sm:gap-1.5 overflow-hidden"
+                exit={{ opacity: 0, width: 0, scale: 0.98 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-10 flex items-center gap-1 sm:gap-1.5 overflow-hidden"
               >
                 {/* Pricing */}
                 <button
                   id="nav-btn-pricing"
                   data-cursor="grow"
                   onClick={() => onNavigate('pricing')}
-                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-colors duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center ${
+                  className={`text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-[2px] whitespace-nowrap leading-none flex items-center justify-center cursor-pointer ${
                     currentView === 'pricing'
                       ? isLightMode
-                        ? 'text-black bg-neutral-200/80 font-bold'
-                        : 'text-white bg-white/15 font-bold'
+                        ? 'text-black bg-neutral-200/90 font-bold shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
+                        : 'text-white bg-white/20 font-bold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_2px_8px_rgba(0,0,0,0.3)]'
                       : isLightMode
-                        ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
-                        : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
+                        ? 'text-neutral-700 hover:text-black hover:bg-black/[0.05]'
+                        : 'text-neutral-300 hover:text-white hover:bg-white/[0.1]'
                   }`}
                   aria-label="Navigate to Pricing"
                 >
@@ -154,10 +167,10 @@ export function Navbar({
                   id="nav-btn-contact"
                   data-cursor="grow"
                   onClick={() => onNavigate('contact')}
-                  className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-colors duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center ${
+                  className={`text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-[2px] whitespace-nowrap leading-none flex items-center justify-center cursor-pointer ${
                     isLightMode
-                      ? 'text-neutral-700 hover:text-black hover:bg-neutral-200/60'
-                      : 'text-neutral-400 hover:text-[#F4F4F2] hover:bg-white/10'
+                      ? 'text-neutral-700 hover:text-black hover:bg-black/[0.05]'
+                      : 'text-neutral-300 hover:text-white hover:bg-white/[0.1]'
                   }`}
                   aria-label="Navigate to Contact"
                 >
@@ -167,19 +180,19 @@ export function Navbar({
             )}
           </AnimatePresence>
 
-          {/* 3. Primary CTA: DEPLOY BUILDOUT (Always Visible in both Expanded and Collapsed states!) */}
+          {/* 3. Primary CTA: CONFIGURE FLEET — Blocky Machined Geometry */}
           <button
-            id="nav-btn-deploy-buildout"
+            id="nav-btn-configure-fleet"
             data-cursor="grow"
-            onClick={handleDeployBuildout}
-            className={`rc-grain-surface text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-3.5 sm:px-4 py-1.5 rounded-full whitespace-nowrap leading-none flex items-center justify-center gap-1 font-semibold border shadow-sm ${
+            onClick={() => onNavigate('pricing')}
+            className={`relative z-10 self-stretch h-full text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-150 px-3.5 sm:px-4 rounded-[2px] whitespace-nowrap leading-none flex items-center justify-center gap-1 font-semibold border cursor-pointer ${
               isLightMode
-                ? 'bg-[#1d1d1f] hover:bg-black text-white border-black/20'
-                : 'bg-white hover:bg-neutral-200 text-[#0a0a0c] border-white/30'
+                ? 'bg-neutral-900 hover:bg-black text-white border-black/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_2px_8px_rgba(0,0,0,0.15)]'
+                : 'bg-neutral-100 hover:bg-white text-neutral-900 border-white/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_2px_12px_rgba(0,0,0,0.5)]'
             }`}
-            aria-label="Deploy Buildout CTA"
+            aria-label="Configure Fleet CTA"
           >
-            <span>Deploy Buildout</span>
+            <span>Configure Fleet</span>
             <ArrowUpRight className="w-3 h-3 opacity-70" />
           </button>
         </div>
@@ -189,26 +202,24 @@ export function Navbar({
           {isScrolled && isDropdownOpen && (
             <motion.div
               key="nav-dropdown-menu"
-              initial={{ opacity: 0, y: -6, scale: 0.95 }}
+              initial={{ opacity: 0, y: -6, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -6, scale: 0.95 }}
+              exit={{ opacity: 0, y: -6, scale: 0.98 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className={`absolute top-full left-0 mt-2 min-w-[150px] p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl rc-grain-surface z-50 flex flex-col gap-0.5 select-none ${
-                isLightMode
-                  ? 'bg-[#f4f4f2]/95 border-black/10 text-neutral-800'
-                  : 'bg-[#0e0e12]/95 border-white/10 text-neutral-200'
-              }`}
+              className={`absolute top-full left-0 mt-2 min-w-[150px] p-1.5 rounded-[3px] border shadow-2xl backdrop-blur-md sm:backdrop-blur-lg z-50 flex flex-col gap-0.5 select-none overflow-hidden`}
+              style={frostedGlassContainerStyle}
             >
+
               <button
                 id="nav-dropdown-home"
                 onClick={() => {
                   setIsDropdownOpen(false);
                   onNavigate('home');
                 }}
-                className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
+                className={`relative z-10 w-full text-left px-3 py-1.5 rounded-[2px] text-xs font-mono tracking-wider transition-colors flex items-center justify-between cursor-pointer ${
                   isLightMode
-                    ? 'hover:bg-black/5 hover:text-black text-neutral-700'
-                    : 'hover:bg-white/10 hover:text-white text-neutral-300'
+                    ? 'hover:bg-black/[0.06] text-neutral-800'
+                    : 'hover:bg-white/[0.12] text-neutral-200'
                 }`}
               >
                 <span>HOME</span>
@@ -221,10 +232,10 @@ export function Navbar({
                   setIsDropdownOpen(false);
                   onNavigate('pricing');
                 }}
-                className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
+                className={`relative z-10 w-full text-left px-3 py-1.5 rounded-[2px] text-xs font-mono tracking-wider transition-colors flex items-center justify-between cursor-pointer ${
                   isLightMode
-                    ? 'hover:bg-black/5 hover:text-black text-neutral-700'
-                    : 'hover:bg-white/10 hover:text-white text-neutral-300'
+                    ? 'hover:bg-black/[0.06] text-neutral-800'
+                    : 'hover:bg-white/[0.12] text-neutral-200'
                 }`}
               >
                 <span>PRICING</span>
@@ -237,10 +248,10 @@ export function Navbar({
                   setIsDropdownOpen(false);
                   onNavigate('contact');
                 }}
-                className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-mono tracking-wider transition-colors flex items-center justify-between ${
+                className={`relative z-10 w-full text-left px-3 py-1.5 rounded-[2px] text-xs font-mono tracking-wider transition-colors flex items-center justify-between cursor-pointer ${
                   isLightMode
-                    ? 'hover:bg-black/5 hover:text-black text-neutral-700'
-                    : 'hover:bg-white/10 hover:text-white text-neutral-300'
+                    ? 'hover:bg-black/[0.06] text-neutral-800'
+                    : 'hover:bg-white/[0.12] text-neutral-200'
                 }`}
               >
                 <span>CONTACT</span>

@@ -1,44 +1,52 @@
 'use client'
 
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SectionWatermark } from '../section-watermark';
 
 interface FaqItem {
   q: string;
   a: string;
-  category: string;
 }
 
 const FAQS: FaqItem[] = [
   {
-    category: 'Security & Access',
-    q: 'How does Relay Capture inspect our domain without account credentials?',
-    a: 'Email authentication protocols (SPF, DKIM, DMARC, BIMI) are by architectural design published on public DNS nameservers so receiving mail servers worldwide can verify them. Relay Capture acts identically to receiving mail transfer agents (MTAs) at Google and Microsoft: querying public authoritative nameservers via DNS-over-HTTPS. We never request API keys, OAuth tokens, inbox access, or sensitive message data.',
+    q: 'What access do you need from us?',
+    a: 'Temporary operator access to your Cloudflare DNS and a delegated admin seat inside your Google Workspace or Microsoft 365 tenant. You never share your primary corporate email passwords, and you revoke our access in one click the second delivery verification clears.',
   },
   {
-    category: 'Compliance',
-    q: 'What are the major receiving mailbox provider enforcement requirements?',
-    a: 'Major mailbox providers mandate that sending domains must: 1) Publish valid SPF and DKIM authentication, 2) Enforce a DMARC policy of at least p=none, 3) Align From: headers with either SPF or DKIM domains, 4) Provide one-click RFC 8058 unsubscribe headers, and 5) Maintain spam complaint rates strictly below 0.3%. Failure to meet these criteria triggers automatic spam quarantine or permanent 550 SMTP rejection.',
+    q: 'How does billing work for domain registrations and mailbox seats?',
+    a: 'You pay us a flat engineering fee via Paddle to build the infrastructure. Provider costs (domain registrations and workspace seats) are billed directly to your corporate card via your own master accounts. We never markup software licenses or act as an unnecessary financial intermediary.',
   },
   {
-    category: 'Protocol Mechanics',
-    q: 'Why is an SPF "~all" (softfail) policy dangerous for outbound deliverability?',
-    a: 'SPF softfail (~all) signals that unlisted IPs sending from your domain should not be explicitly rejected. While intended as a transitional posture, modern spam filters (Microsoft EOP, Gmail) treat ~all with suspicion, often downgrading sender reputation and routing messages to Spam or Quarantine. Enforcing DMARC at p=quarantine or p=reject removes ambiguity.',
+    q: 'What happens if a domain fails verification?',
+    a: 'Every deployment includes external third-party validation reports (MXToolbox, Mail-Tester, Dmarcian). If a single record fails strict RFC alignment at Hour 48, we resolve it immediately or issue an automated 100% refund through Paddle.',
   },
   {
-    category: 'Architecture',
-    q: 'How does Relay Capture differ from ongoing SaaS monitoring tools?',
-    a: 'Relay Capture is a precision infrastructure audit and enforcement service, not a monthly SaaS subscription. Most monitoring tools generate endless dashboard alerts without fixing the root DNS records. We deliver exact, validated, drop-in DNS configurations within 24 hours, verify end-to-end cryptographic alignment, and exit cleanly.',
+    q: 'Why do you use Paddle instead of standard invoicing?',
+    a: 'Paddle acts as our Merchant of Record. They handle international sales tax compliance, automated VAT, PCI-DSS Level 1 security, and statutory buyer protections. You receive an instant commercial tax invoice immediately upon checkout.',
   },
   {
-    category: 'Implementation',
-    q: 'Will applying these DNS record changes disrupt our existing email operations?',
-    a: 'No. Every remediation blueprint is generated specifically to preserve your existing authorized sending services (Google Workspace, Microsoft 365, Postmark, SendGrid, Amazon SES, HubSpot, etc.). We validate selector uniqueness and SPF mechanism limits (RFC 7208 10-lookup rule) to guarantee zero downtime during DNS propagation.',
+    q: 'How long does the setup take?',
+    a: 'The 48-hour SLA begins the moment you complete the technical intake brief post-payment. We deliver the complete setup package, verification links, and ownership documentation within 48 hours.',
+  },
+  {
+    q: 'Why not just use an automated mailbox rental platform?',
+    a: 'Automated rental platforms place your inboxes on pooled reseller subnets without master Super-Admin console access. When another user on that shared subnet triggers a Spamhaus listing or exceeds Google\'s spam rate threshold, your inboxes take collateral damage. We build dedicated, isolated infrastructure that you own permanently.',
+  },
+  {
+    q: 'Do I lose the domains if I stop working with you?',
+    a: 'No. Everything is registered directly in your name inside your own accounts. We do not hold assets hostage or charge recurring maintenance fees to keep your DNS alive.',
+  },
+  {
+    q: 'Do you write copy, scrape leads, or manage campaigns?',
+    a: 'No. We do not write copy, build lead lists, or manage outbound campaigns. Our scope is strictly isolated to systems engineering, DNS hardening, and mailbox deliverability architecture.',
   },
 ];
 
 export function FaqSection({ isLightMode }: { isLightMode?: boolean }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleFaq = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -47,70 +55,122 @@ export function FaqSection({ isLightMode }: { isLightMode?: boolean }) {
   return (
     <section
       id="faq-section"
-      className="relative py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-24 overflow-hidden z-10 section-content-auto"
+      className="relative py-32 sm:py-40 md:py-48 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-14 overflow-x-clip z-10 section-content-auto"
     >
-      <div className="relative z-10 max-w-4xl mx-auto">
-        {/* Section Heading - Integrated with background */}
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
-          <h2
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.15] mb-4 text-center ${
-              isLightMode ? 'text-[#1d1d1f]' : 'text-white'
-            }`}
+      {/* Top-Center Ambient Radial Spotlight */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background: isLightMode
+            ? 'radial-gradient(ellipse at 50% 15%, rgba(0,0,0,0.03) 0%, transparent 60%)'
+            : 'radial-gradient(ellipse at 50% 15%, rgba(255,255,255,0.04) 0%, transparent 60%)',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Monumental Background Watermark (Positioned at top-left corner of the section) */}
+      <SectionWatermark
+        text="FAQ"
+        mobileText="FAQ"
+        top="-30px"
+        left="-30px"
+        size="text-[28rem]"
+        mobileTop="-10px"
+        mobileLeft="-10px"
+        mobileSize="text-[9rem]"
+        opacity="opacity-[0.02]"
+        mobileOpacity="opacity-[0.025]"
+      />
+
+      <div className="max-w-6xl mx-auto w-full relative z-10">
+        {/* Section Header — Swiss Editorial Style */}
+        <div className="text-left max-w-3xl mb-12 sm:mb-16">
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className={`text-[1.85rem] min-[390px]:text-[2.1rem] min-[440px]:text-4xl sm:text-6xl font-medium tracking-[-0.04em] leading-[1.05] ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+              }`}
           >
-            <span className="block">Questions.</span>
-            <span className="block">Answered.</span>
-          </h2>
-          <p
-            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto text-center ${
-              isLightMode ? 'text-neutral-600' : 'text-neutral-400'
-            }`}
+            <span className="whitespace-nowrap">Questions. Answered.</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className={`text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-2xl ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'
+              }`}
           >
-            <span className="block">Direct answers regarding DNS architecture, sender compliance,</span>
-            <span className="block">and mailbox deliverability protection.</span>
-          </p>
+            Direct answers regarding access, wholesale billing, and dedicated infrastructure ownership.
+          </motion.p>
         </div>
 
-        {/* Integrated Accordion List - Seamless with background */}
-        <div className="divide-y divide-black/[0.08] dark:divide-white/[0.1] border-t border-b border-black/[0.08] dark:border-white/[0.1]">
+        {/* Swiss Editorial Accordion List without dividing borders */}
+        <div className="space-y-1">
           {FAQS.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
-              <div key={index} className="py-4 sm:py-6 transition-colors">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-30px' }}
+                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: index * 0.04 }}
+                className="py-1"
+              >
                 <button
                   onClick={() => toggleFaq(index)}
                   data-cursor="grow"
-                  className={`w-full text-left flex items-center justify-between gap-4 font-sans font-medium text-sm sm:text-lg transition-colors group min-h-[48px] ${
-                    isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+                  className={`w-full text-left flex items-center justify-between gap-4 font-sans font-medium text-sm sm:text-lg py-5 sm:py-7 transition-colors group cursor-pointer ${
+                    isOpen
+                      ? 'text-white'
+                      : isLightMode
+                        ? 'text-neutral-500 hover:text-neutral-900'
+                        : 'text-neutral-400 hover:text-neutral-200'
                   }`}
                   aria-expanded={isOpen}
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <span className="font-mono text-xs uppercase tracking-wider opacity-50 flex-shrink-0">
+                    <span className={`font-mono text-xs uppercase tracking-wider flex-shrink-0 transition-colors ${
+                      isOpen ? 'text-white/80' : 'text-neutral-500'
+                    }`}>
                       0{index + 1}.
                     </span>
-                    <span className="group-hover:opacity-80 transition-opacity leading-snug">{faq.q}</span>
+                    <span className="transition-opacity leading-snug">{faq.q}</span>
                   </div>
                   <ChevronDown
-                    className={`w-5 h-5 flex-shrink-0 transition-transform duration-300 ${
-                      isOpen
-                        ? 'rotate-180 text-black dark:text-white'
+                    className={`w-4 h-4 flex-shrink-0 transition-transform duration-300 ${isOpen
+                        ? 'rotate-180 text-white'
                         : isLightMode
-                        ? 'text-neutral-400'
-                        : 'text-neutral-500'
-                    }`}
+                          ? 'text-neutral-400 group-hover:text-neutral-600'
+                          : 'text-neutral-500 group-hover:text-neutral-300'
+                      }`}
                   />
                 </button>
 
-                {isOpen && (
-                  <div
-                    className={`pt-4 pl-8 sm:pl-9 pr-4 text-sm sm:text-base leading-relaxed font-mono animate-fade-in ${
-                      isLightMode ? 'text-neutral-600' : 'text-neutral-400'
-                    }`}
-                  >
-                    {faq.a}
-                  </div>
-                )}
-              </div>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div
+                        className={`pb-6 sm:pb-8 pl-8 sm:pl-[3.25rem] pr-4 text-xs sm:text-sm leading-relaxed ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'
+                          }`}
+                      >
+                        {faq.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>

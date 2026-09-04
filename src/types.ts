@@ -20,6 +20,7 @@ export interface ScanResult {
     spf: DnsCheckRecord;
     dmarc: DnsCheckRecord;
     dkim: DnsCheckRecord;
+    mx?: DnsCheckRecord;
   };
   summary: {
     spoofingExposure: 'Critical' | 'Elevated' | 'Moderate' | 'Protected';

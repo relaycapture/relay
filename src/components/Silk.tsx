@@ -218,7 +218,7 @@ const Silk: React.FC<SilkProps> = ({
           }
         }
       },
-      { rootMargin: '600px 0px' }
+      { rootMargin: '80px 0px' }
     );
     intersectionObserver.observe(canvas);
 

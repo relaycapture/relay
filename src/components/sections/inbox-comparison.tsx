@@ -183,7 +183,7 @@ const SARAH_REPLY_EMAIL: SimulatedEmail = {
   signature: SARAH_SIGNATURE,
 };
 
-// 3. Background Blurred Emails (Rows 4+)
+// 3. Background Blurred Emails (Rows 4+ to completely fill inbox)
 const BACKGROUND_BLURRED_EMAILS: SimulatedEmail[] = [
   {
     id: 'bg-docusign',
@@ -230,6 +230,50 @@ const BACKGROUND_BLURRED_EMAILS: SimulatedEmail[] = [
     time: 'Aug 18',
     type: 'background',
     body: ['Cycle 42 has completed with 18 high-priority infrastructure and deliverability issues resolved.'],
+  },
+  {
+    id: 'bg-cloudflare',
+    sender: 'Cloudflare Security Events',
+    fromEmail: 'notifications@cloudflare.com',
+    toEmail: 'Sarah Chen (Prospect) <s.chen@vanguardindustrial.com>',
+    subject: 'WAF Zone Alert: 0 automated challenge drops in the last 24h',
+    snippet: 'Managed ruleset enforced with TLS 1.3 strict cryptographic session verification active...',
+    time: 'Aug 17',
+    type: 'background',
+    body: ['Cloudflare WAF Zone alert details.'],
+  },
+  {
+    id: 'bg-google-workspace',
+    sender: 'Google Workspace Admin',
+    fromEmail: 'workspace-noreply@google.com',
+    toEmail: 'Sarah Chen (Prospect) <s.chen@vanguardindustrial.com>',
+    subject: 'Super-Admin Identity Audit: SAML SSO & 2FA Enforcement Active',
+    snippet: 'Your monthly tenant compliance digest has been compiled for Vanguard Industrial Parts...',
+    time: 'Aug 16',
+    type: 'background',
+    body: ['Google Workspace Admin digest.'],
+  },
+  {
+    id: 'bg-tally',
+    sender: 'Tally Systems',
+    fromEmail: 'digest@tally.so',
+    toEmail: 'Sarah Chen (Prospect) <s.chen@vanguardindustrial.com>',
+    subject: 'Mentioned in Q3 Outbound Infrastructure Architecture Plan',
+    snippet: 'Engineering tagged you in section 4.2 DNS Protocol Hardening & Routing Matrix...',
+    time: 'Aug 15',
+    type: 'background',
+    body: ['Tally notification.'],
+  },
+  {
+    id: 'bg-slack',
+    sender: 'Slack Notifications',
+    fromEmail: 'notification@slack.com',
+    toEmail: 'Sarah Chen (Prospect) <s.chen@vanguardindustrial.com>',
+    subject: 'New message in #enterprise-deliverability',
+    snippet: 'David: Verified RFC 7489 alignment across all 10 secondary sending domains...',
+    time: 'Aug 14',
+    type: 'background',
+    body: ['Slack digest.'],
   },
 ];
 
@@ -306,26 +350,23 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
   return (
     <section
       id="inbox-comparison"
-      className={`relative px-4 sm:px-8 md:px-12 lg:px-24 overflow-hidden z-10 ${
-        isLivePreview ? 'py-6' : 'py-20 sm:py-28 md:py-36 section-content-auto'
-      }`}
+      className={`relative px-4 sm:px-8 md:px-12 lg:px-24 overflow-hidden z-10 ${isLivePreview ? 'py-6' : 'py-20 sm:py-28 md:py-36 section-content-auto'
+        }`}
       style={isLivePreview ? { height: '100%', minHeight: '100%' } : undefined}
     >
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
           <h2
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.15] mb-4 text-center ${
-              isLightMode ? 'text-[#1d1d1f]' : 'text-white'
-            }`}
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.15] mb-4 text-center ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+              }`}
           >
             <span className="block">The difference between</span>
             <span className="block">Inbox and Quarantine.</span>
           </h2>
           <p
-            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto text-center ${
-              isLightMode ? 'text-neutral-600' : 'text-neutral-400'
-            }`}
+            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto text-center ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'
+              }`}
           >
             <span className="block">What happens when your outbound infrastructure meets modern spam filtering engines.</span>
           </p>
@@ -336,15 +377,14 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
           {/* Active Folder Title & Domain Indicator */}
           <div className="flex items-center gap-2.5">
             <span
-              className={`px-3 py-1 rounded-full font-mono text-xs font-semibold border flex items-center gap-1.5 ${
-                viewState === 'before'
+              className={`px-3 py-1 rounded-full font-mono text-xs font-semibold border flex items-center gap-1.5 ${viewState === 'before'
                   ? isLightMode
                     ? 'bg-rose-50 text-rose-700 border-rose-200'
                     : 'bg-rose-500/10 text-rose-400 border-rose-500/25'
                   : isLightMode
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                     : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
-              }`}
+                }`}
             >
               {viewState === 'before' ? (
                 <>
@@ -362,13 +402,12 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
             {/* Interactive Demo Tour Toggle Badge */}
             <button
               onClick={() => setGuideStep(guideStep ? null : 1)}
-              className={`px-2.5 py-1 rounded-full font-mono text-[11px] border transition-colors flex items-center gap-1 ${
-                guideStep
+              className={`px-2.5 py-1 rounded-full font-mono text-[11px] border transition-colors flex items-center gap-1 ${guideStep
                   ? 'bg-amber-500/15 text-amber-500 border-amber-500/30'
                   : isLightMode
                     ? 'bg-black/5 text-neutral-600 border-black/10 hover:bg-black/10'
                     : 'bg-white/5 text-neutral-400 border-white/10 hover:bg-white/10'
-              }`}
+                }`}
             >
               <HelpCircle className="w-3 h-3" />
               <span>{guideStep ? `Demo Guide: Step ${guideStep}/3` : 'Enable Guide'}</span>
@@ -378,31 +417,28 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
           {/* Toggle Button Switcher */}
           <div className="relative">
             <div
-              className={`rc-grain-surface p-1 rounded-full border flex items-center shadow-lg relative ${
-                isLightMode ? 'bg-black/[0.04] border-black/10' : 'bg-white/[0.05] border-white/15'
-              }`}
+              className={`rc-grain-surface p-1 rounded-full border flex items-center shadow-lg relative ${isLightMode ? 'bg-black/[0.04] border-black/10' : 'bg-white/[0.05] border-white/15'
+                }`}
             >
               <button
                 onClick={() => handleToggleState('before')}
-                className={`px-4 sm:px-6 py-2 rounded-full font-mono text-xs font-bold transition-all duration-300 ${
-                  viewState === 'before'
+                className={`px-4 sm:px-6 py-2 rounded-full font-mono text-xs font-bold transition-all duration-300 ${viewState === 'before'
                     ? 'bg-rose-500 text-white shadow-md'
                     : isLightMode
                       ? 'text-neutral-600 hover:text-black'
                       : 'text-neutral-400 hover:text-white'
-                }`}
+                  }`}
               >
                 Before Remediation
               </button>
               <button
                 onClick={() => handleToggleState('after')}
-                className={`px-4 sm:px-6 py-2 rounded-full font-mono text-xs font-bold transition-all duration-300 relative ${
-                  viewState === 'after'
+                className={`px-4 sm:px-6 py-2 rounded-full font-mono text-xs font-bold transition-all duration-300 relative ${viewState === 'after'
                     ? 'bg-emerald-500 text-white shadow-md'
                     : isLightMode
                       ? 'text-neutral-600 hover:text-black'
                       : 'text-neutral-400 hover:text-white'
-                }`}
+                  }`}
               >
                 After Remediation
               </button>
@@ -415,9 +451,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                   <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping absolute inset-0 opacity-75" />
                 </div>
                 <div
-                  className={`rc-grain-surface p-3 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs max-w-xs text-center space-y-1.5 ${
-                    isLightMode ? 'bg-white/95 border-black/15 text-black' : 'bg-[#18181f]/95 border-emerald-500/40 text-white'
-                  }`}
+                  className={`rc-grain-surface p-3 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs max-w-xs text-center space-y-1.5 ${isLightMode ? 'bg-white/95 border-black/15 text-black' : 'bg-[#18181f]/95 border-emerald-500/40 text-white'
+                    }`}
                 >
                   <div className="font-mono text-[10px] font-bold text-emerald-500 uppercase tracking-wider">
                     Step 2 of 3 · Click to Switch
@@ -433,66 +468,47 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
 
         {/* Main Gmail Window Mockup */}
         <div
-          className={`rc-grain-surface max-w-6xl mx-auto rounded-2xl sm:rounded-3xl border shadow-2xl overflow-hidden transition-all duration-300 relative select-none ${
-            isLightMode
+          className={`rc-grain-surface max-w-6xl mx-auto rounded-2xl sm:rounded-3xl border shadow-2xl overflow-hidden transition-all duration-300 relative select-none ${isLightMode
               ? 'bg-white border-black/10 shadow-black/10'
               : 'bg-[#101014] border-white/10 shadow-black/60'
-          }`}
-        >
-          {/* 1. Gmail Window Title Bar */}
-          <div
-            className={`px-3 sm:px-4 py-2 border-b flex items-center justify-between text-xs select-none ${
-              isLightMode ? 'bg-neutral-100/90 border-black/10' : 'bg-black/40 border-white/10'
             }`}
+        >
+          {/* Top Gmail Search & Profile Bar (Realistic Authentic Gmail Topbar) */}
+          <div
+            className={`px-3 sm:px-6 py-2.5 border-b flex items-center justify-between gap-3 select-none ${isLightMode ? 'bg-white border-black/5' : 'bg-[#141418] border-white/5'
+              }`}
           >
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
-              <span className="font-mono text-[11px] font-semibold tracking-wide ml-2">
-                Gmail // {viewState === 'before' ? 'Spam Folder Inspection' : 'Primary Inbox'}
+            <div className="flex items-center gap-2.5">
+              <GmailLogo className="w-5 h-5" />
+              <span className={`font-sans font-semibold text-sm tracking-tight ${isLightMode ? 'text-neutral-800' : 'text-neutral-200'}`}>
+                Gmail
               </span>
             </div>
 
-            <div className="flex items-center gap-2 font-mono text-[10.5px] text-neutral-400">
-              <span>{viewState === 'before' ? 'Folder: Spam (Filtered)' : 'Folder: Primary (Aligned)'}</span>
-            </div>
-          </div>
-
-          {/* 2. Top Gmail Search & Profile Bar */}
-          <div
-            className={`px-3 sm:px-6 py-2.5 border-b flex items-center justify-between gap-3 select-none ${
-              isLightMode ? 'bg-white border-black/5' : 'bg-[#141418] border-white/5'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <GmailLogo className="w-5 h-5" />
-              <span className="font-sans font-medium text-sm hidden xs:inline">Gmail</span>
-            </div>
-
             <div
-              className={`flex-1 max-w-lg mx-2 px-3 py-1.5 rounded-full border text-xs flex items-center gap-2 transition-colors ${
-                isLightMode ? 'bg-neutral-100 border-black/5 text-neutral-700' : 'bg-white/5 border-white/10 text-neutral-300'
-              }`}
+              className={`flex-1 max-w-lg mx-2 px-3 py-1.5 rounded-full border text-xs flex items-center gap-2 transition-colors ${isLightMode ? 'bg-neutral-100 border-black/5 text-neutral-700' : 'bg-white/5 border-white/10 text-neutral-300'
+                }`}
             >
               <Search className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
               <span className="truncate">{viewState === 'before' ? 'in:spam' : 'in:inbox'}</span>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className={`text-xs font-sans font-medium hidden sm:inline ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
+                Sarah Chen (Prospect)
+              </span>
               <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-bold text-xs flex items-center justify-center">
                 S
               </div>
             </div>
           </div>
 
-          {/* 3. Main Workspace: Split into Left Sidebar and Right Message Area */}
-          <div className="flex min-h-[380px] sm:min-h-[420px] relative overflow-hidden">
-            {/* Left Gmail Sidebar */}
+          {/* 3. Main Workspace: Split into Closed-by-default Left Sidebar and Right Message Area */}
+          <div className="flex min-h-[420px] sm:min-h-[460px] relative overflow-hidden">
+            {/* Left Gmail Sidebar (Closed by Default) */}
             <div
-              className={`w-14 sm:w-48 p-2 border-r flex flex-col justify-between select-none shrink-0 transition-colors ${
-                isLightMode ? 'bg-neutral-50 border-black/5' : 'bg-[#121216] border-white/5'
-              }`}
+              className={`w-14 p-2 border-r flex flex-col justify-between select-none shrink-0 transition-colors ${isLightMode ? 'bg-neutral-50 border-black/5' : 'bg-[#121216] border-white/5'
+                }`}
             >
               <div className="space-y-1">
                 {/* Inbox Tab */}
@@ -503,23 +519,17 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                       setSelectedEmail(null);
                     }
                   }}
-                  className={`px-2 sm:px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between cursor-pointer transition-colors ${
-                    viewState === 'after'
+                  title={`Inbox (${counts.inbox.toLocaleString()})`}
+                  className={`p-2 rounded-xl text-xs font-medium flex items-center justify-center cursor-pointer transition-colors ${viewState === 'after'
                       ? isLightMode
                         ? 'bg-blue-50 text-blue-700 font-semibold'
                         : 'bg-blue-500/15 text-blue-400 font-semibold'
                       : isLightMode
                         ? 'text-neutral-600 hover:bg-black/5'
                         : 'text-neutral-400 hover:bg-white/5'
-                  }`}
+                    }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <Inbox className="w-4 h-4 shrink-0" />
-                    <span className="hidden sm:inline">Inbox</span>
-                  </div>
-                  <span className="font-mono text-[10.5px] font-bold hidden sm:inline">
-                    {counts.inbox.toLocaleString()}
-                  </span>
+                  <Inbox className="w-4 h-4 shrink-0" />
                 </div>
 
                 {/* Spam Tab */}
@@ -530,23 +540,17 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                       setSelectedEmail(null);
                     }
                   }}
-                  className={`px-2 sm:px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between cursor-pointer transition-colors ${
-                    viewState === 'before'
+                  title={`Spam (${counts.spam.toLocaleString()})`}
+                  className={`p-2 rounded-xl text-xs font-medium flex items-center justify-center cursor-pointer transition-colors ${viewState === 'before'
                       ? isLightMode
                         ? 'bg-rose-50 text-rose-700 font-semibold'
                         : 'bg-rose-500/15 text-rose-400 font-semibold'
                       : isLightMode
                         ? 'text-neutral-600 hover:bg-black/5'
                         : 'text-neutral-400 hover:bg-white/5'
-                  }`}
+                    }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <AlertOctagon className="w-4 h-4 shrink-0 text-rose-500" />
-                    <span className="hidden sm:inline">Spam</span>
-                  </div>
-                  <span className="font-mono text-[10.5px] font-bold text-rose-500 hidden sm:inline">
-                    {counts.spam.toLocaleString()}
-                  </span>
+                  <AlertOctagon className="w-4 h-4 shrink-0 text-rose-500" />
                 </div>
               </div>
             </div>
@@ -567,11 +571,10 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                     <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5">
                       <button
                         onClick={() => setSelectedEmail(null)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-colors border ${
-                          isLightMode
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-colors border ${isLightMode
                             ? 'bg-black/5 hover:bg-black/10 text-neutral-800 border-black/10'
                             : 'bg-white/5 hover:bg-white/10 text-neutral-300 border-white/10'
-                        }`}
+                          }`}
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
                         <span>Back to list</span>
@@ -580,13 +583,12 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                       {/* Header Inspector Toggle */}
                       <button
                         onClick={() => setShowHeaders(!showHeaders)}
-                        className={`px-2.5 py-1 rounded-md font-mono text-[11px] border transition-colors ${
-                          showHeaders
+                        className={`px-2.5 py-1 rounded-md font-mono text-[11px] border transition-colors ${showHeaders
                             ? 'bg-emerald-500 text-white border-emerald-500'
                             : isLightMode
                               ? 'bg-black/5 border-black/10 text-neutral-600 hover:bg-black/10'
                               : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10'
-                        }`}
+                          }`}
                       >
                         {showHeaders ? 'Hide Raw Headers' : 'Show Authentication-Results'}
                       </button>
@@ -613,15 +615,14 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                     {/* Warning Banner (Shown if present on unauthenticated emails) */}
                     {selectedEmail.warningTitle && viewState === 'before' && (
                       <div
-                        className={`p-3.5 rounded-xl border flex items-start gap-3 text-xs ${
-                          selectedEmail.warningType === 'dangerous-phish'
+                        className={`p-3.5 rounded-xl border flex items-start gap-3 text-xs ${selectedEmail.warningType === 'dangerous-phish'
                             ? isLightMode
                               ? 'bg-rose-50 border-rose-200 text-rose-900'
                               : 'bg-rose-950/30 border-rose-500/30 text-rose-200'
                             : isLightMode
                               ? 'bg-amber-50 border-amber-200 text-amber-900'
                               : 'bg-amber-950/30 border-amber-500/30 text-amber-200'
-                        }`}
+                          }`}
                       >
                         <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
                         <div className="space-y-1">
@@ -634,9 +635,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                     {/* Authentication-Results Raw Header Drawer */}
                     {showHeaders && (
                       <div
-                        className={`p-3.5 rounded-xl border font-mono text-[11px] leading-relaxed space-y-1.5 ${
-                          isLightMode ? 'bg-neutral-100 border-black/10 text-neutral-800' : 'bg-black/60 border-white/10 text-neutral-300'
-                        }`}
+                        className={`p-3.5 rounded-xl border font-mono text-[11px] leading-relaxed space-y-1.5 ${isLightMode ? 'bg-neutral-100 border-black/10 text-neutral-800' : 'bg-black/60 border-white/10 text-neutral-300'
+                          }`}
                       >
                         <div className="text-[10px] text-neutral-400 uppercase font-bold tracking-wider">
                           RFC 8601 Authentication-Results Header
@@ -683,9 +683,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                   <div className="flex-1 overflow-y-auto relative [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                     {/* Gmail Sub-header Category Bar */}
                     <div
-                      className={`px-3 sm:px-4 py-2 border-b flex items-center justify-between text-xs select-none ${
-                        isLightMode ? 'bg-neutral-50 border-black/5' : 'bg-[#111114] border-white/5'
-                      }`}
+                      className={`px-3 sm:px-4 py-2 border-b flex items-center justify-between text-xs select-none ${isLightMode ? 'bg-neutral-50 border-black/5' : 'bg-[#111114] border-white/5'
+                        }`}
                     >
                       <div className="flex items-center gap-2 font-medium">
                         <Inbox className="w-3.5 h-3.5" />
@@ -722,9 +721,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                           <div className="relative">
                             <div
                               onClick={() => handleSelectEmail(STEVE_PITCH_EMAIL)}
-                              className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs border-l-4 border-amber-500 cursor-pointer transition-colors ${
-                                isLightMode ? 'bg-amber-500/[0.08] hover:bg-amber-500/[0.14]' : 'bg-amber-500/[0.06] hover:bg-amber-500/[0.12]'
-                              }`}
+                              className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs border-l-4 border-amber-500 cursor-pointer transition-colors ${isLightMode ? 'bg-amber-500/[0.08] hover:bg-amber-500/[0.14]' : 'bg-amber-500/[0.06] hover:bg-amber-500/[0.12]'
+                                }`}
                             >
                               <Square className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
                               <Star className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
@@ -749,9 +747,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                                   <span className="w-3 h-3 rounded-full bg-amber-500 animate-ping absolute inset-0 opacity-75" />
                                 </div>
                                 <div
-                                  className={`rc-grain-surface p-3 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs max-w-xs space-y-1 ${
-                                    isLightMode ? 'bg-white/95 border-black/15 text-black' : 'bg-[#18181f]/95 border-amber-500/40 text-white'
-                                  }`}
+                                  className={`rc-grain-surface p-3 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs max-w-xs space-y-1 ${isLightMode ? 'bg-white/95 border-black/15 text-black' : 'bg-[#18181f]/95 border-amber-500/40 text-white'
+                                    }`}
                                 >
                                   <div className="font-mono text-[10px] font-bold text-amber-500 uppercase tracking-wider">
                                     Step 1 of 3 · Click to Inspect
@@ -788,9 +785,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                           <div className="relative">
                             <div
                               onClick={() => handleSelectEmail(SARAH_REPLY_EMAIL)}
-                              className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs border-l-4 border-emerald-500 cursor-pointer transition-colors ${
-                                isLightMode ? 'bg-emerald-50/70 hover:bg-emerald-50' : 'bg-emerald-950/25 hover:bg-emerald-950/40'
-                              }`}
+                              className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs border-l-4 border-emerald-500 cursor-pointer transition-colors ${isLightMode ? 'bg-emerald-50/70 hover:bg-emerald-50' : 'bg-emerald-950/25 hover:bg-emerald-950/40'
+                                }`}
                             >
                               <Square className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
                               <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400/20 shrink-0" />
@@ -815,9 +811,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                                   <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping absolute inset-0 opacity-75" />
                                 </div>
                                 <div
-                                  className={`rc-grain-surface p-3 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs max-w-xs space-y-2 ${
-                                    isLightMode ? 'bg-white/95 border-black/15 text-black' : 'bg-[#18181f]/95 border-emerald-500/40 text-white'
-                                  }`}
+                                  className={`rc-grain-surface p-3 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs max-w-xs space-y-2 ${isLightMode ? 'bg-white/95 border-black/15 text-black' : 'bg-[#18181f]/95 border-emerald-500/40 text-white'
+                                    }`}
                                 >
                                   <div className="font-mono text-[10px] font-bold text-emerald-500 uppercase tracking-wider">
                                     Step 3 of 3 · Primary Inbox Delivery
@@ -842,9 +837,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                           {/* Card 2: Steve Miller (You) - Authenticated */}
                           <div
                             onClick={() => handleSelectEmail(STEVE_PITCH_EMAIL)}
-                            className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs cursor-pointer transition-colors ${
-                              isLightMode ? 'bg-white hover:bg-neutral-50' : 'bg-[#111114] hover:bg-white/[0.03]'
-                            }`}
+                            className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs cursor-pointer transition-colors ${isLightMode ? 'bg-white hover:bg-neutral-50' : 'bg-[#111114] hover:bg-white/[0.03]'
+                              }`}
                           >
                             <Square className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
                             <Star className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
@@ -865,9 +859,8 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                           {/* Card 3: DocuSign Trust Center */}
                           <div
                             onClick={() => handleSelectEmail(BACKGROUND_BLURRED_EMAILS[0])}
-                            className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs cursor-pointer transition-colors ${
-                              isLightMode ? 'bg-white hover:bg-neutral-50' : 'bg-[#111114] hover:bg-white/[0.03]'
-                            }`}
+                            className={`px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs cursor-pointer transition-colors ${isLightMode ? 'bg-white hover:bg-neutral-50' : 'bg-[#111114] hover:bg-white/[0.03]'
+                              }`}
                           >
                             <Square className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
                             <Star className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
@@ -882,11 +875,11 @@ export function InboxComparison({ isLightMode, isLivePreview = false, currentDom
                         </>
                       )}
 
-                      {/* Remaining Background Blurred Emails */}
-                      {BACKGROUND_BLURRED_EMAILS.slice(1).map((email, bgIdx) => (
+                      {/* Remaining Background Blurred Emails (Heavy Blur Unreadable) */}
+                      {BACKGROUND_BLURRED_EMAILS.slice(1).map((email) => (
                         <div
                           key={email.id}
-                          className="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 text-xs opacity-25 filter blur-[1.5px] pointer-events-none select-none"
+                          className="px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3 text-xs opacity-35 filter blur-[7px] pointer-events-none select-none"
                         >
                           <Square className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
                           <Star className="w-3.5 h-3.5 text-neutral-400 shrink-0" />

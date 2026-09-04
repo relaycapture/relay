@@ -8,20 +8,20 @@
     --ease-teleport: cubic-bezier(0.83, 0, 0.17, 1);
   }
 
-  @media (hover: none) and (pointer: coarse) {
-
-    html,
-    body,
-    button,
-    a,
-    input,
-    select,
-    textarea,
-    [role="button"],
-    iframe,
-    * {
-      cursor: auto !important;
-    }
+  /* Unconditional global cursor suppression (eliminates OS cursor on all devices, including touchscreen laptops) */
+  html,
+  body,
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  iframe,
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
   }
 
   html {
@@ -42,23 +42,6 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
-    }
-  }
-
-  /* On mobile touch devices, restore standard cursor */
-  @media (pointer: coarse) {
-
-    html,
-    body,
-    button,
-    a,
-    input,
-    select,
-    textarea,
-    [role="button"],
-    iframe,
-    * {
-      cursor: auto !important;
     }
   }
 }
@@ -249,9 +232,25 @@
   }
 }
 
-/* Homepage & Pricing Page #0f0d13 with tactile organic grain */
+/* Homepage & Pricing Page #08080a with tactile organic grain */
+.rc-page-grain-08080a {
+  background-color: #08080a !important;
+  position: relative;
+}
+
+.rc-page-grain-08080a::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  z-index: 1;
+}
+
 .rc-page-grain-0f0d13 {
-  background-color: #0f0d13 !important;
+  background-color: #08080a !important;
   position: relative;
 }
 
@@ -260,8 +259,83 @@
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.055;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   background-size: 150px 150px;
   z-index: 1;
+}
+
+/* ========================================================================= */
+/* CUSTOM FLEET SLIDER: Smooth sliding, machined glowing thumb               */
+/* ========================================================================= */
+.custom-fleet-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent !important;
+}
+
+.custom-fleet-slider::-webkit-slider-runnable-track {
+  background: transparent;
+  height: 100%;
+}
+
+.custom-fleet-slider::-moz-range-track {
+  background: transparent;
+  height: 100%;
+}
+
+.custom-fleet-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 2px 6px rgba(0, 0, 0, 0.6);
+  margin-top: 5px;
+  transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.08s ease;
+}
+
+.custom-fleet-slider:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 1), 0 4px 10px rgba(0, 0, 0, 0.8);
+}
+
+.custom-fleet-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 2px 6px rgba(0, 0, 0, 0.6);
+  transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.08s ease;
+}
+
+.custom-fleet-slider:active::-moz-range-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 1), 0 4px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* ========================================================================= */
+/* ABSOLUTE CURSOR SUPPRESSION: Zero OS Cursor Leakage Across Any Device     */
+/* Placed at root level outside cascade layers to override all browser defaults */
+/* ========================================================================= */
+html,
+body,
+*,
+*::before,
+*::after,
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+[data-cursor],
+.cursor-pointer,
+.cursor-default,
+.cursor-text,
+.cursor-move {
+  cursor: none !important;
 }

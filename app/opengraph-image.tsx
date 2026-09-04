@@ -11,9 +11,10 @@ export default async function Image() {
   return new ImageResponse(
     (
       <div
-        tw="relative flex h-full w-full flex-col items-center justify-center bg-neutral-950"
+        tw="relative flex h-full w-full flex-col items-center justify-center bg-black"
         style={{
           fontFamily: 'sans-serif',
+          backgroundColor: '#08080a',
         }}
       >
         {/* Subtle glowing radial gradient in the center */}
@@ -21,7 +22,7 @@ export default async function Image() {
           tw="absolute flex h-[480px] w-[640px] rounded-full"
           style={{
             background:
-              'radial-gradient(ellipse at center, rgba(16, 185, 129, 0.18) 0%, rgba(30, 27, 40, 0.4) 40%, rgba(10, 10, 12, 0) 70%)',
+              'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, rgba(30, 30, 35, 0.4) 40%, rgba(8, 8, 10, 0) 70%)',
             filter: 'blur(40px)',
           }}
         />

@@ -1,101 +1,158 @@
-'use client'
+'use client';
 
-import { useEffect, useRef } from 'react'
-
-const TRIANGLE = 'polygon(50% 0%, 100% 100%, 0% 100%)'
-
-function isSafari() {
-  if (typeof navigator === 'undefined') return false
-  const ua = navigator.userAgent
-  return /^((?!chrome|android|crios|fxios).)*safari/i.test(ua)
-}
+import { useEffect, useRef } from 'react';
 
 interface CustomCursorProps {
   isLightMode?: boolean;
 }
 
 export function CustomCursor({ isLightMode: _isLightMode }: CustomCursorProps) {
-  const cursorRef = useRef<HTMLDivElement>(null)
-  const trailRef = useRef<HTMLDivElement>(null)
-  const sparkRef = useRef<HTMLDivElement>(null)
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const rippleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia('(pointer: coarse)').matches) return
+    // Inject permanent global cursor suppression style tag into <head>
+    let styleTag = document.getElementById('force-system-cursor-hidden');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'force-system-cursor-hidden';
+      styleTag.innerHTML = `
+        *, *::before, *::after, html, body, button, a, input, select, textarea, [role="button"], [data-cursor], .cursor-pointer, .cursor-default, .cursor-text, .cursor-move {
+          cursor: none !important;
+        }
+      `;
+      document.head.appendChild(styleTag);
+    }
 
-    const cursor = cursorRef.current
-    const trail = trailRef.current
-    const spark = sparkRef.current
+    const cursor = cursorRef.current;
+    const ripple = rippleRef.current;
+    if (!cursor || !ripple) return;
 
-    if (!cursor || !trail || !spark) return
+    let isMouseActive = false;
+    let posX = -100;
+    let posY = -100;
+    let targetScale = 1;
+    let curScale = 1;
+    let isPressed = false;
+    let raf = 0;
 
-    const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
-    const tr = { x: pos.x, y: pos.y }
-    let targetScale = 1
-    let curScale = 1
-    let raf = 0
-    let started = false
-
-    const onMove = (e: PointerEvent) => {
-      pos.x = e.clientX
-      pos.y = e.clientY
-      if (!started) {
-        started = true
-        cursor.style.opacity = '1'
-        trail.style.opacity = '0.1'
+    const activateCustomCursor = () => {
+      if (!isMouseActive) {
+        isMouseActive = true;
+        cursor.style.display = 'block';
+        cursor.style.opacity = '1';
       }
-      const target = e.target as HTMLElement | null
-      const interactive = target?.closest(
+    };
+
+    const deactivateCustomCursor = () => {
+      if (isMouseActive) {
+        isMouseActive = false;
+        cursor.style.display = 'none';
+        cursor.style.opacity = '0';
+      }
+    };
+
+    // Ultra-fast zero-latency position update without any DOM traversal
+    const onMove = (e: MouseEvent | PointerEvent) => {
+      if ('pointerType' in e && e.pointerType === 'touch') {
+        deactivateCustomCursor();
+        return;
+      }
+
+      activateCustomCursor();
+      posX = e.clientX;
+      posY = e.clientY;
+
+      cursor.style.transform = `translate3d(${posX}px, ${posY}px, 0) translate(-3px, -3px) scale(${curScale})`;
+    };
+
+    // Separate hover detection to pointerover/pointerout so onMove never walks the DOM
+    const onOver = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const interactive = target.closest(
         '[data-cursor="grow"], button, a, input, select, textarea, [role="button"], .interactive-target, #inbox-comparison, #pricing-tiers-grid'
-      )
-      targetScale = interactive ? 1.3 : 1
-    }
+      );
+      targetScale = interactive ? 1.18 : 1;
+    };
 
-    const onDown = () => {
-      spark.style.transition = 'none'
-      spark.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%) scale(0)`
-      spark.style.opacity = '0.9'
-      void spark.offsetWidth
-      spark.style.transition = 'transform 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 320ms cubic-bezier(0.16, 1, 0.3, 1)'
-      spark.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%) scale(1.4)`
-      spark.style.opacity = '0'
-    }
+    const onDown = (e: MouseEvent | PointerEvent) => {
+      if ('pointerType' in e && e.pointerType === 'touch') return;
+      isPressed = true;
 
+      // Tactile click confirmation ripple
+      ripple.style.transition = 'none';
+      ripple.style.transform = `translate3d(${posX}px, ${posY}px, 0) translate(-50%, -50%) scale(0.3)`;
+      ripple.style.opacity = '0.9';
+      void ripple.offsetWidth; // force reflow
+      ripple.style.transition =
+        'transform 260ms cubic-bezier(0.16, 1, 0.3, 1), opacity 260ms cubic-bezier(0.16, 1, 0.3, 1)';
+      ripple.style.transform = `translate3d(${posX}px, ${posY}px, 0) translate(-50%, -50%) scale(1.5)`;
+      ripple.style.opacity = '0';
+    };
+
+    const onUp = () => {
+      isPressed = false;
+    };
+
+    const onMouseLeave = () => {
+      cursor.style.opacity = '0';
+    };
+
+    const onMouseEnter = () => {
+      if (isMouseActive) cursor.style.opacity = '1';
+    };
+
+    // Smooth scale animation loop (only animates scale, position is instant hardware transform)
     const loop = () => {
-      tr.x += (pos.x - tr.x) * 0.15
-      tr.y += (pos.y - tr.y) * 0.15
-      curScale += (targetScale - curScale) * 0.18
+      const activeTarget = isPressed ? targetScale * 0.86 : targetScale;
+      if (Math.abs(activeTarget - curScale) > 0.005) {
+        curScale += (activeTarget - curScale) * 0.3;
+        cursor.style.transform = `translate3d(${posX}px, ${posY}px, 0) translate(-3px, -3px) scale(${curScale})`;
+      }
 
-      // Translate so the top-center triangle tip (50% 0%) sits precisely at (pos.x, pos.y) and rotates about the tip
-      cursor.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, 0) rotate(-22deg) scale(${curScale})`
-      trail.style.transform = `translate3d(${tr.x}px, ${tr.y}px, 0) translate(-50%, 0) rotate(-22deg) scale(${curScale * 0.6})`
+      raf = requestAnimationFrame(loop);
+    };
 
-      raf = requestAnimationFrame(loop)
+    // Use PointerEvents if available, otherwise mouse events (never both together)
+    if (window.PointerEvent) {
+      window.addEventListener('pointermove', onMove, { passive: true });
+      window.addEventListener('pointerdown', onDown, { passive: true });
+      window.addEventListener('pointerup', onUp, { passive: true });
+      document.addEventListener('pointerover', onOver, { passive: true });
+    } else {
+      window.addEventListener('mousemove', onMove, { passive: true });
+      window.addEventListener('mousedown', onDown, { passive: true });
+      window.addEventListener('mouseup', onUp, { passive: true });
+      document.addEventListener('mouseover', onOver, { passive: true });
     }
 
-    window.addEventListener('pointermove', onMove, { passive: true })
-    window.addEventListener('pointerdown', onDown, { passive: true })
-    raf = requestAnimationFrame(loop)
+    document.addEventListener('mouseleave', onMouseLeave);
+    document.addEventListener('mouseenter', onMouseEnter);
+
+    raf = requestAnimationFrame(loop);
 
     return () => {
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerdown', onDown)
-      cancelAnimationFrame(raf)
-    }
-  }, [])
-
-  const safari = typeof window !== 'undefined' && isSafari()
+      if (window.PointerEvent) {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerdown', onDown);
+        window.removeEventListener('pointerup', onUp);
+        document.removeEventListener('pointerover', onOver);
+      } else {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mousedown', onDown);
+        window.removeEventListener('mouseup', onUp);
+        document.removeEventListener('mouseover', onOver);
+      }
+      document.removeEventListener('mouseleave', onMouseLeave);
+      document.removeEventListener('mouseenter', onMouseEnter);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <>
-      {/* SVG glass refraction filter guarantee */}
-      <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
-        <filter id="glass-refract">
-          <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves={1} seed={4} result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale={16} xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
-
-      {/* Main Glass Refracting Triangle Cursor - Origin at Tip (50% 0%) */}
+      {/* Modern Black Tailless Precision Cursor with Crisp White Outline */}
       <div
         id="custom-cursor"
         ref={cursorRef}
@@ -104,67 +161,59 @@ export function CustomCursor({ isLightMode: _isLightMode }: CustomCursorProps) {
           position: 'fixed',
           left: 0,
           top: 0,
-          width: '23px',
-          height: '23px',
-          transformOrigin: '50% 0%',
-          clipPath: TRIANGLE,
-          backdropFilter: safari ? 'blur(2px)' : 'blur(1px) saturate(200%)',
-          WebkitBackdropFilter: safari ? 'blur(2px)' : 'blur(1px) saturate(200%)',
-          filter: safari ? undefined : 'url(#glass-refract)',
-          border: '0.5px solid rgba(255, 255, 255, 0.4)',
-          boxShadow: '0 0 8px rgba(255, 255, 255, 0.2)',
-          mixBlendMode: 'difference',
-          pointerEvents: 'none',
-          zIndex: 9999,
-          opacity: safari ? 0.9 : 0,
-          willChange: 'transform',
-        }}
-      />
-
-      {/* Trailing Copy: 60% size, opacity 0.1, blur 4px, origin at Tip */}
-      <div
-        id="custom-cursor-trail"
-        ref={trailRef}
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          width: '20px',
-          height: '20px',
-          transformOrigin: '50% 0%',
-          clipPath: TRIANGLE,
-          filter: 'blur(4px)',
-          background: 'rgba(255, 255, 255, 0.7)',
-          mixBlendMode: 'difference',
-          pointerEvents: 'none',
-          zIndex: 9998,
-          opacity: 0,
-          willChange: 'transform',
-        }}
-      />
-
-      {/* Click Spark: Circle expanding from exact cursor tip location */}
-      <div
-        id="custom-cursor-spark"
-        ref={sparkRef}
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          left: 0,
-          top: 0,
           width: '28px',
           height: '28px',
-          borderRadius: '50%',
-          border: '1.5px solid rgba(255, 255, 255, 0.9)',
-          boxShadow: '0 0 8px rgba(255, 255, 255, 0.5)',
-          mixBlendMode: 'difference',
           pointerEvents: 'none',
-          zIndex: 9997,
+          zIndex: 99999,
+          opacity: 0,
+          transformOrigin: '3px 3px',
+          willChange: 'transform',
+        }}
+      >
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 28 28"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            filter: 'drop-shadow(0 2px 7px rgba(0, 0, 0, 0.85))',
+          }}
+        >
+          {/* Modern Tailless Arrowhead (Zero Diagonal Tail / Stem) */}
+          <path
+            d="M 3 3 L 3 24 L 8.5 18.5 L 18.5 18.5 Z"
+            fill="#050507"
+            stroke="#ffffff"
+            strokeWidth="1.65"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
+
+      {/* Tactile Click Confirmation Ripple */}
+      <div
+        id="custom-cursor-ripple"
+        ref={rippleRef}
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          width: '36px',
+          height: '36px',
+          borderRadius: '50%',
+          border: '1.5px solid rgba(255, 255, 255, 0.85)',
+          boxShadow: '0 0 10px rgba(255, 255, 255, 0.45), inset 0 0 6px rgba(0, 0, 0, 0.5)',
+          pointerEvents: 'none',
+          zIndex: 99998,
           opacity: 0,
           transformOrigin: 'center center',
+          willChange: 'transform, opacity',
         }}
       />
     </>
-  )
+  );
 }
+

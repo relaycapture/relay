@@ -83,62 +83,44 @@ export function FinancialLeakage({
   const monthlyRevenueLeakage = Math.round(quarantinedMessages * conversionMultiplier * dealValue);
   const annualLeakage = monthlyRevenueLeakage * 12;
 
-  // Severity Status:
+  // Severity Status (Strict Monochrome):
   const severityStatus = useMemo(() => {
     if (bounceRate <= 10) {
       return {
-        label: 'Healthy',
-        color: '#10b981',
-        badgeBg: isLightMode ? 'rgba(16, 185, 129, 0.12)' : 'rgba(16, 185, 129, 0.18)',
-        badgeText: isLightMode ? '#047857' : '#34d399',
-        badgeBorder: 'rgba(16, 185, 129, 0.3)',
+        label: 'Optimized',
+        color: '#ffffff',
+        badgeBg: isLightMode ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.1)',
+        badgeText: isLightMode ? '#18181b' : '#ffffff',
+        badgeBorder: 'rgba(255, 255, 255, 0.25)',
       };
     } else if (bounceRate <= 24) {
       return {
         label: 'At Risk',
-        color: '#f59e0b',
-        badgeBg: isLightMode ? 'rgba(245, 158, 11, 0.15)' : 'rgba(245, 158, 11, 0.20)',
-        badgeText: isLightMode ? '#b45309' : '#fbbf24',
-        badgeBorder: 'rgba(245, 158, 11, 0.35)',
+        color: '#d4d4d8',
+        badgeBg: isLightMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.06)',
+        badgeText: isLightMode ? '#3f3f46' : '#d4d4d8',
+        badgeBorder: 'rgba(255, 255, 255, 0.15)',
       };
     } else {
       return {
-        label: 'Elevated Risk',
-        color: '#ef4444',
-        badgeBg: isLightMode ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.22)',
-        badgeText: isLightMode ? '#b91c1c' : '#f87171',
-        badgeBorder: 'rgba(239, 68, 68, 0.35)',
+        label: 'Critical Flag',
+        color: '#a1a1aa',
+        badgeBg: isLightMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.04)',
+        badgeText: isLightMode ? '#52525b' : '#a1a1aa',
+        badgeBorder: 'rgba(255, 255, 255, 0.12)',
       };
     }
   }, [bounceRate, isLightMode]);
 
   const themeColor = useMemo(() => {
-    if (bounceRate <= 10) {
-      return {
-        stroke: '#10b981',
-        fill: 'rgba(16, 185, 129, 0.12)',
-        glow: 'rgba(16, 185, 129, 0.45)',
-        dotBorder: '#059669',
-        accentHex: '#10b981',
-      };
-    } else if (bounceRate <= 24) {
-      return {
-        stroke: '#f59e0b',
-        fill: 'rgba(245, 158, 11, 0.15)',
-        glow: 'rgba(245, 158, 11, 0.45)',
-        dotBorder: '#d97706',
-        accentHex: '#f59e0b',
-      };
-    } else {
-      return {
-        stroke: '#ef4444',
-        fill: 'rgba(239, 68, 68, 0.2)',
-        glow: 'rgba(239, 68, 68, 0.5)',
-        dotBorder: '#dc2626',
-        accentHex: '#ef4444',
-      };
-    }
-  }, [bounceRate]);
+    return {
+      stroke: '#ffffff',
+      fill: 'rgba(255, 255, 255, 0.08)',
+      glow: 'rgba(255, 255, 255, 0.4)',
+      dotBorder: '#a1a1aa',
+      accentHex: '#ffffff',
+    };
+  }, []);
 
   // 12-Month Mathematical Data Engine:
   const graphPointsData = useMemo(() => {
@@ -250,18 +232,16 @@ export function FinancialLeakage({
         {/* Outer Browser-Style Tab Bar */}
         <div className="flex flex-wrap sm:flex-nowrap items-end justify-between gap-2 px-0 -mb-[1px] relative z-20">
           <div
-            className={`rc-grain-surface border-t border-l border-r border-b-0 px-4 sm:px-6 py-2 sm:py-2.5 rounded-tl-2xl sm:rounded-tl-3xl rounded-tr-xl sm:rounded-tr-2xl flex items-center gap-2.5 shadow-sm transition-all duration-300 relative z-20 backdrop-blur-xl shrink min-w-0 ${
-              isLightMode
-                ? 'bg-black/[0.015] border-black/[0.08] text-black'
-                : 'bg-white/[0.02] border-white/[0.08] text-white'
-            }`}
+            className={`rc-grain-surface border-t border-l border-r border-b-0 px-4 sm:px-6 py-2 sm:py-2.5 rounded-tl-2xl sm:rounded-tl-3xl rounded-tr-xl sm:rounded-tr-2xl flex items-center gap-2.5 shadow-sm transition-all duration-300 relative z-20 backdrop-blur-xl shrink min-w-0 ${isLightMode
+              ? 'bg-black/[0.015] border-black/[0.08] text-black'
+              : 'bg-white/[0.02] border-white/[0.08] text-white'
+              }`}
           >
             {currentDomain || scanResult?.domain ? (
               <>
                 <div
-                  className={`w-4 h-4 sm:w-4.5 sm:h-4.5 rounded flex items-center justify-center overflow-hidden shrink-0 ${
-                    isLightMode ? 'bg-neutral-100' : 'bg-white/10'
-                  }`}
+                  className={`w-4 h-4 sm:w-4.5 sm:h-4.5 rounded flex items-center justify-center overflow-hidden shrink-0 ${isLightMode ? 'bg-neutral-100' : 'bg-white/10'
+                    }`}
                 >
                   <DomainFavicon
                     domain={currentDomain || scanResult?.domain || ''}
@@ -308,11 +288,10 @@ export function FinancialLeakage({
 
         {/* Main Display Card Body */}
         <div
-          className={`rc-grain-surface p-1 sm:p-2.5 md:p-3 rounded-b-2xl sm:rounded-b-3xl rounded-tr-2xl sm:rounded-tr-3xl rounded-tl-none border backdrop-blur-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between flex-1 shadow-xl ${
-            isLightMode
-              ? 'bg-black/[0.015] border-black/[0.08]'
-              : 'bg-white/[0.02] border-white/[0.08]'
-          }`}
+          className={`rc-grain-surface p-1 sm:p-2.5 md:p-3 rounded-b-2xl sm:rounded-b-3xl rounded-tr-2xl sm:rounded-tr-3xl rounded-tl-none border backdrop-blur-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between flex-1 shadow-xl ${isLightMode
+            ? 'bg-black/[0.015] border-black/[0.08]'
+            : 'bg-white/[0.02] border-white/[0.08]'
+            }`}
         >
           <div className="w-full relative flex-1 flex items-center justify-center my-0">
             <svg
@@ -341,11 +320,10 @@ export function FinancialLeakage({
                       x={padding.left - 6}
                       y={yPos + 4.5}
                       textAnchor="end"
-                      className={`font-mono ${
-                        tick.isSpecial
-                          ? 'text-[14px] sm:text-[15px] font-bold'
-                          : 'text-[12.5px] sm:text-[13.5px] font-semibold'
-                      }`}
+                      className={`font-mono ${tick.isSpecial
+                        ? 'text-[14px] sm:text-[15px] font-bold'
+                        : 'text-[12.5px] sm:text-[13.5px] font-semibold'
+                        }`}
                       fill={
                         tick.isSpecial
                           ? isLightMode ? '#000000' : '#ffffff'
@@ -408,7 +386,7 @@ export function FinancialLeakage({
               </span>
               <span className="font-black text-lg sm:text-2xl md:text-3xl tracking-tight mt-1" style={{ color: themeColor.stroke }}>
                 <NumberTicker value={annualLeakage} prefix="$" duration={900} />
-                <span className={`text-xs sm:text-sm font-normal ml-0.5 ${isLightMode ? 'text-neutral-500' : 'text-neutral-400'}`}>/yr (Scenario Model)</span>
+                <span className={`text-xs sm:text-sm font-normal ml-0.5 ${isLightMode ? 'text-neutral-500' : 'text-neutral-400'}`}>/yr</span>
               </span>
             </div>
 
@@ -430,20 +408,18 @@ export function FinancialLeakage({
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-2.5 sm:gap-3 flex-1">
           {/* Box 1: Monthly Outbound */}
           <div
-            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-              isLightMode
-                ? 'bg-black/[0.015] border-black/[0.08]'
-                : 'bg-white/[0.02] border-white/[0.08]'
-            }`}
+            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
+              ? 'bg-black/[0.015] border-black/[0.08]'
+              : 'bg-white/[0.02] border-white/[0.08]'
+              }`}
           >
             <div className="flex justify-between items-center text-xs font-mono mb-1.5">
               <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
                 Monthly Outbound
               </span>
               <span
-                className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${
-                  isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
-                }`}
+                className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
+                  }`}
               >
                 {outboundVolume.toLocaleString()}
               </span>
@@ -456,9 +432,8 @@ export function FinancialLeakage({
                 step={1000}
                 value={outboundVolume}
                 onChange={(e) => setOutboundVolume(Number(e.target.value))}
-                className={`w-full h-1 appearance-none cursor-pointer rounded-full ${
-                  isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
-                }`}
+                className={`w-full h-1 appearance-none cursor-pointer rounded-full ${isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
+                  }`}
               />
               <div className="flex justify-between text-[9px] font-mono text-neutral-400 mt-1">
                 <span>1k</span>
@@ -469,11 +444,10 @@ export function FinancialLeakage({
 
           {/* Box 2: Quarantine / Spam Rate */}
           <div
-            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-              isLightMode
-                ? 'bg-black/[0.015] border-black/[0.08]'
-                : 'bg-white/[0.02] border-white/[0.08]'
-            }`}
+            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
+              ? 'bg-black/[0.015] border-black/[0.08]'
+              : 'bg-white/[0.02] border-white/[0.08]'
+              }`}
           >
             <div className="flex justify-between items-center text-xs font-mono mb-1.5">
               <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
@@ -509,20 +483,18 @@ export function FinancialLeakage({
 
           {/* Box 3: Value per Deal */}
           <div
-            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-              isLightMode
-                ? 'bg-black/[0.015] border-black/[0.08]'
-                : 'bg-white/[0.02] border-white/[0.08]'
-            }`}
+            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
+              ? 'bg-black/[0.015] border-black/[0.08]'
+              : 'bg-white/[0.02] border-white/[0.08]'
+              }`}
           >
             <div className="flex justify-between items-center text-xs font-mono mb-1.5">
               <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
                 Deal Value
               </span>
               <span
-                className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${
-                  isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
-                }`}
+                className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
+                  }`}
               >
                 ${dealValue.toLocaleString()}
               </span>
@@ -535,9 +507,8 @@ export function FinancialLeakage({
                 step={100}
                 value={dealValue}
                 onChange={(e) => setDealValue(Number(e.target.value))}
-                className={`w-full h-1 appearance-none cursor-pointer rounded-full ${
-                  isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
-                }`}
+                className={`w-full h-1 appearance-none cursor-pointer rounded-full ${isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
+                  }`}
               />
               <div className="flex justify-between text-[9px] font-mono text-neutral-400 mt-1">
                 <span>$100</span>
@@ -548,20 +519,18 @@ export function FinancialLeakage({
 
           {/* Box 4: Assumed Opportunity Rate */}
           <div
-            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${
-              isLightMode
-                ? 'bg-black/[0.015] border-black/[0.08]'
-                : 'bg-white/[0.02] border-white/[0.08]'
-            }`}
+            className={`rc-grain-surface p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border backdrop-blur-md flex flex-col justify-between transition-all duration-200 shadow-sm ${isLightMode
+              ? 'bg-black/[0.015] border-black/[0.08]'
+              : 'bg-white/[0.02] border-white/[0.08]'
+              }`}
           >
             <div className="flex justify-between items-center text-xs font-mono mb-1.5">
               <span className={`text-[11px] sm:text-xs font-medium truncate ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
                 Assumed Opportunity Rate
               </span>
               <span
-                className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${
-                  isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
-                }`}
+                className={`font-mono text-[10.5px] sm:text-xs px-1.5 py-0.5 rounded-md shrink-0 ${isLightMode ? 'bg-black/5 text-black font-semibold' : 'bg-white/10 text-white font-semibold'
+                  }`}
               >
                 {conversionRatePct}%
               </span>
@@ -574,9 +543,8 @@ export function FinancialLeakage({
                 step={0.01}
                 value={conversionRatePct}
                 onChange={(e) => setConversionRatePct(Number(Number(e.target.value).toFixed(2)))}
-                className={`w-full h-1 appearance-none cursor-pointer rounded-full ${
-                  isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
-                }`}
+                className={`w-full h-1 appearance-none cursor-pointer rounded-full ${isLightMode ? 'bg-neutral-200 accent-black' : 'bg-neutral-800 accent-white'
+                  }`}
               />
               <div className="flex justify-between text-[9px] font-mono text-neutral-400 mt-1">
                 <span>0.05%</span>
@@ -625,28 +593,24 @@ export function FinancialLeakage({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className={`rc-grain-surface relative w-full max-w-6xl rounded-3xl border shadow-2xl overflow-hidden my-auto ${
-              isLightMode
-                ? 'bg-[#fbfbfd] border-black/15 text-[#1d1d1f]'
-                : 'bg-[#100e16] border-white/15 text-white'
-            }`}
+            className={`rc-grain-surface relative w-full max-w-6xl rounded-3xl border shadow-2xl overflow-hidden my-auto ${isLightMode
+              ? 'bg-[#fbfbfd] border-black/15 text-[#1d1d1f]'
+              : 'bg-[#100e16] border-white/15 text-white'
+              }`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Modal Header Bar with Title & Close X */}
             <div
-              className={`p-4 sm:p-5 md:p-6 border-b flex items-center justify-between gap-4 select-none ${
-                isLightMode ? 'border-black/10 bg-black/[0.02]' : 'border-white/10 bg-white/[0.02]'
-              }`}
+              className={`p-4 sm:p-5 md:p-6 border-b flex items-center justify-between gap-4 select-none ${isLightMode ? 'border-black/10 bg-black/[0.02]' : 'border-white/10 bg-white/[0.02]'
+                }`}
             >
               <div>
-                <h2 className={`text-lg sm:text-xl md:text-2xl font-semibold tracking-tight ${
-                  isLightMode ? 'text-[#1d1d1f]' : 'text-white'
-                }`}>
+                <h2 className={`text-lg sm:text-xl md:text-2xl font-semibold tracking-tight ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+                  }`}>
                   Estimated Pipeline Impact (Scenario Model)
                 </h2>
-                <p className={`text-xs sm:text-sm font-normal mt-0.5 ${
-                  isLightMode ? 'text-neutral-600' : 'text-neutral-400'
-                }`}>
+                <p className={`text-xs sm:text-sm font-normal mt-0.5 ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'
+                  }`}>
                   Adjust sending volume and conversion assumptions to estimate potential revenue vulnerability.
                 </p>
               </div>
@@ -656,11 +620,10 @@ export function FinancialLeakage({
                 onClick={onClose}
                 data-cursor="grow"
                 aria-label="Close Revenue Impact Modal"
-                className={`p-2 rounded-full border transition-all shrink-0 ${
-                  isLightMode
-                    ? 'bg-black/5 hover:bg-black/10 text-neutral-800 border-black/10'
-                    : 'bg-white/10 hover:bg-white/20 text-neutral-200 border-white/10'
-                }`}
+                className={`p-2 rounded-full border transition-all shrink-0 ${isLightMode
+                  ? 'bg-black/5 hover:bg-black/10 text-neutral-800 border-black/10'
+                  : 'bg-white/10 hover:bg-white/20 text-neutral-200 border-white/10'
+                  }`}
               >
                 <X className="w-5 h-5" />
               </button>

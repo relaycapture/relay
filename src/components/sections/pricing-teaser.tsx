@@ -112,7 +112,7 @@ export function PricingTeaser({ onNavigateToPricing, isLightMode }: PricingTease
                 isLightMode ? 'bg-black/5 text-black' : 'bg-white/10 text-white'
               }`}
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-white" />
               <span>
                 {selectedNeed === 'onetime'
                   ? 'SELF-SERVE SPECIFICATION'

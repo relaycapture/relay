@@ -8,59 +8,32 @@
     --ease-teleport: cubic-bezier(0.83, 0, 0.17, 1);
   }
 
-  @media (hover: none) and (pointer: coarse) {
-
-    html,
-    body,
-    button,
-    a,
-    input,
-    select,
-    textarea,
-    [role="button"],
-    iframe,
-    * {
-      cursor: auto !important;
-    }
-  }
-
   html {
     font-family: var(--font-sans);
-    scroll-behavior: smooth;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
+}
 
-  /* When reduced motion is requested */
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-
-  /* On mobile touch devices, restore standard cursor */
-  @media (pointer: coarse) {
-
-    html,
-    body,
-    button,
-    a,
-    input,
-    select,
-    textarea,
-    [role="button"],
-    iframe,
-    * {
-      cursor: auto !important;
-    }
-  }
+/* Unconditional global cursor suppression (immune to OS or touch-screen overrides) */
+html,
+body,
+*,
+*::before,
+*::after,
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+[data-cursor],
+[data-cursor="grow"],
+.cursor-pointer,
+.cursor-default {
+  cursor: none !important;
 }
 
 /* Custom scrollbar */
@@ -78,7 +51,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 211, 238, 0.4);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 /* CCTV Grain In-Place Noise Jitter */
@@ -235,10 +208,9 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* Off-screen layout skipping for below-the-fold sections */
+/* Content visibility wrapper */
 .section-content-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 800px;
+  content-visibility: visible;
 }
 
 /* Mobile & low-power device blur optimizations to avoid fill-rate bottlenecks */
@@ -252,19 +224,64 @@
 }
 
 /* Landing Page, Pricing Page, Refunds Page, Terms Page, Privacy Page #08080a with subtle but visible premium-grade grain */
-.rc-page-grain-08080a {
+.rc-page-grain-08080a,
+.rc-page-grain-0f0d13 {
   background-color: #08080a !important;
   position: relative;
 }
 
-.rc-page-grain-08080a::before {
+.rc-page-grain-08080a::before,
+.rc-page-grain-0f0d13::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.055;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
   mix-blend-mode: screen;
   z-index: 1;
+}
+
+/* Atmospheric Slow Drifting Gradient Keyframes (45s - 62s GPU composited) */
+@keyframes slowDriftA {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(40px, -35px, 0) scale(1.08) rotate(15deg);
+  }
+  100% {
+    transform: translate3d(-30px, 45px, 0) scale(0.94) rotate(-10deg);
+  }
+}
+
+@keyframes slowDriftB {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-45px, 30px, 0) scale(1.06) rotate(-20deg);
+  }
+  100% {
+    transform: translate3d(35px, -40px, 0) scale(0.96) rotate(12deg);
+  }
+}
+
+@keyframes slowDriftC {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+  }
+  50% {
+    transform: translate3d(-25px, -30px, 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(30px, 20px, 0) scale(1);
+  }
+}
+
+/* Off-screen section virtualization for 120Hz buttery smooth scrolling */
+.section-content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 650px;
 }

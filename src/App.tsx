@@ -5,33 +5,38 @@ import Lenis from 'lenis';
 import { TeleportOverlay } from './components/teleport-overlay';
 import { CustomCursor } from './components/custom-cursor';
 import { Navbar } from './components/navbar';
-import { CornerElements } from './components/corner-elements';
 import { QuickNav, QuickNavSection } from './components/quick-nav';
 import { HeroSection } from './components/sections/hero-section';
 import { DomainCheckerSection } from './components/sections/domain-checker-section';
 import { FinancialLeakage } from './components/sections/financial-leakage';
-import { InboxComparison } from './components/sections/inbox-comparison';
-import { DeliverabilitySimulator } from './components/sections/deliverability-simulator';
-import { LiveProtocolFeed } from './components/sections/live-protocol-feed';
-import { ThreeCards } from './components/sections/three-cards';
+import { CryptographicBaseline } from './components/sections/cryptographic-baseline';
+import { HowItWorks } from './components/sections/how-it-works';
+import { PostInvoiceTimeline } from './components/sections/post-invoice-timeline';
+import { ArchitectureComparison } from './components/sections/architecture-comparison';
+import { PreOrderChecklist } from './components/sections/pre-order-checklist';
+import { FleetPricing } from './components/sections/fleet-pricing';
 import { SampleDeliverableModal } from './components/sections/sample-deliverable-modal';
 import { FaqSection } from './components/sections/faq-section';
 import { FooterContact } from './components/sections/footer-contact';
-import { SectionDivider } from './components/section-divider';
+import { BottomScreenBlur, TopScreenBlur } from './components/bottom-screen-blur';
 import { PricingPage } from './components/pricing-page';
 import { TermsPage } from './components/terms-page';
 import { PrivacyPage } from './components/privacy-page';
 import { RefundsPage } from './components/refunds-page';
+import { initPaddle } from './utils/paddle';
 import { PagePhase, CurrentView, ScanResult } from './types';
 
 const SECTIONS: QuickNavSection[] = [
   { id: 'hero-section', label: '01 // Overview' },
   { id: 'domain-checker-section', label: '02 // Domain Audit' },
-  { id: 'inbox-comparison', label: '03 // Inbox Simulation' },
-  { id: 'protocol-feed', label: '04 // Protocol Stream' },
-  { id: 'three-cards-section', label: '05 // Deliverables' },
-  { id: 'faq-section', label: '06 // Architecture FAQ' },
-  { id: 'contact-section', label: '07 // Engineering Contact' },
+  { id: 'cryptographic-baseline', label: '03 // Cryptographic Baseline' },
+  { id: 'how-it-works', label: '04 // How It Works' },
+  { id: 'invoice-settle-timeline', label: '05 // Post-Payment SLA' },
+  { id: 'comparison-section', label: '06 // Architectural Benchmark' },
+  { id: 'prerequisites-section', label: '07 // Pre-Order Checklist' },
+  { id: 'fleet-pricing-section', label: '08 // Fleet Engineering Fee' },
+  { id: 'faq-section', label: '09 // Architecture FAQ' },
+  { id: 'contact-section', label: '10 // Engineering Contact' },
 ];
 
 export default function App() {
@@ -39,7 +44,7 @@ export default function App() {
   const [teleportDestination, setTeleportDestination] = useState<string>('');
   const [currentView, setCurrentView] = useState<CurrentView>('landing');
   const [activeSection, setActiveSection] = useState('hero-section');
-  const [isLightMode, setIsLightMode] = useState(false);
+  const isLightMode = false;
   const [currentDomain, setCurrentDomain] = useState<string | null>(null);
   const [lastScannedTime, setLastScannedTime] = useState<Date | null>(null);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
@@ -49,7 +54,6 @@ export default function App() {
   const [isQuickNavOpen, setIsQuickNavOpen] = useState(false);
 
   const [showNavbar, setShowNavbar] = useState(true);
-  const [showThemeToggle, setShowThemeToggle] = useState(true);
   const [showQuickNav, setShowQuickNav] = useState(true);
 
   const lenisRef = useRef<Lenis | null>(null);
@@ -63,18 +67,23 @@ export default function App() {
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
+  // Pre-initialize Paddle v2 SDK
+  useEffect(() => {
+    initPaddle();
+  }, []);
+
   // Initialize Lenis smooth scroll
   useEffect(() => {
-    if (reducedMotion) return;
-
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: isTouch ? 0.9 : 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
+      wheelMultiplier: 0.95,
+      touchMultiplier: 1.0,
+      autoResize: true,
     });
 
     lenisRef.current = lenis;
@@ -90,7 +99,7 @@ export default function App() {
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [reducedMotion]);
+  }, []);
 
   // Page boot sequence
   useEffect(() => {
@@ -109,10 +118,8 @@ export default function App() {
 
       if (scrollY < 50) {
         setShowNavbar(true);
-        setShowThemeToggle(true);
       } else {
         setShowNavbar(true);
-        setShowThemeToggle(true);
       }
 
       if (scrollY + windowHeight >= documentHeight - 100) {
@@ -180,7 +187,7 @@ export default function App() {
     lenisRef.current?.start();
 
     if (target === 'pricing') {
-      triggerTeleportTransition('One-Time Pricing', () => {
+      triggerTeleportTransition('Fleet Engineering Fee', () => {
         setCurrentView('pricing');
         window.scrollTo({ top: 0, behavior: 'instant' });
       });
@@ -226,15 +233,14 @@ export default function App() {
   const SECTION_TITLES: Record<string, string> = {
     'hero-section': 'Overview',
     'domain-checker-section': 'Domain Audit',
-    'financial-leakage': 'Revenue Impact',
-    'inbox-comparison': 'Inbox Simulation',
-    'protocol-feed': 'Protocol Stream',
-    'three-cards-section': 'Deliverables',
+    'cryptographic-baseline': 'Cryptographic Baseline',
+    'how-it-works': 'How It Works',
+    'invoice-settle-timeline': 'Post-Payment SLA',
+    'comparison-section': 'Architectural Benchmark',
+    'prerequisites-section': 'Pre-Order Checklist',
+    'fleet-pricing-section': 'Fleet Engineering Fee',
     'faq-section': 'Architecture FAQ',
     'contact-section': 'Engineering Contact',
-    'financial-leakage-section': 'Revenue Impact',
-    'inbox-comparison-section': 'Inbox Simulation',
-    'protocol-feed-section': 'Protocol Stream',
   };
 
   const handleSelectSection = (sectionId: string) => {
@@ -265,42 +271,21 @@ export default function App() {
     });
   };
 
-  const handleToggleTheme = () => {
-    setIsLightMode(!isLightMode);
-    document.documentElement.classList.toggle('light', !isLightMode);
-    document.documentElement.classList.toggle('dark', isLightMode);
-  };
-
   return (
-    <div
-      className={`min-h-screen transition-colors duration-300 ${isLightMode
-        ? 'bg-[#F4F4F2] text-[#0A0A0C] light'
-        : (currentView === 'landing' || currentView === 'pricing' || currentView === 'terms' || currentView === 'privacy' || currentView === 'refunds')
-          ? 'bg-[#0f0d13] rc-page-grain-0f0d13 text-[#F4F4F2] dark'
-          : 'bg-[#0f0d13] text-[#F4F4F2] dark'
-        }`}
-    >
-      {/* Custom Refractive Cursor. Hidden for now */}
-      {/* <CustomCursor /> */}
+    <div className="min-h-screen bg-[#08080a] rc-page-grain-08080a text-[#F4F4F2] dark select-none">
+      {/* Modern Black Cursor with White Outline & Tactile Click Confirmation */}
+      <CustomCursor />
 
-      {/* Teleport Black Grainy Fade Overlay with Destination Indicator */}
+      {/* Teleport Grainy Fade Overlay with Destination Indicator */}
       <TeleportOverlay phase={phase} destination={teleportDestination} reducedMotion={reducedMotion} />
 
       {/* Top-Left Dynamic Collapsible Navbar */}
       <Navbar
         currentView={currentView}
         onNavigate={handleNavigate}
-        isLightMode={isLightMode}
+        isLightMode={false}
         isHidden={!showNavbar || isQuickNavOpen}
         isQuickNavOpen={isQuickNavOpen}
-      />
-
-      {/* Top-Right Fixed Theme Toggle */}
-      <CornerElements
-        isLightMode={isLightMode}
-        onToggleTheme={handleToggleTheme}
-        isQuickNavOpen={isQuickNavOpen}
-        showThemeToggle={showThemeToggle}
       />
 
       {/* Compressed Bottom-Left Proximity Section Quick-Nav with Full Backdrop Blur & Teleport */}
@@ -315,6 +300,12 @@ export default function App() {
         />
       )}
 
+      {/* Top Screen Blur (Progressive optical dissipation feathering at top edge) */}
+      <TopScreenBlur isLightMode={isLightMode} height="h-20 sm:h-24 md:h-28" />
+
+      {/* Bottom Screen Blur (Clean, shorter, high-performance progressive optical feathering) */}
+      <BottomScreenBlur isLightMode={isLightMode} height="h-20 sm:h-24 md:h-28" />
+
       {/* Views */}
       {currentView === 'landing' ? (
         <main className="relative w-full overflow-x-clip">
@@ -325,7 +316,10 @@ export default function App() {
               const el = document.getElementById('domain-checker-section');
               el?.scrollIntoView({ behavior: 'smooth' });
             }}
-            onExploreClick={() => handleNavigate('pricing')}
+            onExploreClick={() => {
+              const el = document.getElementById('fleet-pricing-section');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
           />
 
           {/* 2. Standalone Domain Checker Section */}
@@ -342,29 +336,31 @@ export default function App() {
             isLightMode={isLightMode}
           />
 
-          {/* 4. Real-World Gmail Inbox Simulation (Before / After) */}
-          <InboxComparison
-            currentDomain={currentDomain || undefined}
+          {/* 3. Live Cryptographic Baseline Section */}
+          <CryptographicBaseline isLightMode={isLightMode} />
+
+          {/* 4. How It Works Section */}
+          <HowItWorks isLightMode={isLightMode} />
+
+          {/* 5. What Happens The Second You Settle The Invoice Section */}
+          <PostInvoiceTimeline isLightMode={isLightMode} />
+
+          {/* 6. Comparison Section (Direct Dedicated vs Automated Reseller Pools) */}
+          <ArchitectureComparison isLightMode={isLightMode} />
+
+          {/* 7. Have These Ready Before Ordering Section */}
+          <PreOrderChecklist isLightMode={isLightMode} />
+
+          {/* 8. Fleet Engineering Fee Configurator Section */}
+          <FleetPricing
             isLightMode={isLightMode}
-          />
-
-          {/* 5. Cloudflare DNS Zone Mockup Demo Tab (Hidden per request, files kept intact) */}
-          {/* <DeliverabilitySimulator isLightMode={isLightMode} /> */}
-
-          {/* 5. Live Protocol Enforcement Feed (Moving Vertical Cards Stream) */}
-          <LiveProtocolFeed isLightMode={isLightMode} />
-
-          {/* 6. Three Structured Deliverables Cards */}
-          <ThreeCards
-            onSelectTier={() => handleNavigate('pricing')}
             onOpenSampleModal={() => setIsSampleModalOpen(true)}
-            isLightMode={isLightMode}
           />
 
-          {/* 7. Technical Architecture & Questions Answered FAQ */}
+          {/* 9. Technical Architecture & Questions Answered FAQ */}
           <FaqSection isLightMode={isLightMode} />
 
-          {/* 8. Direct Technical Contact Block */}
+          {/* 10. Direct Technical Contact Block & Footer */}
           <FooterContact
             isLightMode={isLightMode}
             onNavigateToPricing={() => handleNavigate('pricing')}

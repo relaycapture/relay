@@ -203,7 +203,7 @@ export function LiveProtocolFeed({
                   <span className="text-neutral-400 truncate max-w-[150px]">
                     {event.rfcOrPolicy}
                   </span>
-                  <div className="flex items-center gap-1 font-semibold text-emerald-500 text-[10px]">
+                  <div className="flex items-center gap-1 font-semibold text-white text-[10px]">
                     <CheckCircle2 className="w-3 h-3" />
                     <span>ENFORCED</span>
                   </div>
@@ -228,7 +228,7 @@ export function LiveProtocolFeed({
           >
             <div className="flex items-center justify-between border-b pb-3 border-black/10 dark:border-white/10">
               <div className="flex items-center gap-2 font-mono text-xs text-neutral-400 uppercase">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <ShieldCheck className="w-4 h-4 text-white" />
                 <span>{selectedEvent.authority}</span>
               </div>
               <button
@@ -249,7 +249,7 @@ export function LiveProtocolFeed({
 
             <div className="p-3.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 space-y-1 font-mono text-xs">
               <div className="text-neutral-400 uppercase text-[10px]">Mandated Specification:</div>
-              <div className="text-emerald-500 font-semibold text-xs">{selectedEvent.rfcOrPolicy}</div>
+              <div className="text-white font-semibold text-xs">{selectedEvent.rfcOrPolicy}</div>
             </div>
 
             <button

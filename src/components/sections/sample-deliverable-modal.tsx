@@ -206,19 +206,19 @@ export function SampleDeliverableModal({ isOpen, onClose, isLightMode }: SampleD
                     <div>
                       <strong>SPF:</strong> v=spf1 include:_spf.google.com ~all
                     </div>
-                    <span className="text-amber-700 font-bold">WARNING (Softfail)</span>
+                    <span className="text-neutral-700 font-bold">WARNING (Softfail)</span>
                   </div>
                   <div className="p-2.5 rounded bg-neutral-100 flex items-center justify-between">
                     <div>
                       <strong>DKIM:</strong> selector1 (2048-bit) + s1 (1024-bit)
                     </div>
-                    <span className="text-amber-700 font-bold">LEGACY KEY</span>
+                    <span className="text-neutral-700 font-bold">LEGACY KEY</span>
                   </div>
                   <div className="p-2.5 rounded bg-neutral-100 flex items-center justify-between">
                     <div>
                       <strong>DMARC:</strong> v=DMARC1; p=quarantine; pct=100
                     </div>
-                    <span className="text-emerald-700 font-bold">ENFORCING</span>
+                    <span className="text-black font-bold">ENFORCING</span>
                   </div>
                 </div>
               </div>

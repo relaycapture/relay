@@ -1,16 +1,15 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Lock,
-  ArrowRight,
-} from 'lucide-react';
+import { Lock, ArrowRight } from 'lucide-react';
 import { HeroSection } from './sections/hero-section';
 import { DomainCheckerSection } from './sections/domain-checker-section';
-import { FinancialLeakage } from './sections/financial-leakage';
-import { InboxComparison } from './sections/inbox-comparison';
-import { LiveProtocolFeed } from './sections/live-protocol-feed';
-import { ThreeCards } from './sections/three-cards';
+import { CryptographicBaseline } from './sections/cryptographic-baseline';
+import { HowItWorks } from './sections/how-it-works';
+import { PostInvoiceTimeline } from './sections/post-invoice-timeline';
+import { ArchitectureComparison } from './sections/architecture-comparison';
+import { PreOrderChecklist } from './sections/pre-order-checklist';
+import { FleetPricing } from './sections/fleet-pricing';
 import { FaqSection } from './sections/faq-section';
 import { FooterContact } from './sections/footer-contact';
 
@@ -178,11 +177,9 @@ export function QuickNav({
     e.preventDefault();
     e.stopPropagation();
     if (e.deltaY > 15) {
-      // scroll down
       const nextIdx = Math.min(sections.length - 1, currentPreviewIndex + 1);
       setHoveredSectionId(sections[nextIdx].id);
     } else if (e.deltaY < -15) {
-      // scroll up
       const prevIdx = Math.max(0, currentPreviewIndex - 1);
       setHoveredSectionId(sections[prevIdx].id);
     }
@@ -194,15 +191,13 @@ export function QuickNav({
 
   return (
     <>
-      {/* 
-        1. Full Website Grainy Blur Backdrop
-        Layered between website content and the floating HUD with hardware acceleration
-      */}
+      {/* 1. Full Website Grainy Blur Backdrop */}
       <div
         id="quick-nav-grainy-backdrop"
         aria-hidden="true"
-        className={`fixed inset-0 z-[38] pointer-events-none transition-all duration-350 ease-out ${isNear ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
+        className={`fixed inset-0 z-[38] pointer-events-none transition-all duration-350 ease-out ${
+          isNear ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
         style={{
           backdropFilter: isNear ? 'blur(10px) saturate(120%)' : 'blur(0px)',
           WebkitBackdropFilter: isNear ? 'blur(10px) saturate(120%)' : 'blur(0px)',
@@ -224,18 +219,16 @@ export function QuickNav({
         />
       </div>
 
-      {/* 
-        2. LEFT SIDE: Quick-Nav List (No outer box / border / background container)
-        Text 01 to 09 is larger, tight vertical rhythm, floating directly on screen.
-      */}
+      {/* 2. LEFT SIDE: Quick-Nav List */}
       <div
         ref={leftNavRef}
         id="section-quick-nav-left"
         onMouseEnter={() => setIsNear(true)}
         onWheel={handleWheel}
         aria-label="Interactive Section Quick Navigation"
-        className={`hidden md:flex fixed left-8 bottom-8 z-[45] flex-col select-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${isVisible ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-6 pointer-events-none'
-          }`}
+        className={`hidden md:flex fixed left-8 bottom-8 z-[45] flex-col select-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${
+          isVisible ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-6 pointer-events-none'
+        }`}
         style={{ transform: 'translateZ(0)' }}
       >
         {/* IDLE STATE: Compressed tick lines in bottom left */}
@@ -275,11 +268,11 @@ export function QuickNav({
           </nav>
         )}
 
-        {/* EXPANDED HOVER STATE: Bold editorial typography 01 to 09, tight spacing, NO outer box */}
+        {/* EXPANDED HOVER STATE: Bold editorial typography 01 to 10 */}
         {isNear && (
           <div className="flex flex-col gap-1 animate-fade-in p-2">
-            <div className="mb-2 flex items-center gap-2 text-xs font-mono tracking-widest text-emerald-500 font-bold uppercase">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="mb-2 flex items-center gap-2 text-xs font-mono tracking-widest text-white font-bold uppercase">
+              <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.8)] animate-pulse" />
               <span>NAVIGATION / JUMP</span>
             </div>
 
@@ -293,10 +286,10 @@ export function QuickNav({
                   id={`quick-nav-btn-${section.id}`}
                   onClick={() => handleSelect(section.id)}
                   onMouseEnter={() => setHoveredSectionId(section.id)}
-                  className={`group flex items-center gap-3 py-1.5 text-left bg-transparent border-0 outline-none cursor-pointer transition-all duration-200 ${isSelected ? 'translate-x-2' : 'hover:translate-x-1'
-                    }`}
+                  className={`group flex items-center gap-3 py-1.5 text-left bg-transparent border-0 outline-none cursor-pointer transition-all duration-200 ${
+                    isSelected ? 'translate-x-2' : 'hover:translate-x-1'
+                  }`}
                 >
-                  {/* Floating tick indicator */}
                   <div
                     className="h-[2px] rounded-full transition-all duration-300 flex-shrink-0"
                     style={{
@@ -311,30 +304,31 @@ export function QuickNav({
                     }}
                   />
 
-                  {/* Section Label: Bigger font, high contrast, subtle scale */}
                   <div className="flex items-baseline gap-2">
                     <span
-                      className={`font-mono text-base md:text-lg font-bold transition-all duration-200 ${isSelected
-                        ? isLightMode
-                          ? 'text-black scale-105'
-                          : 'text-white scale-105'
-                        : isLightMode
-                          ? 'text-neutral-500 group-hover:text-neutral-800'
-                          : 'text-neutral-400 group-hover:text-neutral-200'
-                        }`}
+                      className={`font-mono text-base md:text-lg font-bold transition-all duration-200 ${
+                        isSelected
+                          ? isLightMode
+                            ? 'text-black scale-105'
+                            : 'text-white scale-105'
+                          : isLightMode
+                            ? 'text-neutral-500 group-hover:text-neutral-800'
+                            : 'text-neutral-400 group-hover:text-neutral-200'
+                      }`}
                     >
                       {numStr}
                     </span>
 
                     <span
-                      className={`font-mono text-sm md:text-base tracking-tight transition-all duration-200 ${isSelected
-                        ? isLightMode
-                          ? 'text-black font-bold scale-[1.03]'
-                          : 'text-white font-bold scale-[1.03]'
-                        : isLightMode
-                          ? 'text-neutral-600 group-hover:text-neutral-900'
-                          : 'text-neutral-400 group-hover:text-neutral-200'
-                        }`}
+                      className={`font-mono text-sm md:text-base tracking-tight transition-all duration-200 ${
+                        isSelected
+                          ? isLightMode
+                            ? 'text-black font-bold scale-[1.03]'
+                            : 'text-white font-bold scale-[1.03]'
+                          : isLightMode
+                            ? 'text-neutral-600 group-hover:text-neutral-900'
+                            : 'text-neutral-400 group-hover:text-neutral-200'
+                      }`}
                     >
                       // {section.label.replace(/^\d+\s*\/\/\s*/, '')}
                     </span>
@@ -342,8 +336,9 @@ export function QuickNav({
 
                   {isSelected && (
                     <ArrowRight
-                      className={`w-4 h-4 ml-1 flex-shrink-0 animate-pulse ${isLightMode ? 'text-black' : 'text-white'
-                        }`}
+                      className={`w-4 h-4 ml-1 flex-shrink-0 animate-pulse ${
+                        isLightMode ? 'text-black' : 'text-white'
+                      }`}
                     />
                   )}
                 </button>
@@ -357,12 +352,7 @@ export function QuickNav({
         )}
       </div>
 
-      {/* 
-        3. RIGHT SIDE: Floating Desktop-Ratio Viewport Carousel
-        - Lightweight lazy mounting for active & adjacent previews to maintain 60fps
-        - Center active card: sharp, highlighted with emerald accent
-        - Smooth vertical sliding scroll transition with hardware acceleration
-      */}
+      {/* 3. RIGHT SIDE: Floating Desktop-Ratio Viewport Carousel */}
       {isNear && (
         <div
           ref={carouselContainerRef}
@@ -372,7 +362,6 @@ export function QuickNav({
           style={{ transform: 'translateZ(0)', willChange: 'transform' }}
         >
           <div className="w-full h-full relative overflow-hidden">
-            {/* Sliding vertical stack strictly calculated from vertical center */}
             <div
               className="w-full absolute left-0 right-0 transition-transform duration-350 ease-out flex flex-col items-center"
               style={{
@@ -391,19 +380,18 @@ export function QuickNav({
                     key={section.id}
                     onClick={() => handleSelect(section.id)}
                     onMouseEnter={() => setHoveredSectionId(section.id)}
-                    className={`w-full rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden relative flex flex-col ${isCenter
-                      ? 'scale-100 shadow-2xl z-20 ring-1 ring-emerald-500/40'
-                      : isAdjacent
-                        ? 'scale-[0.94] shadow-lg z-10 hover:scale-[0.96]'
-                        : 'scale-[0.88] z-0'
-                      }`}
+                    className={`w-full rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden relative flex flex-col ${
+                      isCenter
+                        ? 'scale-100 shadow-2xl z-20 ring-1 ring-white/30'
+                        : isAdjacent
+                          ? 'scale-[0.94] shadow-lg z-10 hover:scale-[0.96]'
+                          : 'scale-[0.88] z-0'
+                    }`}
                     style={{
                       height: `${CARD_HEIGHT}px`,
                       marginBottom: `${CARD_GAP}px`,
-                      opacity: 1, // 100% OPACITY FOR ALL PREVIEWS
-                      backgroundColor: isLightMode
-                        ? '#ffffff'
-                        : '#0d0d12',
+                      opacity: 1,
+                      backgroundColor: isLightMode ? '#ffffff' : '#0d0d12',
                       borderColor: isCenter
                         ? isLightMode
                           ? 'rgba(0, 0, 0, 0.25)'
@@ -423,33 +411,35 @@ export function QuickNav({
                   >
                     {/* Desktop Browser Top Frame Window Bar */}
                     <div
-                      className={`h-7 px-3.5 border-b flex items-center justify-between font-mono text-[10px] select-none z-30 flex-shrink-0 ${isLightMode
-                        ? 'bg-neutral-100 border-black/10 text-neutral-600'
-                        : 'bg-black/80 border-white/10 text-neutral-400'
-                        }`}
+                      className={`h-7 px-3.5 border-b flex items-center justify-between font-mono text-[10px] select-none z-30 flex-shrink-0 ${
+                        isLightMode
+                          ? 'bg-neutral-100 border-black/10 text-neutral-600'
+                          : 'bg-black/80 border-white/10 text-neutral-400'
+                      }`}
                     >
                       <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-white/20 inline-block" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-white/30 inline-block" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-white/40 inline-block" />
                       </div>
 
                       <div className="flex items-center gap-1.5 opacity-90">
-                        <Lock className="w-2.5 h-2.5 text-emerald-500" />
+                        <Lock className="w-2.5 h-2.5 text-white" />
                         <span className="truncate max-w-[260px] font-mono text-[10px] text-neutral-400">
                           relaycapture.com/#{section.id}
                         </span>
                       </div>
 
                       <span
-                        className={`text-[9px] font-bold uppercase font-mono ${isCenter ? 'text-emerald-500' : 'text-neutral-400'
-                          }`}
+                        className={`text-[9px] font-bold uppercase font-mono ${
+                          isCenter ? 'text-white' : 'text-neutral-400'
+                        }`}
                       >
                         {String(idx + 1).padStart(2, '0')} // LIVE STREAM
                       </span>
                     </div>
 
-                    {/* Desktop Live Section Screen Body - Scaled with Lazy Mounting */}
+                    {/* Desktop Live Section Screen Body */}
                     <div className="flex-1 overflow-hidden relative w-full h-full bg-inherit">
                       {shouldRenderLive ? (
                         <ScaledLiveSectionRenderer
@@ -501,10 +491,8 @@ function ScaledLiveSectionRenderer({
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
       if (width > 0 && height > 0) {
-        // Target standard desktop canvas width of 1240px
         const currentScale = width / 1240;
         setScale(currentScale);
-        // Calculate exact unscaled height needed so unscaledHeight * currentScale == container height
         setUnscaledHeight(Math.ceil(height / currentScale));
       }
     };
@@ -533,33 +521,20 @@ function ScaledLiveSectionRenderer({
             isLivePreview={true}
           />
         );
-      case 'financial-leakage':
-        return (
-          <FinancialLeakage
-            scanResult={null}
-            isLightMode={!!isLightMode}
-            isLivePreview={true}
-          />
-        );
-      case 'inbox-comparison':
-        return (
-          <InboxComparison
-            isLightMode={!!isLightMode}
-            isLivePreview={true}
-          />
-        );
-      case 'protocol-feed':
-        return (
-          <LiveProtocolFeed
-            isLightMode={!!isLightMode}
-            isLivePreview={true}
-          />
-        );
+      case 'cryptographic-baseline':
+        return <CryptographicBaseline isLightMode={!!isLightMode} isLivePreview={true} />;
+      case 'how-it-works':
+        return <HowItWorks isLightMode={!!isLightMode} isLivePreview={true} />;
+      case 'invoice-settle-timeline':
+        return <PostInvoiceTimeline isLightMode={!!isLightMode} isLivePreview={true} />;
+      case 'comparison-section':
+        return <ArchitectureComparison isLightMode={!!isLightMode} isLivePreview={true} />;
+      case 'prerequisites-section':
+        return <PreOrderChecklist isLightMode={!!isLightMode} isLivePreview={true} />;
+      case 'fleet-pricing-section':
       case 'three-cards-section':
         return (
-          <ThreeCards
-            onSelectTier={() => {}}
-            onOpenSampleModal={() => {}}
+          <FleetPricing
             isLightMode={!!isLightMode}
             isLivePreview={true}
           />

@@ -54,7 +54,7 @@ export function TeleportOverlay({
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse 75% 60% at 50% 48%, rgba(255, 255, 255, 0.14) 0%, rgba(210, 220, 255, 0.05) 42%, rgba(0, 0, 0, 0) 75%)',
+            'radial-gradient(ellipse 75% 60% at 50% 48%, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 42%, rgba(0, 0, 0, 0) 75%)',
           opacity: isVisible ? 1 : 0,
           transform: isVisible ? 'scale(1)' : 'scale(0.9)',
           transition: `opacity ${transitionDuration} ${ease}, transform ${transitionDuration} ${ease}`,
@@ -66,7 +66,7 @@ export function TeleportOverlay({
         className="absolute w-[540px] h-[320px] rounded-full pointer-events-none blur-[100px]"
         style={{
           background:
-            'radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(160, 180, 240, 0.04) 50%, transparent 80%)',
+            'radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 50%, transparent 80%)',
           opacity: isVisible ? 1 : 0,
           transform: isVisible ? 'scale(1)' : 'scale(0.85)',
           transition: `opacity ${transitionDuration} ${ease}, transform ${transitionDuration} ${ease}`,

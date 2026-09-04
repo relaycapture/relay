@@ -1,34 +1,39 @@
 'use client'
 
-import { Search, ArrowUpRight } from 'lucide-react';
-import { openPaddleCheckout, PADDLE_CONFIG } from '../../utils/paddle';
+import React from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { SectionWatermark } from '../section-watermark';
 
 interface HeroSectionProps {
-  isLightMode: boolean;
+  isLightMode?: boolean;
+  isLivePreview?: boolean;
   onScanClick?: () => void;
   onExploreClick?: () => void;
-  isLivePreview?: boolean;
 }
 
 export function HeroSection({
-  isLightMode,
+  isLightMode = false,
+  isLivePreview = false,
   onScanClick,
   onExploreClick,
-  isLivePreview = false,
 }: HeroSectionProps) {
-  const handleDeployBuildout = () => {
+  const handleConfigureFleet = () => {
     if (onExploreClick) {
       onExploreClick();
     } else {
-      openPaddleCheckout(PADDLE_CONFIG.prices.turnkey, 'Turnkey Remediation ($547)');
+      const el = document.getElementById('fleet-pricing-section');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
-  const handleCheckDomain = () => {
+  const handleViewSpecs = () => {
     if (onScanClick) {
       onScanClick();
     } else {
-      const el = document.getElementById('domain-checker-section');
+      const el = document.getElementById('cryptographic-baseline') || document.getElementById('domain-checker-section');
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
       }
@@ -38,86 +43,111 @@ export function HeroSection({
   return (
     <section
       id="hero-section"
-      className={`relative w-full min-h-[85vh] sm:min-h-[90vh] flex flex-col justify-center items-center text-center overflow-hidden z-10 select-none transition-colors duration-300 ${
-        isLivePreview
-          ? 'py-6 px-4 sm:px-8'
-          : 'pt-28 sm:pt-32 md:pt-36 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-8 md:px-12 lg:px-24'
-      } bg-transparent`}
+      className={`relative w-full min-h-screen h-[100dvh] min-h-[100dvh] flex flex-col justify-center items-start overflow-x-clip z-10 select-none transition-colors duration-300 ${isLivePreview
+        ? 'py-6 px-4 sm:px-6'
+        : 'py-20 sm:py-24 md:py-28 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-14'
+        } bg-transparent`}
     >
-      {/* Subtle Ambient Radial Lighting Gradient */}
+      {/* Center Radial Ambient Spotlight for Hero */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
         style={{
           background: isLightMode
-            ? 'radial-gradient(circle at 50% 30%, rgba(0, 0, 0, 0.02) 0%, transparent 70%)'
-            : 'radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.025) 0%, transparent 70%)',
+            ? 'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.035) 0%, transparent 70%)'
+            : 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.015) 35%, transparent 70%)',
         }}
+        aria-hidden="true"
       />
 
-      {/* Hero Content Overlay */}
-      <div className="relative z-10 max-w-5xl mx-auto w-full flex flex-col items-center justify-center text-center my-auto">
-        {/* Subtle Clean Eyebrow / Tagline */}
-        <p
-          className={`font-mono text-[9.5px] sm:text-[11px] md:text-xs tracking-widest uppercase mb-5 sm:mb-7 select-none transition-colors ${
-            isLightMode ? 'text-neutral-500' : 'text-neutral-400'
-          }`}
-        >
-          PUBLIC DNS ONLY · NO CREDENTIALS · NO MAILBOX ACCESS
-        </p>
+      {/* Monumental Background Watermark */}
+      <SectionWatermark
+        text="RELAY"
+        mobileText="RELAY"
+        top="-30px"
+        left="-30px"
+        size="text-[28rem]"
+        mobileTop="37px"
+        mobileLeft="-10px"
+        mobileSize="text-[10.2rem]"
+        opacity="opacity-[0.02]"
+        mobileOpacity="opacity-[0.025]"
+      />
 
-        {/* Fact-Based Modern Headline: STRICTLY TWO BIG VISIBLE LINES ON ANY SCREEN SIZE */}
-        <h1
-          className={`font-sans font-semibold tracking-[-0.035em] leading-[1.12] mb-4 sm:mb-6 text-center text-[clamp(1.65rem,5.2vw,3.75rem)] ${
-            isLightMode ? 'text-[#1d1d1f]' : 'text-white'
-          }`}
-        >
-          <span className="block whitespace-nowrap">Is your outbound email</span>
-          <span className={`block whitespace-nowrap ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
-            actually authenticated?
-          </span>
-        </h1>
+      <div className="max-w-7xl mx-auto w-full relative z-20 my-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Headline, Paragraph, Machined CTAs */}
+          <div className="lg:col-span-12 xl:col-span-10 text-left">
+            {/* Subtle Clean Eyebrow / Tagline */}
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className={`font-mono text-[9.5px] sm:text-[11px] md:text-xs tracking-widest uppercase mb-7 sm:mb-7 select-none transition-colors ${isLightMode ? 'text-neutral-500' : 'text-neutral-400'
+                }`}
+            >
+              ZERO CALLS · 48-HOUR SLA · SOVEREIGN ASSET OWNERSHIP
+            </motion.p>
 
-        {/* Subtitle Description (A bit smaller but readable) */}
-        <p
-          className={`text-xs sm:text-sm md:text-[15px] font-normal leading-relaxed max-w-lg mx-auto mb-7 sm:mb-9 text-center ${
-            isLightMode ? 'text-neutral-600' : 'text-neutral-400'
-          }`}
-        >
-          Check your configuration before mailbox providers do it for you.
-        </p>
+            {/* Fact-Based Modern Headline: Scoped to never bleed off screen while remaining two lines on desktop */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+              className={`font-sans font-medium tracking-[-0.04em] leading-[1.08] sm:leading-[0.98] mb-6 sm:mb-6 text-[1.65rem] min-[380px]:text-[1.85rem] min-[440px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[4.25rem] ${isLightMode ? 'text-[#1d1d1f]' : 'text-white'
+                }`}
+            >
+              <span className="block sm:whitespace-nowrap">Dedicated Outbound Architecture.</span>
+              <span className={`block sm:whitespace-nowrap mt-1 sm:mt-0 ${isLightMode ? 'text-neutral-700' : 'text-neutral-300'}`}>
+                Built By Hand. Owned By You.
+              </span>
+            </motion.h1>
 
-        {/* Two Centralized Action CTAs: 1. Deploy Buildout  2. Check Domain */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none">
-          {/* 1. Primary CTA: Deploy Buildout */}
-          <button
-            id="hero-deploy-buildout-btn"
-            data-cursor="grow"
-            onClick={handleDeployBuildout}
-            className={`rc-grain-surface w-full sm:w-auto px-6 sm:px-7 py-3 sm:py-3.5 rounded-full font-sans font-medium text-xs sm:text-sm transition-all duration-200 backdrop-blur-md border shadow-lg flex items-center justify-center gap-2 min-h-[44px] ${
-              isLightMode
-                ? 'bg-[#1d1d1f]/90 hover:bg-black text-white border-black/20 shadow-black/10'
-                : 'bg-white/90 hover:bg-white text-[#0a0a0c] border-white/30 shadow-white/5'
-            }`}
-          >
-            <span>Deploy Buildout</span>
-            <ArrowUpRight className="w-4 h-4" />
-          </button>
+            {/* Subtitle Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.18 }}
+              className={`text-xs sm:text-sm md:text-[15px] font-normal leading-[1.7] sm:leading-relaxed max-w-xl mb-8 sm:mb-9 ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'
+                }`}
+            >
+              We engineer enterprise-grade secondary sending infrastructure. Delivered to your sequencer in 48 hours. No client contact. No middleman markups.
+            </motion.p>
 
-          {/* 2. Secondary Button: Check Domain */}
-          <button
-            id="hero-check-domain-btn"
-            data-cursor="grow"
-            onClick={handleCheckDomain}
-            className={`rc-grain-surface w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 rounded-full font-sans font-medium text-xs sm:text-sm transition-all duration-200 backdrop-blur-md flex items-center justify-center gap-1.5 border shadow-sm min-h-[44px] ${
-              isLightMode
-                ? 'bg-black/[0.04] hover:bg-black/[0.08] text-neutral-800 border-black/10'
-                : 'bg-white/[0.05] hover:bg-white/[0.1] text-neutral-200 border-white/10'
-            }`}
-          >
-            <Search className="w-3.5 h-3.5 opacity-60" />
-            <span>Check Domain</span>
-          </button>
+            {/* Two Action CTAs: Next to each other on phone view as well */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.28 }}
+              className="flex flex-row items-center gap-2.5 sm:gap-4 pt-2 w-full max-w-lg"
+            >
+              {/* 1. Primary CTA: Configure Fleet */}
+              <button
+                id="hero-configure-fleet-btn"
+                data-cursor="grow"
+                onClick={handleConfigureFleet}
+                className={`flex-1 sm:flex-initial px-3.5 sm:px-7 py-3 sm:py-3.5 rounded-[2px] font-sans font-medium text-xs sm:text-sm transition-all duration-150 border flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap ${isLightMode
+                  ? 'bg-neutral-900 hover:bg-black text-white border-black/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_4px_12px_rgba(0,0,0,0.15)]'
+                  : 'bg-neutral-100 hover:bg-white text-neutral-900 border-white/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_6px_20px_rgba(0,0,0,0.6)]'
+                  }`}
+              >
+                <span>Configure Fleet</span>
+                <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
+              </button>
+
+              {/* 2. Secondary CTA: View Technical Specs */}
+              <button
+                id="hero-view-specs-btn"
+                data-cursor="grow"
+                onClick={handleViewSpecs}
+                className={`flex-1 sm:flex-initial px-3 sm:px-7 py-3 sm:py-3.5 rounded-[2px] font-sans font-medium text-xs sm:text-sm transition-all duration-150 border backdrop-blur-md flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap ${isLightMode
+                  ? 'bg-transparent hover:bg-black/[0.04] text-neutral-800 border-black/15 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8)]'
+                  : 'bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 border-white/[0.12] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)]'
+                  }`}
+              >
+                <span>View Technical Specs</span>
+              </button>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
