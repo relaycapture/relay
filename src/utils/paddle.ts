@@ -7,7 +7,7 @@
  * The frontend never passes catalog price IDs or mutable quantities directly to Paddle.
  * All pricing, product IDs, and quantity calculations are authoritatively performed by /api/checkout.
  */
-const defaultToken = 'test_1f8686b5f0144f0c19f74bdef50';
+const defaultToken = 'live_df20b9edfa397b87a234a04e7df';
 const activeToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || defaultToken;
 
 export const PADDLE_CONFIG = {
