@@ -21,61 +21,65 @@ export function triggerPartyConfetti() {
   const zIndex = 999999;
 
   // Wave 1: Corner cannons shooting up towards center
-  // Bottom-left corner shooting up-right towards center (60 degrees)
+  // Bottom-left corner shooting up-right towards center (55 degrees, higher velocity to cross center)
   confetti({
-    particleCount: 45,
-    angle: 60,
-    spread: 55,
+    particleCount: 95,
+    angle: 55,
+    spread: 85,
     origin: { x: 0, y: 0.95 },
-    startVelocity: 55,
+    startVelocity: 85,
+    decay: 0.92,
     colors,
     zIndex,
-    ticks: 250,
-    gravity: 0.9,
+    ticks: 350,
+    gravity: 0.7,
     scalar: 1.0,
   });
 
-  // Bottom-right corner shooting up-left towards center (120 degrees)
+  // Bottom-right corner shooting up-left towards center (125 degrees, higher velocity to cross center)
   confetti({
-    particleCount: 45,
-    angle: 120,
-    spread: 55,
+    particleCount: 95,
+    angle: 125,
+    spread: 85,
     origin: { x: 1, y: 0.95 },
-    startVelocity: 55,
+    startVelocity: 85,
+    decay: 0.92,
     colors,
     zIndex,
-    ticks: 250,
-    gravity: 0.9,
+    ticks: 350,
+    gravity: 0.7,
     scalar: 1.0,
   });
 
-  // Wave 2: Subtle secondary puff (+150ms) for organic flutter
+  // Wave 2: Subtle secondary puff (+200ms) for organic flutter reaching center
   setTimeout(() => {
     confetti({
-      particleCount: 25,
-      angle: 60,
-      spread: 45,
+      particleCount: 45,
+      angle: 55,
+      spread: 75,
       origin: { x: 0.02, y: 0.98 },
-      startVelocity: 45,
+      startVelocity: 72,
+      decay: 0.92,
       colors,
       zIndex,
-      ticks: 200,
-      gravity: 0.95,
-      scalar: 0.9,
+      ticks: 300,
+      gravity: 0.75,
+      scalar: 0.7,
     });
 
     confetti({
-      particleCount: 25,
-      angle: 120,
-      spread: 45,
+      particleCount: 45,
+      angle: 125,
+      spread: 75,
       origin: { x: 0.98, y: 0.98 },
-      startVelocity: 45,
+      startVelocity: 72,
+      decay: 0.92,
       colors,
       zIndex,
-      ticks: 200,
-      gravity: 0.95,
-      scalar: 0.9,
+      ticks: 300,
+      gravity: 0.75,
+      scalar: 0.7,
     });
-  }, 150);
+  }, 200);
 }
 
