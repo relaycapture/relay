@@ -19,6 +19,52 @@ export const PADDLE_CONFIG = {
   },
 };
 
+let lockedPriceId: string | null = null;
+let lockedQuantity: number = 1;
+let isRevertingQuantity = false;
+
+/**
+ * Handles Paddle checkout lifecycle events to strictly prevent users from
+ * tampering with or reducing the fleet domain quantity inside the Paddle overlay.
+ */
+function handlePaddleEvent(event: any) {
+  if (!event || !event.name) return;
+
+  if (
+    (event.name === 'checkout.items.updated' || event.name === 'checkout.updated') &&
+    lockedPriceId &&
+    lockedQuantity > 0 &&
+    !isRevertingQuantity
+  ) {
+    const items = event.data?.items;
+    if (Array.isArray(items) && items.length > 0) {
+      const currentItem = items[0];
+      const currentQuantity = currentItem?.quantity;
+      if (typeof currentQuantity === 'number' && currentQuantity !== lockedQuantity) {
+        isRevertingQuantity = true;
+        try {
+          const win = window as any;
+          if (win.Paddle && typeof win.Paddle.Checkout?.updateCheckout === 'function') {
+            win.Paddle.Checkout.updateCheckout({
+              items: [{ priceId: lockedPriceId, quantity: lockedQuantity }],
+            });
+          }
+        } catch (e) {
+          console.warn('Quantity lock revert notice:', e);
+        } finally {
+          setTimeout(() => {
+            isRevertingQuantity = false;
+          }, 350);
+        }
+      }
+    }
+  }
+
+  if (event.name === 'checkout.closed') {
+    lockedPriceId = null;
+  }
+}
+
 /**
  * Pre-initializes the Paddle v2 SDK on page load so overlay opens with zero latency.
  */
@@ -41,6 +87,7 @@ export function initPaddle() {
           }
           win.Paddle.Initialize({
             token: PADDLE_CONFIG.clientToken,
+            eventCallback: handlePaddleEvent,
           });
         }
       } catch (e) {
@@ -101,6 +148,9 @@ export function openPaddleCheckout(
     }
   };
 
+  lockedPriceId = effectivePriceId;
+  lockedQuantity = effectiveQuantity;
+
   if (win.Paddle && win.Paddle.Checkout) {
     triggerOpen();
   } else {
@@ -118,6 +168,7 @@ export function openPaddleCheckout(
             }
             win.Paddle.Initialize({
               token: PADDLE_CONFIG.clientToken,
+              eventCallback: handlePaddleEvent,
             });
           }
         } catch (e) {
