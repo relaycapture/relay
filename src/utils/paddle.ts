@@ -88,7 +88,7 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
           items: [
             {
               priceId: effectivePriceId,
-              quantity: clampedDomains,
+              quantity: 1,
             },
           ],
           customData: {
