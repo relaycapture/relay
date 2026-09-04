@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { MechanicalOdometer } from '../mechanical-odometer';
 import Silk from '../Silk';
 import { SectionWatermark } from '../section-watermark';
-import { openPaddleCheckout, PADDLE_CONFIG } from '../../utils/paddle';
+import { openServerPaddleCheckout } from '../../utils/paddle';
 
 interface FleetPricingProps {
   isLightMode?: boolean;
@@ -19,6 +19,7 @@ export function FleetPricing({
   isLivePreview = false,
 }: FleetPricingProps) {
   const [domainCount, setDomainCount] = useState<number>(10);
+  const [isMintingTransaction, setIsMintingTransaction] = useState(false);
 
   const inboxes = domainCount * 3;
   const engineeringFee = domainCount * 100;
@@ -26,13 +27,39 @@ export function FleetPricing({
   const maxEmails = inboxes * 40 * 30;
   const fillPercent = Math.min(100, Math.max(0, ((domainCount - 1) / 99) * 100));
 
-  const handleCheckout = () => {
-    openPaddleCheckout(
-      PADDLE_CONFIG.prices.turnkey,
-      `${domainCount}-Domain Fleet Deployment ($${engineeringFee.toLocaleString()})`,
-      { domainCount, inboxes, engineeringFee },
-      domainCount
-    );
+  const handleCheckout = async () => {
+    if (isMintingTransaction) return;
+    setIsMintingTransaction(true);
+
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domains: domainCount }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.transactionId) {
+        throw new Error(data.error || 'Failed to mint checkout transaction');
+      }
+
+      const win = window as any;
+      if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
+        win.Paddle.Checkout.open({
+          transactionId: data.transactionId,
+          settings: {
+            displayMode: 'overlay',
+            theme: 'dark',
+          },
+        });
+      } else {
+        await openServerPaddleCheckout(domainCount);
+      }
+    } catch (err: any) {
+      console.error('Checkout initialization failed:', err);
+    } finally {
+      setIsMintingTransaction(false);
+    }
   };
 
   const tickCount = 20;
@@ -274,13 +301,15 @@ export function FleetPricing({
               </div>
             </div>
 
-            {/* Machined Industrial Checkout Button */}
             <button
               id="btn-deploy-fleet-checkout"
               type="button"
               data-cursor="grow"
               onClick={handleCheckout}
-              className={`relative z-10 w-full py-4 sm:py-5 px-6 font-mono text-sm tracking-wide font-semibold transition-all duration-150 rounded-[2px] flex items-center justify-center gap-3 cursor-pointer select-none border ${isLightMode
+              disabled={isMintingTransaction}
+              className={`relative z-10 w-full py-4 sm:py-5 px-6 font-mono text-sm tracking-wide font-semibold transition-all duration-150 rounded-[2px] flex items-center justify-center gap-3 cursor-pointer select-none border ${
+                isMintingTransaction ? 'opacity-70 cursor-wait' : ''
+              } ${isLightMode
                 ? 'bg-black text-white hover:bg-neutral-800 border-black/30 shadow-[0_4px_16px_rgba(0,0,0,0.2)]'
                 : 'bg-white text-black hover:bg-neutral-200 border-white/60 shadow-[0_4px_24px_rgba(255,255,255,0.2),inset_0_1px_0_0_rgba(255,255,255,0.9)]'
                 }`}

@@ -353,15 +353,17 @@ export default function App() {
       {/* Teleport Grainy Fade Overlay with Destination Indicator */}
       <TeleportOverlay phase={phase} destination={teleportDestination} reducedMotion={reducedMotion} />
 
-      {/* Top-Left Dynamic Collapsible Navbar */}
-      <Navbar
-        currentView={currentView}
-        onNavigate={handleNavigate}
-        isLightMode={false}
-        isHidden={!showNavbar || isQuickNavOpen}
-        isQuickNavOpen={isQuickNavOpen}
-        activeSection={activeSection}
-      />
+      {/* Top-Left Dynamic Collapsible Navbar (Hidden on pricing, terms, privacy, and refund pages) */}
+      {currentView === 'landing' && (
+        <Navbar
+          currentView={currentView}
+          onNavigate={handleNavigate}
+          isLightMode={false}
+          isHidden={!showNavbar || isQuickNavOpen}
+          isQuickNavOpen={isQuickNavOpen}
+          activeSection={activeSection}
+        />
+      )}
 
       {/* Compressed Bottom-Left Proximity Section Quick-Nav with Full Backdrop Blur & Teleport */}
       {currentView === 'landing' && (

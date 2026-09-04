@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { openPaddleCheckout, PADDLE_CONFIG } from '../utils/paddle';
 
 interface NavbarProps {
   currentView: string;
@@ -39,10 +38,6 @@ export function Navbar({
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleDeployBuildout = () => {
-    openPaddleCheckout(PADDLE_CONFIG.prices.turnkey, 'Turnkey Remediation ($547)');
-  };
 
   const frostedGlassContainerStyle: React.CSSProperties = isLightMode
     ? {

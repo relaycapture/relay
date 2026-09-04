@@ -3,8 +3,9 @@
 /**
  * Paddle Checkout Configuration & Helper
  *
- * Price key: pri_01m0ad0sn09xvkymfy1t7588a8
- * Client key: live_df20b9edfa397b87a234a04e7df
+ * Implements server-side transaction minting architecture:
+ * The frontend never passes catalog price IDs or mutable quantities directly to Paddle.
+ * All pricing, product IDs, and quantity calculations are authoritatively performed by /api/checkout.
  */
 const defaultToken = 'test_1f8686b5f0144f0c19f74bdef50';
 const activeToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || defaultToken;
@@ -12,11 +13,6 @@ const activeToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || defaultToken;
 export const PADDLE_CONFIG = {
   clientToken: activeToken,
   environment: (process.env.NEXT_PUBLIC_PADDLE_ENV as 'sandbox' | 'production') || (activeToken.startsWith('test_') ? 'sandbox' : 'production'),
-  prices: {
-    selfServe: process.env.NEXT_PUBLIC_PADDLE_PRICE_SELF_SERVE || 'pri_01kzwg4sqpmgbd2rx264awn6ve',
-    turnkey: process.env.NEXT_PUBLIC_PADDLE_PRICE_TURNKEY || 'pri_01kzwg4sqpmgbd2rx264awn6ve',
-    managed: process.env.NEXT_PUBLIC_PADDLE_PRICE_MANAGED || 'pri_01kzwg4sqpmgbd2rx264awn6ve',
-  },
 };
 
 /**
@@ -52,83 +48,58 @@ export function initPaddle() {
 }
 
 /**
- * Opens a Paddle overlay checkout directly for the given price ID and quantity.
- * Charges $100 per domain / per notch in slider.
+ * Mints an immutable server-side Paddle transaction and opens the overlay exclusively by transactionId.
  */
-export function openPaddleCheckout(
-  priceId?: string,
-  planName?: string,
-  customData?: Record<string, any>,
-  quantity: number = 1
-) {
+export async function openServerPaddleCheckout(domains: number): Promise<void> {
   if (typeof window === 'undefined') return;
 
   const win = window as any;
-  const effectivePriceId = priceId || PADDLE_CONFIG.prices.turnkey;
-  const effectiveQuantity = Math.max(1, quantity || 1);
+  initPaddle();
 
+  // 1. Authoritative server-side transaction minting
+  const res = await fetch('/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ domains }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || `Server returned HTTP ${res.status}`);
+  }
+
+  const data = await res.json();
+  if (!data.transactionId) {
+    throw new Error('No transactionId returned from server transaction minting');
+  }
+
+  // 2. Open Paddle using the transaction ID exclusively
   const triggerOpen = () => {
-    try {
-      if (win.Paddle && typeof win.Paddle.Checkout?.open === 'function') {
-        win.Paddle.Checkout.open({
-          items: [{ priceId: effectivePriceId, quantity: effectiveQuantity }],
-          customData: {
-            ...customData,
-            quantity: effectiveQuantity,
-            domainCount: effectiveQuantity,
-            unitPrice: 100,
-            totalPrice: effectiveQuantity * 100,
-          },
-          settings: {
-            displayMode: 'overlay',
-            theme: 'dark',
-            locale: 'en',
-            successUrl: window.location.origin + '/?checkout=success',
-          },
-        });
-      } else {
-        throw new Error('Paddle.Checkout.open is not available');
-      }
-    } catch (err) {
-      console.warn('Paddle Checkout invocation note:', err);
-      alert(
-        '[Paddle Direct Checkout]' +
-        '\n\nPlan: ' + (planName || 'Fleet Deployment') +
-        '\nDomains: ' + effectiveQuantity + ' ($' + (effectiveQuantity * 100).toLocaleString() + ')' +
-        '\nPrice Key: ' + effectivePriceId +
-        '\nClient Token: ' + PADDLE_CONFIG.clientToken
-      );
+    if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
+      win.Paddle.Checkout.open({
+        transactionId: data.transactionId,
+        settings: {
+          displayMode: 'overlay',
+          theme: 'dark',
+        },
+      });
+    } else {
+      setTimeout(triggerOpen, 100);
     }
   };
 
-  if (win.Paddle && win.Paddle.Checkout) {
-    triggerOpen();
-  } else {
-    const existingScript = document.getElementById('paddle-v2-sdk');
-    if (!existingScript) {
-      const script = document.createElement('script');
-      script.id = 'paddle-v2-sdk';
-      script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
-      script.async = true;
-      script.onload = () => {
-        try {
-          if (win.Paddle) {
-            if (PADDLE_CONFIG.environment === 'sandbox') {
-              win.Paddle.Environment?.set('sandbox');
-            }
-            win.Paddle.Initialize({
-              token: PADDLE_CONFIG.clientToken,
-            });
-          }
-        } catch (e) {
-          console.warn('Paddle initialization notice:', e);
-        }
-        triggerOpen();
-      };
-      script.onerror = () => triggerOpen();
-      document.head.appendChild(script);
-    } else {
-      triggerOpen();
-    }
-  }
+  triggerOpen();
+}
+
+/**
+ * Compatibility alias for callers passing domains
+ */
+export async function openPaddleCheckout(
+  _priceId?: string,
+  _planName?: string,
+  customData?: Record<string, any>,
+  quantity: number = 10
+): Promise<void> {
+  const domains = customData?.domainCount || quantity || 10;
+  return openServerPaddleCheckout(domains);
 }
