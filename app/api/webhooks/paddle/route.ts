@@ -12,17 +12,46 @@ interface IntakeDispatchPayload {
 }
 
 /**
+ * In-memory idempotency cache for deduplicating webhook retries within the runtime process.
+ * In a distributed multi-node / serverless cluster, persist transactionId with a UNIQUE primary key constraint
+ * in your persistent database (PostgreSQL, Redis SETNX, DynamoDB, etc.) to drop duplicate executions.
+ */
+const processedTransactions = new Set<string>();
+
+/**
  * Intake Dispatch & Provisioning Execution Handler
  * Dispatches verified orders directly to the infrastructure automation pipeline.
+ * Enforces idempotency on payload.transactionId to guarantee single execution.
  */
 async function dispatchIntakeProvisioning(payload: IntakeDispatchPayload) {
+  if (processedTransactions.has(payload.transactionId)) {
+    console.warn(
+      `[Intake Dispatch] Duplicate transaction ${payload.transactionId} detected. Provisioning already initiated. Skipping duplicate.`
+    );
+    return {
+      success: true,
+      duplicate: true,
+      jobId: `job_${payload.transactionId}`,
+      dispatchedAt: payload.timestamp,
+    };
+  }
+
+  // Record transaction ID in idempotency set
+  processedTransactions.add(payload.transactionId);
+  // Cap set size to avoid memory growth over long-running processes
+  if (processedTransactions.size > 10000) {
+    const [oldest] = processedTransactions;
+    processedTransactions.delete(oldest);
+  }
+
   console.log(
-    `[Intake Dispatch] Initializing 48h SLA provisioning for ${payload.domains} domains (Transaction: ${payload.transactionId}, Total: $${(payload.settledCents / 100).toFixed(2)})`
+    `[Intake Dispatch] Initializing 48h SLA provisioning for ${payload.domains} domains (Transaction: ${payload.transactionId}, Subtotal: $${(payload.settledCents / 100).toFixed(2)})`
   );
 
   // Here the system initiates the automated DNS / registrar allocation and tenant invitation workflow.
   return {
     success: true,
+    duplicate: false,
     jobId: `job_${payload.transactionId}`,
     dispatchedAt: payload.timestamp,
   };
@@ -58,13 +87,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. Parse ts and h1 components from paddle-signature header (format: "ts=1671552777;h1=0bc...")
+    // 1. Parse ts and h1 components from paddle-signature header (format: "ts=1671552777; h1=0bc...")
+    // Trim tokens to defend against reverse proxy whitespace normalization (Cloudflare / Vercel edge)
     const parts = signatureHeader.split(';');
     let ts: string | undefined;
     let h1: string | undefined;
 
     for (const part of parts) {
-      const [key, val] = part.split('=');
+      const [rawKey, rawVal] = part.split('=');
+      const key = rawKey?.trim();
+      const val = rawVal?.trim();
       if (key === 'ts') ts = val;
       if (key === 'h1') h1 = val;
     }
@@ -112,17 +144,31 @@ export async function POST(request: NextRequest) {
 
     if (eventType === 'transaction.completed') {
       const transaction = event.data;
+      const transactionId = transaction?.id;
+
+      // 5. Webhook Retry Race (Idempotency Protection)
+      // Paddle webhooks have at-least-once delivery; short-circuit retried deliveries immediately
+      if (transactionId && processedTransactions.has(transactionId)) {
+        console.log(
+          `[Paddle Webhook Idempotency] Duplicate transaction ${transactionId} received. Dropping retry cleanly.`
+        );
+        return NextResponse.json(
+          { received: true, duplicate: true },
+          { status: 200 }
+        );
+      }
+
       const customData = transaction.custom_data || {};
       const provisionDomains = Number(customData.provision_domains || 0);
       const expectedCents = Number(customData.expected_cents || 0);
 
-      // Extract transaction totals
-      // Paddle sends totals.total as a decimal string e.g. "1000.00"
-      const totalAmountStr =
+      // Extract transaction subtotal to isolate raw engineering fee from sales tax / VAT
+      // Paddle sends totals.subtotal as a decimal string e.g. "1000.00"
+      const subtotalStr =
+        transaction.details?.totals?.subtotal ||
         transaction.details?.totals?.total ||
-        transaction.details?.totals?.grand_total ||
         '0';
-      const settledCents = Math.round(parseFloat(totalAmountStr) * 100);
+      const settledCents = Math.round(parseFloat(subtotalStr) * 100);
 
       // Validate payment integrity against expected cents
       if (expectedCents > 0 && settledCents < expectedCents) {

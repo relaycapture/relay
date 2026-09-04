@@ -43,29 +43,16 @@ export async function POST(request: NextRequest) {
       ? 'https://sandbox-api.paddle.com'
       : 'https://api.paddle.com';
 
-    let productId =
+    const productId =
       process.env.PADDLE_PRODUCT_ID ||
       process.env.NEXT_PUBLIC_PADDLE_PRODUCT_ID;
 
-    // Fallback: If PADDLE_PRODUCT_ID is not explicitly configured, fetch the primary active product from Paddle
     if (!productId) {
-      try {
-        const prodRes = await fetch(`${paddleBaseUrl}/products?status=active&per_page=1`, {
-          headers: { Authorization: `Bearer ${apiKey}` },
-        });
-        if (prodRes.ok) {
-          const prodData = await prodRes.json();
-          if (prodData.data && prodData.data.length > 0) {
-            productId = prodData.data[0].id;
-          }
-        }
-      } catch (e) {
-        console.warn('[Paddle API /api/checkout] Could not auto-fetch active product:', e);
-      }
-    }
-
-    if (!productId) {
-      productId = 'pro_01kzwg4sqpmgbd2rx264awn6ve';
+      console.error('[Paddle Checkout] Missing PADDLE_PRODUCT_ID');
+      return NextResponse.json(
+        { error: 'Server configuration error: Product ID missing' },
+        { status: 500 }
+      );
     }
 
     // 3. Mint immutable Paddle transaction with ad-hoc price
@@ -75,7 +62,6 @@ export async function POST(request: NextRequest) {
           quantity: 1,
           price: {
             description: `Dedicated Outbound Fleet — ${clampedDomains} Domains`,
-            name: `Dedicated Outbound Fleet — ${clampedDomains} Domains`,
             product_id: productId,
             unit_price: {
               amount: totalCents.toString(),
