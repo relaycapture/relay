@@ -7,6 +7,7 @@ import { MechanicalOdometer } from '../mechanical-odometer';
 import Silk from '../Silk';
 import { SectionWatermark } from '../section-watermark';
 import { openServerPaddleCheckout } from '../../utils/paddle';
+import { triggerPartyConfetti } from '../../utils/confetti';
 
 interface FleetPricingProps {
   isLightMode?: boolean;
@@ -28,6 +29,9 @@ export function FleetPricing({
   const fillPercent = Math.min(100, Math.max(0, ((domainCount - 1) / 99) * 100));
 
   const handleCheckout = async () => {
+    // Blast party confetti blowing upwards from the bottom across the screen
+    triggerPartyConfetti();
+
     if (isMintingTransaction) return;
     setIsMintingTransaction(true);
 
