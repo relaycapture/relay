@@ -236,6 +236,36 @@ export default function App() {
           });
         }
       });
+    } else if (target === 'fleet-pricing' || target === 'pricing-section') {
+      triggerTeleportTransition('Fleet Engineering Fee', () => {
+        const isAlreadyOnLanding = currentView === 'landing';
+        if (!isAlreadyOnLanding) {
+          setCurrentView('landing');
+        }
+        document.body.style.overflow = '';
+        lenisRef.current?.start();
+
+        const scrollToTarget = () => {
+          const el = document.getElementById('fleet-pricing-section');
+          if (el) {
+            if (lenisRef.current) {
+              lenisRef.current.scrollTo(el, { immediate: true });
+            } else {
+              el.scrollIntoView({ behavior: 'instant' });
+            }
+            return true;
+          }
+          return false;
+        };
+
+        if (!scrollToTarget()) {
+          requestAnimationFrame(() => {
+            if (!scrollToTarget()) {
+              setTimeout(scrollToTarget, 50);
+            }
+          });
+        }
+      });
     } else if (target === 'contact') {
       triggerTeleportTransition('Engineering Contact', () => {
         const isAlreadyOnLanding = currentView === 'landing';
@@ -393,10 +423,7 @@ export default function App() {
               const el = document.getElementById('domain-checker-section');
               el?.scrollIntoView({ behavior: 'smooth' });
             }}
-            onExploreClick={() => {
-              const el = document.getElementById('fleet-pricing-section');
-              el?.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onExploreClick={() => handleNavigate('fleet-pricing')}
           />
 
           {/* 2. Standalone Domain Checker Section */}

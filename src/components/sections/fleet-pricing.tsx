@@ -32,29 +32,7 @@ export function FleetPricing({
     setIsMintingTransaction(true);
 
     try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domains: domainCount }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.transactionId) {
-        throw new Error(data.error || 'Failed to mint checkout transaction');
-      }
-
-      const win = window as any;
-      if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
-        win.Paddle.Checkout.open({
-          transactionId: data.transactionId,
-          settings: {
-            displayMode: 'overlay',
-            theme: 'dark',
-          },
-        });
-      } else {
-        await openServerPaddleCheckout(domainCount);
-      }
+      await openServerPaddleCheckout(domainCount);
     } catch (err: any) {
       console.error('Checkout initialization failed:', err);
     } finally {
