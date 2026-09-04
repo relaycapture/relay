@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
     const totalUsd = clampedDomains * unitPriceUsd;
     const totalCents = totalUsd * 100;
 
-    const apiKey = process.env.PADDLE_API_KEY;
-    if (!apiKey) {
+    const rawApiKey = process.env.PADDLE_API_KEY;
+    if (!rawApiKey) {
       console.error('[Paddle API /api/checkout] Missing PADDLE_API_KEY in server environment.');
       return NextResponse.json(
         {
@@ -32,21 +32,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Robustly sanitize apiKey: strip surrounding quotes, duplicate Bearer prefixes, whitespace
+    const apiKey = rawApiKey
+      .trim()
+      .replace(/^["']|["']$/g, '')
+      .replace(/^Bearer\s+/i, '')
+      .replace(/^["']|["']$/g, '')
+      .trim();
+
     // Determine environment (sandbox vs production)
     const isSandbox =
       process.env.PADDLE_ENV === 'sandbox' ||
       process.env.NEXT_PUBLIC_PADDLE_ENV === 'sandbox' ||
-      Boolean(apiKey.startsWith('paddlesandbox_')) ||
+      apiKey.startsWith('pdl_sdbx_') ||
+      apiKey.startsWith('paddlesandbox_') ||
       Boolean(process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN?.startsWith('test_'));
 
     const paddleBaseUrl = isSandbox
       ? 'https://sandbox-api.paddle.com'
       : 'https://api.paddle.com';
 
-    const productId =
+    const defaultProductId = isSandbox
+      ? 'pro_01kzwg1zzgxcwgfjfye4308vx0'
+      : 'pro_01m1q07kw0hwmq1tegwjjja1kx';
+
+    const rawProductId =
       process.env.PADDLE_PRODUCT_ID ||
       process.env.NEXT_PUBLIC_PADDLE_PRODUCT_ID ||
-      'pro_01m1q07kw0hwmq1tegwjjja1kx';
+      defaultProductId;
+
+    const productId = rawProductId
+      .trim()
+      .replace(/^["']|["']$/g, '');
 
     if (!productId) {
       console.error('[Paddle Checkout] Missing PADDLE_PRODUCT_ID');
