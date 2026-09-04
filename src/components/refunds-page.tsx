@@ -47,46 +47,58 @@ export function RefundsPage({
             <div>
               <div className="font-mono text-xs text-neutral-500 uppercase tracking-wider mb-2">Legal Specification</div>
               <h1 className={`text-3xl sm:text-4xl font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
-                Refund & Guarantee Policy
+                Refund Policy
               </h1>
-              <p className="font-mono text-xs text-neutral-400 mt-1">Last Updated: October 2024</p>
+              <p className="font-mono text-xs text-neutral-400 mt-1">Last updated: August 13, 2026</p>
             </div>
 
             <div className={`prose prose-sm max-w-none space-y-6 leading-relaxed ${isLightMode ? 'text-neutral-600' : 'text-neutral-400'}`}>
               <section className="space-y-2">
                 <h2 className={`text-base sm:text-lg font-semibold ${isLightMode ? 'text-black' : 'text-white'}`}>
-                  1. The 100% Deliverability Execution Guarantee
+                  1. Snapshot Report & Audit + Fix-It Kit (one-time purchases)
                 </h2>
                 <p>
-                  Relay guarantees that all DNS records, macros, and public keys generated as part of the Turnkey Remediation tier comply strictly with RFC 7208 (SPF), RFC 6376 (DKIM), and RFC 7489 (DMARC). If your receiving compliance check does not pass standard validation after proper DNS propagation (24-48 hours), our engineering team will continue manual intervention until alignment is achieved at zero additional charge.
+                  These are instant digital deliverables generated at the moment of purchase. Because the product is fully delivered on payment, we do not offer refunds once your report or kit has been generated and sent, except in the case of: a duplicate charge, a failed delivery (you paid and never received your deliverable), or a materially broken output (the scan failed to run against your domain and returned no usable result). Contact{' '}
+                  <a href="mailto:sam@relaycapture.com" className="underline hover:text-white">
+                    sam@relaycapture.com
+                  </a>{' '}
+                  within 7 days of purchase for any of these cases and we'll make it right.
                 </p>
               </section>
 
-              <section className="space-y-2">
+              <section className="space-y-2 pt-4 border-t border-white/10">
                 <h2 className={`text-base sm:text-lg font-semibold ${isLightMode ? 'text-black' : 'text-white'}`}>
-                  2. Diagnostic Blueprints & Digital Reports
+                  2. Continuous Monitoring (subscription)
                 </h2>
                 <p>
-                  Due to the immediate delivery of digital diagnostic files, raw nameserver telemetry, and proprietary lookup flattening instructions, Self-Serve Blueprint purchases ($247) are non-refundable once the deliverable bundle has been generated and dispatched.
+                  New subscribers get a 14-day free trial; you won't be charged until it ends, and you can cancel any time before then at no cost. Once billing has started, charges are non-refundable for that billing period, but you can cancel to stop future charges at any time — cancellation takes effect at the end of the current period.
                 </p>
               </section>
 
-              <section className="space-y-2">
+              <section className="space-y-2 pt-4 border-t border-white/10">
                 <h2 className={`text-base sm:text-lg font-semibold ${isLightMode ? 'text-black' : 'text-white'}`}>
-                  3. Turnkey Execution Services
+                  3. Merchant of Record
                 </h2>
                 <p>
-                  If you purchase a Turnkey Remediation plan and our engineers determine during initial nameserver probing that your sending architecture cannot be supported due to hard registrar locks or upstream provider bans prior to record generation, a full 100% refund will be issued immediately upon notification.
+                  All payments are processed by Paddle.com, our Merchant of Record, who handles billing, tax, and payment-related support.
                 </p>
               </section>
 
-              <section className="space-y-2">
+              <section className="space-y-2 pt-4 border-t border-white/10">
                 <h2 className={`text-base sm:text-lg font-semibold ${isLightMode ? 'text-black' : 'text-white'}`}>
-                  4. Dispute Resolution & Contact
+                  4. Contact Information
                 </h2>
                 <p>
-                  For refund inquiries, verification disputes, or technical questions regarding your deliverable receipt, contact engineering directly at <strong>sam@relaycapture.com</strong> with your transaction reference.
+                  If you have questions regarding your billing or this Refund Policy, please contact our support team at:
                 </p>
+                <div className="font-mono text-xs space-y-1 pl-2 border-l border-white/20">
+                  <p>
+                    Email:{' '}
+                    <a href="mailto:sam@relaycapture.com" className="underline hover:text-white">
+                      sam@relaycapture.com
+                    </a>
+                  </p>
+                </div>
               </section>
             </div>
           </div>
