@@ -108,9 +108,55 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
 }
 
 /**
- * Direct client checkout helper using client token & price ID.
+ * Authoritatively mints a server transaction with dynamic unit price,
+ * and opens Paddle checkout with the transaction ID.
  */
 export async function openServerPaddleCheckout(domains: number): Promise<void> {
+  if (typeof window === 'undefined') return;
+
+  const win = window as any;
+  initPaddle();
+
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domains }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.transactionId) {
+        return new Promise((resolve) => {
+          const triggerOpen = () => {
+            if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
+              if (PADDLE_CONFIG.environment === 'sandbox' && win.Paddle.Environment) {
+                win.Paddle.Environment.set('sandbox');
+              }
+              win.Paddle.Checkout.open({
+                transactionId: data.transactionId,
+                settings: {
+                  displayMode: 'overlay',
+                  theme: 'dark',
+                },
+              });
+              resolve();
+            } else {
+              setTimeout(triggerOpen, 100);
+            }
+          };
+          triggerOpen();
+        });
+      }
+    } else {
+      const err = await res.json().catch(() => ({}));
+      console.error('[Paddle Checkout] /api/checkout error:', err);
+    }
+  } catch (err) {
+    console.error('[Paddle Checkout] Fetch error:', err);
+  }
+
+  // Fallback to direct client checkout if server minting fails
   return openPaddleDirectCheckout(domains);
 }
 
