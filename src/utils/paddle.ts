@@ -7,8 +7,8 @@
  * 1. Server-side transaction minting (when PADDLE_API_KEY is configured in production).
  * 2. Direct client token + priceId checkout (for sandbox testing and direct client flows).
  */
-const defaultSandboxToken = 'test_1f8686b5f0144f0c19f74bdef50';
-const activeToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || defaultSandboxToken;
+const defaultToken = 'live_df20b9edfa397b87a234a04e7df';
+const activeToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || defaultToken;
 const activePriceId = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID || 'pri_01m0ad0sn09xvkymfy1t7588a8';
 
 export const PADDLE_CONFIG = {
@@ -108,50 +108,9 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
 }
 
 /**
- * Mints an immutable server-side Paddle transaction if configured, or seamlessly
- * falls back to direct client checkout with client token & price ID.
+ * Direct client checkout helper using client token & price ID.
  */
 export async function openServerPaddleCheckout(domains: number): Promise<void> {
-  if (typeof window === 'undefined') return;
-
-  const win = window as any;
-  initPaddle();
-
-  // 1. Attempt authoritative server-side transaction minting if API key is configured
-  try {
-    const res = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ domains }),
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data.transactionId) {
-        return new Promise((resolve) => {
-          const triggerOpen = () => {
-            if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
-              win.Paddle.Checkout.open({
-                transactionId: data.transactionId,
-                settings: {
-                  displayMode: 'overlay',
-                  theme: 'dark',
-                },
-              });
-              resolve();
-            } else {
-              setTimeout(triggerOpen, 100);
-            }
-          };
-          triggerOpen();
-        });
-      }
-    }
-  } catch {
-    // Server minting unconfigured or unavailable
-  }
-
-  // 2. Direct client token + priceId checkout
   return openPaddleDirectCheckout(domains);
 }
 
