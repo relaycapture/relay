@@ -11,6 +11,7 @@ interface NavbarProps {
   isLightMode: boolean;
   isHidden?: boolean;
   isQuickNavOpen?: boolean;
+  activeSection?: string;
 }
 
 export function Navbar({
@@ -19,6 +20,7 @@ export function Navbar({
   isLightMode,
   isHidden = false,
   isQuickNavOpen = false,
+  activeSection,
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -149,7 +151,7 @@ export function Navbar({
                   data-cursor="grow"
                   onClick={() => onNavigate('pricing')}
                   className={`text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-[2px] whitespace-nowrap leading-none flex items-center justify-center cursor-pointer ${
-                    currentView === 'pricing'
+                    currentView === 'pricing' || (currentView === 'landing' && activeSection === 'fleet-pricing-section')
                       ? isLightMode
                         ? 'text-black bg-neutral-200/90 font-bold shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
                         : 'text-white bg-white/20 font-bold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_2px_8px_rgba(0,0,0,0.3)]'
@@ -168,9 +170,13 @@ export function Navbar({
                   data-cursor="grow"
                   onClick={() => onNavigate('contact')}
                   className={`text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-200 px-2.5 sm:px-3.5 py-1.5 rounded-[2px] whitespace-nowrap leading-none flex items-center justify-center cursor-pointer ${
-                    isLightMode
-                      ? 'text-neutral-700 hover:text-black hover:bg-black/[0.05]'
-                      : 'text-neutral-300 hover:text-white hover:bg-white/[0.1]'
+                    currentView === 'landing' && activeSection === 'contact-section'
+                      ? isLightMode
+                        ? 'text-black bg-neutral-200/90 font-bold shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
+                        : 'text-white bg-white/20 font-bold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_2px_8px_rgba(0,0,0,0.3)]'
+                      : isLightMode
+                        ? 'text-neutral-700 hover:text-black hover:bg-black/[0.05]'
+                        : 'text-neutral-300 hover:text-white hover:bg-white/[0.1]'
                   }`}
                   aria-label="Navigate to Contact"
                 >
@@ -180,11 +186,11 @@ export function Navbar({
             )}
           </AnimatePresence>
 
-          {/* 3. Primary CTA: CONFIGURE FLEET — Blocky Machined Geometry */}
+          {/* 3. Primary CTA: CONFIGURE FLEET — Teleports to Pre-Order Checklist ("Have These Ready") */}
           <button
             id="nav-btn-configure-fleet"
             data-cursor="grow"
-            onClick={() => onNavigate('pricing')}
+            onClick={() => onNavigate('checklist')}
             className={`relative z-10 self-stretch h-full text-[10px] sm:text-xs font-mono tracking-wider transition-all duration-150 px-3.5 sm:px-4 rounded-[2px] whitespace-nowrap leading-none flex items-center justify-center gap-1 font-semibold border cursor-pointer ${
               isLightMode
                 ? 'bg-neutral-900 hover:bg-black text-white border-black/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_2px_8px_rgba(0,0,0,0.15)]'

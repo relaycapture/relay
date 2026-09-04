@@ -206,10 +206,71 @@ export default function App() {
         setCurrentView('refunds');
         window.scrollTo({ top: 0, behavior: 'instant' });
       });
+    } else if (target === 'checklist' || target === 'prerequisites') {
+      triggerTeleportTransition('Have These Ready', () => {
+        const isAlreadyOnLanding = currentView === 'landing';
+        if (!isAlreadyOnLanding) {
+          setCurrentView('landing');
+        }
+        document.body.style.overflow = '';
+        lenisRef.current?.start();
+
+        const scrollToTarget = () => {
+          const el = document.getElementById('prerequisites-section');
+          if (el) {
+            if (lenisRef.current) {
+              lenisRef.current.scrollTo(el, { immediate: true });
+            } else {
+              el.scrollIntoView({ behavior: 'instant' });
+            }
+            return true;
+          }
+          return false;
+        };
+
+        if (!scrollToTarget()) {
+          requestAnimationFrame(() => {
+            if (!scrollToTarget()) {
+              setTimeout(scrollToTarget, 50);
+            }
+          });
+        }
+      });
+    } else if (target === 'contact') {
+      triggerTeleportTransition('Engineering Contact', () => {
+        const isAlreadyOnLanding = currentView === 'landing';
+        if (!isAlreadyOnLanding) {
+          setCurrentView('landing');
+        }
+        document.body.style.overflow = '';
+        lenisRef.current?.start();
+
+        const scrollToTarget = () => {
+          const el = document.getElementById('contact-section');
+          if (el) {
+            if (lenisRef.current) {
+              lenisRef.current.scrollTo(el, { immediate: true });
+            } else {
+              el.scrollIntoView({ behavior: 'instant' });
+            }
+            return true;
+          }
+          return false;
+        };
+
+        if (!scrollToTarget()) {
+          requestAnimationFrame(() => {
+            if (!scrollToTarget()) {
+              setTimeout(scrollToTarget, 50);
+            }
+          });
+        }
+      });
     } else if (target === 'home') {
       triggerTeleportTransition('Overview', () => {
         setCurrentView('landing');
         window.scrollTo({ top: 0, behavior: 'instant' });
+        lenisRef.current?.scrollTo(0, { immediate: true });
       });
     } else if (target === 'checker') {
       if (currentView !== 'landing') {
@@ -237,7 +298,7 @@ export default function App() {
     'how-it-works': 'How It Works',
     'invoice-settle-timeline': 'Post-Payment SLA',
     'comparison-section': 'Architectural Benchmark',
-    'prerequisites-section': 'Pre-Order Checklist',
+    'prerequisites-section': 'Have These Ready',
     'fleet-pricing-section': 'Fleet Engineering Fee',
     'faq-section': 'Architecture FAQ',
     'contact-section': 'Engineering Contact',
@@ -254,19 +315,32 @@ export default function App() {
       'Overview';
 
     triggerTeleportTransition(title, () => {
-      if (currentView !== 'landing') {
+      const isAlreadyOnLanding = currentView === 'landing';
+      if (!isAlreadyOnLanding) {
         setCurrentView('landing');
       }
       document.body.style.overflow = '';
       lenisRef.current?.start();
 
-      const el = document.getElementById(sectionId);
-      if (el) {
-        if (lenisRef.current) {
-          lenisRef.current.scrollTo(el, { immediate: true });
-        } else {
-          el.scrollIntoView({ behavior: 'instant' });
+      const scrollToTarget = () => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          if (lenisRef.current) {
+            lenisRef.current.scrollTo(el, { immediate: true });
+          } else {
+            el.scrollIntoView({ behavior: 'instant' });
+          }
+          return true;
         }
+        return false;
+      };
+
+      if (!scrollToTarget()) {
+        requestAnimationFrame(() => {
+          if (!scrollToTarget()) {
+            setTimeout(scrollToTarget, 50);
+          }
+        });
       }
     });
   };
@@ -286,6 +360,7 @@ export default function App() {
         isLightMode={false}
         isHidden={!showNavbar || isQuickNavOpen}
         isQuickNavOpen={isQuickNavOpen}
+        activeSection={activeSection}
       />
 
       {/* Compressed Bottom-Left Proximity Section Quick-Nav with Full Backdrop Blur & Teleport */}
