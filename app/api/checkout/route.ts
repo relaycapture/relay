@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     const productId =
       process.env.PADDLE_PRODUCT_ID ||
       process.env.NEXT_PUBLIC_PADDLE_PRODUCT_ID ||
-      'pro_01kzwg1zzgxcwgfjfye4308vx0';
+      'pro_01m1q07kw0hwmq1tegwjjja1kx';
 
     if (!productId) {
       console.error('[Paddle Checkout] Missing PADDLE_PRODUCT_ID');

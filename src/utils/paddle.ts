@@ -7,9 +7,9 @@
  * 1. Server-side transaction minting (when PADDLE_API_KEY is configured in production).
  * 2. Direct client token + priceId checkout (for sandbox testing and direct client flows).
  */
-const defaultToken = 'test_691c27315b7f65163a0df39c770';
+const defaultToken = 'live_045505a4686cb238475db57dfe0';
 const activeToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || defaultToken;
-const activePriceId = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID || 'pri_01kzwg4sqpmgbd2rx264awn6ve';
+const activePriceId = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID || 'pri_01m1q092mvmewcdyey2rs8w4tr';
 
 export const PADDLE_CONFIG = {
   clientToken: activeToken,
