@@ -13,6 +13,10 @@ import {
   Check,
   Maximize2,
   Minimize2,
+  Lock,
+  ArrowRight,
+  ShieldAlert,
+  Loader2,
 } from 'lucide-react';
 
 function IntakeContent() {
@@ -25,6 +29,11 @@ function IntakeContent() {
   const [copied, setCopied] = useState(false);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [isBriefLoading, setIsBriefLoading] = useState(true);
+
+  // Manual Order ID unlock state for the security gate
+  const [manualOrderId, setManualOrderId] = useState<string>('');
+  const [isManualChecking, setIsManualChecking] = useState<boolean>(false);
+  const [manualError, setManualError] = useState<string>('');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -97,6 +106,42 @@ function IntakeContent() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (_) {}
+  };
+
+  // Authoritative manual verification for customers unlocking via Order ID on the security gate
+  const handleManualVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanId = manualOrderId.trim();
+    if (!cleanId) return;
+
+    setIsManualChecking(true);
+    setManualError('');
+
+    try {
+      const res = await fetch(`/api/checkout/verify?txn=${encodeURIComponent(cleanId)}`);
+      const data = await res.json();
+
+      if (data.verified) {
+        setIsVerified(true);
+        setOrderId(cleanId);
+        if (data.email) setCustomerEmail(data.email);
+        if (data.domains) setDomainCount(data.domains);
+
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('txn', cleanId);
+        newUrl.searchParams.set('order_id', cleanId);
+        window.history.replaceState({}, '', newUrl.toString());
+      } else {
+        setManualError(
+          data.error ||
+            'Order ID not found or transaction is not settled in Paddle. Please ensure payment completed successfully.'
+        );
+      }
+    } catch (err: any) {
+      setManualError('Network error checking verification status. Please retry.');
+    } finally {
+      setIsManualChecking(false);
+    }
   };
 
   // Construct forwardable query string for Tally hidden fields
@@ -378,17 +423,118 @@ function IntakeContent() {
         </button>
       )}
 
-      {/* Full Window Transparent Tally Iframe Embed Floating on Living Website Canvas */}
-      <main className="flex-1 min-h-0 relative w-full h-full bg-[#08080a] overflow-hidden z-10">
-        <iframe
-          data-tally-src={tallyFullUrl}
-          src={tallyFullUrl}
-          width="100%"
-          height="100%"
-          style={{ background: 'transparent' }}
-          className="absolute inset-0 w-full h-full border-0 bg-transparent"
-          title={`Engineering Intake Brief · Order #${orderId || customerEmail || 'RELAY'}`}
-        />
+      {/* Main Content: Authenticated Brief OR Authoritative Security Gate */}
+      <main className="flex-1 min-h-0 relative w-full h-full bg-[#08080a] overflow-y-auto z-10">
+        {isVerifying ? (
+          <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center px-4">
+            <div className="w-10 h-10 rounded-full border border-white/10 border-t-white animate-spin mb-4" />
+            <h3 className="font-sans text-xl font-medium text-white mb-1">
+              Authenticating Deployment Order
+            </h3>
+            <p className="font-mono text-xs text-neutral-400">
+              Verifying cryptographic transaction settlement with Paddle...
+            </p>
+          </div>
+        ) : isVerified === true ? (
+          <iframe
+            data-tally-src={tallyFullUrl}
+            src={tallyFullUrl}
+            width="100%"
+            height="100%"
+            style={{ background: 'transparent' }}
+            className="absolute inset-0 w-full h-full border-0 bg-transparent"
+            title={`Engineering Intake Brief · Order #${orderId || customerEmail || 'RELAY'}`}
+          />
+        ) : (
+          <div className="min-h-full flex items-center justify-center p-4 sm:p-6 md:p-8">
+            <div className="max-w-xl w-full border border-white/[0.08] bg-white/[0.02] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] rounded-2xl p-6 sm:p-10 backdrop-blur-xl relative overflow-hidden">
+              {/* Corner hair-line coordinate */}
+              <div className="absolute top-4 right-4 font-mono text-[10px] text-neutral-600 tracking-wider">
+                AUTH // RESTRICTED
+              </div>
+
+              {/* Icon */}
+              <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-white mb-6">
+                <Lock className="w-5 h-5 text-neutral-300" />
+              </div>
+
+              {/* Security Notice */}
+              <div className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 mb-2">
+                01 // AUTHORIZED ACCESS REQUIRED
+              </div>
+              <h2 className="font-sans text-2xl sm:text-3xl font-medium tracking-tight text-white mb-3">
+                Engineering Brief Restricted
+              </h2>
+              <p className="font-sans text-sm text-neutral-400 leading-relaxed mb-6 font-normal">
+                Access to the Relay Capture technical brief is strictly reserved for confirmed, settled fleet deployments. If you recently completed payment, enter your Paddle Order ID below to unlock your workspace.
+              </p>
+
+              {/* Order ID Verification Form */}
+              <form onSubmit={handleManualVerify} className="space-y-3 mb-6">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={manualOrderId}
+                    onChange={(e) => {
+                      setManualOrderId(e.target.value);
+                      if (manualError) setManualError('');
+                    }}
+                    placeholder="Enter Paddle Order ID (e.g. txn_01m1...)"
+                    className="w-full bg-[#08080a] border border-white/15 focus:border-white/40 rounded-lg px-4 py-3 text-xs sm:text-sm font-mono text-white placeholder:text-neutral-600 outline-none transition-all"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isManualChecking || !manualOrderId.trim()}
+                    style={{ cursor: 'pointer' }}
+                    className="mt-3 sm:mt-0 sm:absolute sm:right-1.5 sm:top-1.5 sm:bottom-1.5 px-4 py-2 bg-white text-black hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed rounded-md font-mono text-xs font-medium transition-all inline-flex items-center justify-center gap-2 shrink-0"
+                  >
+                    {isManualChecking ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Verifying...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Unlock Brief</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {manualError && (
+                  <div className="flex items-start gap-2 text-rose-400 font-mono text-xs mt-2 bg-rose-500/10 border border-rose-500/20 px-3 py-2 rounded">
+                    <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{manualError}</span>
+                  </div>
+                )}
+              </form>
+
+              {/* Divider */}
+              <div className="h-px w-full bg-white/[0.08] mb-6" />
+
+              {/* Call to Actions for Unpaid Visitors */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <Link
+                  href="/#fleet-pricing-section"
+                  style={{ cursor: 'pointer' }}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-white/15 hover:border-white/30 bg-white/[0.04] hover:bg-white/[0.08] text-white font-mono text-xs transition-all tracking-tight"
+                >
+                  <span>Provision New Fleet ($1,000 / 10 domains)</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
+                </Link>
+
+                <Link
+                  href="/"
+                  style={{ cursor: 'pointer' }}
+                  className="inline-flex items-center justify-center text-xs font-mono text-neutral-400 hover:text-neutral-200 transition-colors py-2 px-2"
+                >
+                  Return to Overview
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
