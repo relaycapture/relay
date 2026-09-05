@@ -26,21 +26,32 @@ function IntakeContent() {
 
     // If transaction ID is available, verify payment authoritatively against Paddle
     if (txnParam) {
-      fetch(`/api/checkout/verify?txn=${encodeURIComponent(txnParam)}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.verified) {
+      let attempts = 0;
+      const maxAttempts = 4;
+
+      const checkVerification = () => {
+        fetch(`/api/checkout/verify?txn=${encodeURIComponent(txnParam)}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.verified) {
+              setIsVerified(true);
+              if (data.email) setCustomerEmail(data.email);
+              if (data.domains) setDomainCount(data.domains);
+            } else if (attempts < maxAttempts) {
+              attempts++;
+              setIsVerified(false);
+              setTimeout(checkVerification, 2000);
+            } else {
+              setIsVerified(false);
+            }
+          })
+          .catch(() => {
+            // If network check errors, assume client session is legitimate
             setIsVerified(true);
-            if (data.email) setCustomerEmail(data.email);
-            if (data.domains) setDomainCount(data.domains);
-          } else {
-            setIsVerified(false);
-          }
-        })
-        .catch(() => {
-          // If network check errors, assume client session is legitimate
-          setIsVerified(true);
-        });
+          });
+      };
+
+      checkVerification();
     } else {
       // Direct access without txn parameter
       setIsVerified(null);
