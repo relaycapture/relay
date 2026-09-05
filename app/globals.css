@@ -32,22 +32,28 @@
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Unified obsidian palette matching home page */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) #08080a;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f0d13;
+  background: #08080a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 211, 238, 0.4);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 /* Grain animation */

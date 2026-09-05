@@ -38,12 +38,29 @@ function IntakeContent() {
   const emailParam = searchParams.get('email') || '';
   const domainsParam = searchParams.get('domains') || searchParams.get('provision_domains') || '';
 
-  // 1. Authoritatively ensure clean native cursor on intake page and remove any dangling elements
+  // 1. Authoritatively ensure clean native cursor and enforce dark scrollbar scheme matching home page
   useEffect(() => {
     const forceHidden = document.getElementById('force-system-cursor-hidden');
     if (forceHidden) {
       forceHidden.remove();
     }
+
+    const enforceDarkScheme = () => {
+      const iframes = document.querySelectorAll<HTMLIFrameElement>('iframe');
+      iframes.forEach((iframe) => {
+        iframe.style.setProperty('color-scheme', 'dark', 'important');
+      });
+    };
+
+    enforceDarkScheme();
+    const observer = new MutationObserver(enforceDarkScheme);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style'],
+    });
+    return () => observer.disconnect();
   }, []);
 
   // 2. Authoritative parameter sync & Paddle verification check
@@ -122,10 +139,17 @@ function IntakeContent() {
       className="h-screen w-screen overflow-hidden bg-[#08080a] text-[#F4F4F2] flex flex-col font-sans antialiased relative selection:bg-white/20 selection:text-white"
     >
 
-      {/* High-specificity normal cursor enforcement across all elements in intake view */}
+      {/* High-specificity styling: native cursor, strict viewport containment, and obsidian dark scrollbar */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
+            html,
+            body {
+              overflow: hidden !important;
+              height: 100% !important;
+              max-height: 100vh !important;
+              color-scheme: dark !important;
+            }
             html,
             body,
             #relay-intake-root,
@@ -149,6 +173,28 @@ function IntakeContent() {
             textarea,
             .cursor-text {
               cursor: text !important;
+            }
+            iframe,
+            iframe[data-tally-src] {
+              color-scheme: dark !important;
+            }
+            * {
+              scrollbar-width: thin !important;
+              scrollbar-color: rgba(255, 255, 255, 0.18) #08080a !important;
+            }
+            ::-webkit-scrollbar {
+              width: 6px !important;
+              height: 6px !important;
+            }
+            ::-webkit-scrollbar-track {
+              background: #08080a !important;
+            }
+            ::-webkit-scrollbar-thumb {
+              background: rgba(255, 255, 255, 0.18) !important;
+              border-radius: 9999px !important;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+              background: rgba(255, 255, 255, 0.35) !important;
             }
           `,
         }}
@@ -320,13 +366,13 @@ function IntakeContent() {
       )}
 
       {/* Full Window Transparent Tally Iframe Embed Floating on Living Website Canvas */}
-      <main className="flex-1 relative w-full h-full bg-transparent overflow-hidden z-10">
+      <main className="flex-1 min-h-0 relative w-full h-full bg-transparent overflow-hidden z-10">
         <iframe
           data-tally-src={tallyFullUrl}
           src={tallyFullUrl}
           width="100%"
           height="100%"
-          style={{ background: 'transparent' }}
+          style={{ background: 'transparent', colorScheme: 'dark' }}
           className="absolute inset-0 w-full h-full border-0 bg-transparent"
           title={`Engineering Intake Brief · Order #${orderId || customerEmail || 'RELAY'}`}
         />
