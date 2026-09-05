@@ -22,6 +22,7 @@ export const PADDLE_CONFIG = {
 
 let hasRedirected = false;
 let currentMintedTxnId: string = '';
+let isPaymentCompleted = false;
 
 /**
  * Safely navigates to the intake brief with authoritative transaction parameters.
@@ -56,6 +57,7 @@ function handlePaddleCheckoutEvent(event: any) {
   if (!event) return;
 
   if (event.name === 'checkout.completed') {
+    isPaymentCompleted = true;
     try {
       const data = event.data || {};
       const txnId =
@@ -79,8 +81,9 @@ function handlePaddleCheckoutEvent(event: any) {
       navigateToIntake();
     }
   } else if (event.name === 'checkout.closed') {
-    // If user clicked Done or closed the modal after payment completed
-    if (currentMintedTxnId) {
+    // CRITICAL: ONLY navigate to /intake if payment was actually completed!
+    // If the modal was closed due to a declined card or user cancellation, DO NOT REDIRECT.
+    if (isPaymentCompleted && currentMintedTxnId) {
       navigateToIntake(currentMintedTxnId);
     }
   }
@@ -191,6 +194,10 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
  */
 export async function openServerPaddleCheckout(domains: number): Promise<void> {
   if (typeof window === 'undefined') return;
+
+  hasRedirected = false;
+  isPaymentCompleted = false;
+  currentMintedTxnId = '';
 
   const win = window as any;
   initPaddle();

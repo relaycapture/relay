@@ -18,6 +18,7 @@ import {
 function IntakeContent() {
   const searchParams = useSearchParams();
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [customerEmail, setCustomerEmail] = useState<string>('');
   const [domainCount, setDomainCount] = useState<number>(10);
   const [orderId, setOrderId] = useState<string>('');
@@ -55,6 +56,7 @@ function IntakeContent() {
     }
 
     if (txnParam) {
+      setIsVerifying(true);
       let attempts = 0;
       const maxAttempts = 4;
 
@@ -64,24 +66,27 @@ function IntakeContent() {
           .then((data) => {
             if (data.verified) {
               setIsVerified(true);
+              setIsVerifying(false);
               if (data.email) setCustomerEmail(data.email);
               if (data.domains) setDomainCount(data.domains);
             } else if (attempts < maxAttempts) {
               attempts++;
-              setIsVerified(false);
               setTimeout(checkVerification, 2000);
             } else {
               setIsVerified(false);
+              setIsVerifying(false);
             }
           })
           .catch(() => {
-            setIsVerified(true);
+            setIsVerified(false);
+            setIsVerifying(false);
           });
       };
 
       checkVerification();
     } else {
       setIsVerified(null);
+      setIsVerifying(false);
     }
   }, [txnParam, emailParam, domainsParam]);
 
@@ -221,10 +226,18 @@ function IntakeContent() {
       >
         <div className="relative z-10 max-w-md w-full">
           <h2 className="font-sans text-3xl font-medium tracking-tight text-white mb-2">
-            Payment confirmed.
+            {isVerified === true
+              ? 'Payment confirmed.'
+              : isVerified === false
+              ? 'Settlement unconfirmed.'
+              : 'Engineering Brief.'}
           </h2>
           <p className="font-sans text-sm text-neutral-400 font-normal mb-8">
-            Preparing your engineering brief.
+            {isVerified === true
+              ? 'Preparing your engineering brief.'
+              : isVerified === false
+              ? 'Transaction was not settled or is pending.'
+              : 'Initializing intake workspace.'}
           </p>
           <div className="w-48 h-[1px] bg-white/10 relative overflow-hidden mx-auto mb-6">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent animate-pulse" />
@@ -258,15 +271,20 @@ function IntakeContent() {
 
             {/* Verification Status Indicator */}
             <div className="flex items-center gap-2 font-mono text-xs shrink-0">
-              {isVerified === true ? (
+              {isVerifying ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[11px] font-medium tracking-tight">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span>Verifying settlement</span>
+                </span>
+              ) : isVerified === true ? (
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-medium tracking-tight">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                   <span>Payment confirmed</span>
                 </span>
               ) : isVerified === false ? (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[11px] font-medium tracking-tight">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                  <span>Verifying settlement</span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px] font-medium tracking-tight">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                  <span>Payment unconfirmed or declined</span>
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.04] text-neutral-300 border border-white/[0.08] text-[11px] font-medium tracking-tight">
@@ -328,6 +346,22 @@ function IntakeContent() {
 
           </div>
         </header>
+      )}
+
+      {/* Unconfirmed / Declined Payment Banner */}
+      {!isFocusMode && isVerified === false && (
+        <div className="bg-rose-950/40 border-b border-rose-500/30 px-4 sm:px-6 py-2 flex items-center justify-between text-xs font-mono text-rose-200 z-20 shrink-0 select-none">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0" />
+            <span>Order #{orderId || 'N/A'} has not been settled (card was declined or payment canceled).</span>
+          </div>
+          <Link
+            href="/"
+            className="text-rose-300 hover:text-white underline transition-colors ml-4 shrink-0 font-medium"
+          >
+            Return to checkout →
+          </Link>
+        </div>
       )}
 
       {/* Floating Restore Button when in Focus Mode */}
