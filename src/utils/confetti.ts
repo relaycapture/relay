@@ -20,66 +20,66 @@ export function triggerPartyConfetti() {
 
   const zIndex = 999999;
 
-  // Wave 1: Corner cannons shooting up towards center
-  // Bottom-left corner shooting up-right towards center (55 degrees, higher velocity to cross center)
+  // Wave 1: Corner cannons shooting up-inward towards center
+  // Bottom-left corner shooting up-right towards center (55 degrees, high velocity & low decay to cross center)
   confetti({
     particleCount: 95,
     angle: 55,
-    spread: 85,
+    spread: 60,
     origin: { x: 0, y: 0.95 },
-    startVelocity: 85,
-    decay: 0.92,
+    startVelocity: 60,
+    decay: 0.925,
     colors,
     zIndex,
-    ticks: 350,
-    gravity: 0.7,
-    scalar: 1.0,
+    ticks: 320,
+    gravity: 0.72,
+    scalar: 1.05,
   });
 
-  // Bottom-right corner shooting up-left towards center (125 degrees, higher velocity to cross center)
+  // Bottom-right corner shooting up-left towards center (125 degrees, high velocity & low decay to cross center)
   confetti({
     particleCount: 95,
     angle: 125,
-    spread: 85,
+    spread: 60,
     origin: { x: 1, y: 0.95 },
-    startVelocity: 85,
-    decay: 0.92,
+    startVelocity: 60,
+    decay: 0.925,
     colors,
     zIndex,
-    ticks: 350,
-    gravity: 0.7,
-    scalar: 1.0,
+    ticks: 320,
+    gravity: 0.72,
+    scalar: 1.05,
   });
 
-  // Wave 2: Subtle secondary puff (+200ms) for organic flutter reaching center
+  // Wave 2: Secondary accent blast (+220ms) reaching the center
   setTimeout(() => {
     confetti({
       particleCount: 45,
       angle: 55,
-      spread: 75,
+      spread: 50,
       origin: { x: 0.02, y: 0.98 },
-      startVelocity: 72,
-      decay: 0.92,
+      startVelocity: 44,
+      decay: 0.925,
       colors,
       zIndex,
-      ticks: 300,
-      gravity: 0.75,
-      scalar: 0.7,
+      ticks: 260,
+      gravity: 0.78,
+      scalar: 0.85,
     });
 
     confetti({
       particleCount: 45,
       angle: 125,
-      spread: 75,
+      spread: 50,
       origin: { x: 0.98, y: 0.98 },
-      startVelocity: 72,
-      decay: 0.92,
+      startVelocity: 44,
+      decay: 0.925,
       colors,
       zIndex,
-      ticks: 300,
-      gravity: 0.75,
-      scalar: 0.7,
+      ticks: 260,
+      gravity: 0.78,
+      scalar: 0.85,
     });
-  }, 200);
+  }, 220);
 }
 

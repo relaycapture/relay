@@ -21,6 +21,36 @@ export const PADDLE_CONFIG = {
 };
 
 /**
+ * Global handler for Paddle checkout lifecycle events.
+ * When payment completes and is verified, automatically redirects to the Engineering Intake Brief.
+ */
+function handlePaddleCheckoutEvent(event: any) {
+  if (event && event.name === 'checkout.completed') {
+    try {
+      const data = event.data || {};
+      const txnId = data.id || data.transaction_id || '';
+      const email = data.customer?.email || '';
+      const customData = data.custom_data || {};
+      const domains = customData.provision_domains || '';
+
+      const params = new URLSearchParams();
+      if (txnId) {
+        params.set('txn', txnId);
+        params.set('order_id', txnId);
+      }
+      if (email) params.set('email', email);
+      if (domains) params.set('domains', String(domains));
+
+      const redirectUrl = `/intake?${params.toString()}`;
+      window.location.href = redirectUrl;
+    } catch (err) {
+      console.error('[Paddle Checkout Redirect Error]', err);
+      window.location.href = '/intake';
+    }
+  }
+}
+
+/**
  * Pre-initializes the Paddle v2 SDK on page load so overlay opens with zero latency.
  */
 export function initPaddle() {
@@ -42,6 +72,7 @@ export function initPaddle() {
           }
           win.Paddle.Initialize({
             token: PADDLE_CONFIG.clientToken,
+            eventCallback: handlePaddleCheckoutEvent,
           });
         }
       } catch (e) {
@@ -56,6 +87,7 @@ export function initPaddle() {
       }
       win.Paddle.Initialize({
         token: PADDLE_CONFIG.clientToken,
+        eventCallback: handlePaddleCheckoutEvent,
       });
       win.Paddle._initialized = true;
     } catch (e) {
@@ -76,6 +108,7 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
 
     const effectivePriceId = priceId || PADDLE_CONFIG.priceId;
     const clampedDomains = Math.min(100, Math.max(1, domains || 10));
+    const successUrl = `${window.location.origin}/intake?domains=${clampedDomains}`;
 
     const triggerOpen = () => {
       if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
@@ -87,6 +120,7 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
             displayMode: 'overlay',
             theme: 'dark',
             locale: 'en',
+            successUrl,
           },
           items: [
             {
@@ -112,7 +146,7 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
 
 /**
  * Authoritatively mints a server transaction with dynamic unit price,
- * and opens Paddle checkout with the transaction ID.
+ * and opens Paddle checkout with the transaction ID and success redirect.
  */
 export async function openServerPaddleCheckout(domains: number): Promise<void> {
   if (typeof window === 'undefined') return;
@@ -132,6 +166,8 @@ export async function openServerPaddleCheckout(domains: number): Promise<void> {
     const data = await res.json().catch(() => ({}));
 
     if (res.ok && data.transactionId) {
+      const successUrl = `${window.location.origin}/intake?txn=${encodeURIComponent(data.transactionId)}&order_id=${encodeURIComponent(data.transactionId)}&domains=${clampedDomains}`;
+
       return new Promise((resolve) => {
         const triggerOpen = () => {
           if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
@@ -143,6 +179,7 @@ export async function openServerPaddleCheckout(domains: number): Promise<void> {
               settings: {
                 displayMode: 'overlay',
                 theme: 'dark',
+                successUrl,
               },
             });
             resolve();
