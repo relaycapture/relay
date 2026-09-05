@@ -20,32 +20,68 @@ export const PADDLE_CONFIG = {
   environment: (process.env.NEXT_PUBLIC_PADDLE_ENV as 'sandbox' | 'production') || (activeToken.startsWith('live_') ? 'production' : 'sandbox'),
 };
 
+let hasRedirected = false;
+let currentMintedTxnId: string = '';
+
+/**
+ * Safely navigates to the intake brief with authoritative transaction parameters.
+ * Prevents multiple concurrent navigation attempts.
+ */
+function navigateToIntake(txnId?: string, email?: string, domains?: number | string) {
+  if (hasRedirected || typeof window === 'undefined') return;
+  hasRedirected = true;
+
+  const effectiveTxn =
+    txnId ||
+    currentMintedTxnId ||
+    '';
+
+  const params = new URLSearchParams();
+  if (effectiveTxn) {
+    params.set('txn', effectiveTxn);
+    params.set('order_id', effectiveTxn);
+  }
+  if (email) params.set('email', email);
+  if (domains) params.set('domains', String(domains));
+
+  const redirectUrl = `/intake?${params.toString()}`;
+  window.location.href = redirectUrl;
+}
+
 /**
  * Global handler for Paddle checkout lifecycle events.
- * When payment completes and is verified, automatically redirects to the Engineering Intake Brief.
+ * Listens for checkout completion and provides a fail-safe redirect to /intake.
  */
 function handlePaddleCheckoutEvent(event: any) {
-  if (event && event.name === 'checkout.completed') {
+  if (!event) return;
+
+  if (event.name === 'checkout.completed') {
     try {
       const data = event.data || {};
-      const txnId = data.id || data.transaction_id || '';
+      const txnId =
+        data.transaction_id ||
+        data.transaction?.id ||
+        currentMintedTxnId ||
+        (typeof data.id === 'string' && data.id.startsWith('txn_') ? data.id : '') ||
+        '';
+
       const email = data.customer?.email || '';
       const customData = data.custom_data || {};
       const domains = customData.provision_domains || '';
 
-      const params = new URLSearchParams();
-      if (txnId) {
-        params.set('txn', txnId);
-        params.set('order_id', txnId);
-      }
-      if (email) params.set('email', email);
-      if (domains) params.set('domains', String(domains));
-
-      const redirectUrl = `/intake?${params.toString()}`;
-      window.location.href = redirectUrl;
+      // Paddle natively displays its confirmation screen and triggers successUrl redirect.
+      // We set a fallback timer in case Paddle's native redirect is delayed or blocked by browser extensions.
+      setTimeout(() => {
+        navigateToIntake(txnId, email, domains);
+      }, 2400);
     } catch (err) {
       console.error('[Paddle Checkout Redirect Error]', err);
-      window.location.href = '/intake';
+      navigateToIntake();
+    }
+  } else if (event.name === 'checkout.closed') {
+    // If user clicked Done or closed the modal after payment completed
+    if (currentMintedTxnId) {
+      navigateToIntake(currentMintedTxnId);
     }
   }
 }
@@ -110,7 +146,9 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
     const clampedDomains = Math.min(100, Math.max(1, domains || 10));
     const successUrl = `${window.location.origin}/intake?domains=${clampedDomains}`;
 
+    let attempts = 0;
     const triggerOpen = () => {
+      attempts++;
       if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
         if (PADDLE_CONFIG.environment === 'sandbox' && win.Paddle.Environment) {
           win.Paddle.Environment.set('sandbox');
@@ -125,7 +163,7 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
           items: [
             {
               priceId: effectivePriceId,
-              quantity: 1,
+              quantity: clampedDomains,
             },
           ],
           customData: {
@@ -135,8 +173,10 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
           },
         });
         resolve();
-      } else {
+      } else if (attempts < 50) {
         setTimeout(triggerOpen, 100);
+      } else {
+        resolve();
       }
     };
 
@@ -146,7 +186,8 @@ export function openPaddleDirectCheckout(domains: number, priceId?: string): Pro
 
 /**
  * Authoritatively mints a server transaction with dynamic unit price,
- * and opens Paddle checkout with the transaction ID and success redirect.
+ * and opens Paddle checkout with the transaction ID and native success redirect.
+ * Includes automatic retry and resilient client fallback.
  */
 export async function openServerPaddleCheckout(domains: number): Promise<void> {
   if (typeof window === 'undefined') return;
@@ -156,54 +197,80 @@ export async function openServerPaddleCheckout(domains: number): Promise<void> {
 
   const clampedDomains = Math.min(100, Math.max(1, domains || 10));
 
-  try {
-    const res = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ domains: clampedDomains }),
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (res.ok && data.transactionId) {
-      const successUrl = `${window.location.origin}/intake?txn=${encodeURIComponent(data.transactionId)}&order_id=${encodeURIComponent(data.transactionId)}&domains=${clampedDomains}`;
-
-      return new Promise((resolve) => {
-        const triggerOpen = () => {
-          if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
-            if (PADDLE_CONFIG.environment === 'sandbox' && win.Paddle.Environment) {
-              win.Paddle.Environment.set('sandbox');
-            }
-            win.Paddle.Checkout.open({
-              transactionId: data.transactionId,
-              settings: {
-                displayMode: 'overlay',
-                theme: 'dark',
-                successUrl,
-              },
-            });
-            resolve();
-          } else {
-            setTimeout(triggerOpen, 100);
-          }
-        };
-        triggerOpen();
+  const mintTransaction = async (): Promise<{ ok: boolean; transactionId?: string; error?: string }> => {
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domains: clampedDomains }),
       });
-    } else {
-      console.error('[Paddle Checkout] /api/checkout failed:', data);
-      // Fallback only if single domain (where 1 unit = $100 exactly)
-      if (clampedDomains === 1) {
-        return openPaddleDirectCheckout(1);
+
+      const rawText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = { error: rawText || `HTTP ${res.status}: ${res.statusText}` };
       }
-      throw new Error(data.error || 'Server checkout minting failed.');
+
+      if (res.ok && data.transactionId) {
+        return { ok: true, transactionId: data.transactionId };
+      }
+
+      return {
+        ok: false,
+        error: data.error || data.details?.message || `Server checkout minting failed (${res.status})`,
+      };
+    } catch (err: any) {
+      return { ok: false, error: err?.message || 'Network error connecting to /api/checkout' };
     }
-  } catch (err: any) {
-    console.error('[Paddle Checkout] Checkout error:', err);
-    if (clampedDomains === 1) {
-      return openPaddleDirectCheckout(1);
-    }
-    throw err;
+  };
+
+  // Attempt 1
+  let result = await mintTransaction();
+
+  // If failed (e.g. during dev server compilation or transient blip), retry once after 500ms
+  if (!result.ok) {
+    console.warn('[Paddle Checkout] First transaction mint attempt failed, retrying in 500ms...', result.error);
+    await new Promise((r) => setTimeout(r, 500));
+    result = await mintTransaction();
   }
+
+  if (result.ok && result.transactionId) {
+    currentMintedTxnId = result.transactionId;
+    const successUrl = `${window.location.origin}/intake?txn=${encodeURIComponent(result.transactionId)}&order_id=${encodeURIComponent(result.transactionId)}&domains=${clampedDomains}`;
+
+    return new Promise((resolve) => {
+      let attempts = 0;
+      const triggerOpen = () => {
+        attempts++;
+        if (win.Paddle && win.Paddle.Checkout && typeof win.Paddle.Checkout.open === 'function') {
+          if (PADDLE_CONFIG.environment === 'sandbox' && win.Paddle.Environment) {
+            win.Paddle.Environment.set('sandbox');
+          }
+          win.Paddle.Checkout.open({
+            transactionId: result.transactionId,
+            settings: {
+              displayMode: 'overlay',
+              theme: 'dark',
+              locale: 'en',
+              successUrl,
+            },
+          });
+          resolve();
+        } else if (attempts < 50) {
+          setTimeout(triggerOpen, 100);
+        } else {
+          resolve();
+        }
+      };
+      triggerOpen();
+    });
+  }
+
+  // Graceful fallback if server minting is unavailable
+  console.warn('[Paddle Checkout] Server transaction minting unavailable, engaging direct client checkout fallback:', result.error);
+  return openPaddleDirectCheckout(clampedDomains);
 }
 
 /**

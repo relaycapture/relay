@@ -5,7 +5,6 @@ import Lenis from 'lenis';
 import { TeleportOverlay } from './components/teleport-overlay';
 import { CustomCursor } from './components/custom-cursor';
 import { Navbar } from './components/navbar';
-import { QuickNav, QuickNavSection } from './components/quick-nav';
 import { HeroSection } from './components/sections/hero-section';
 import { DomainCheckerSection } from './components/sections/domain-checker-section';
 import { FinancialLeakage } from './components/sections/financial-leakage';
@@ -26,7 +25,7 @@ import { RefundsPage } from './components/refunds-page';
 import { initPaddle } from './utils/paddle';
 import { PagePhase, CurrentView, ScanResult } from './types';
 
-const SECTIONS: QuickNavSection[] = [
+const SECTIONS = [
   { id: 'hero-section', label: '01 // Overview' },
   { id: 'domain-checker-section', label: '02 // Domain Audit' },
   { id: 'cryptographic-baseline', label: '03 // Cryptographic Baseline' },
@@ -51,10 +50,8 @@ export default function App() {
   const [isSampleModalOpen, setIsSampleModalOpen] = useState(false);
   const [isRevenueImpactOpen, setIsRevenueImpactOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [isQuickNavOpen, setIsQuickNavOpen] = useState(false);
 
   const [showNavbar, setShowNavbar] = useState(true);
-  const [showQuickNav, setShowQuickNav] = useState(true);
 
   const lenisRef = useRef<Lenis | null>(null);
 
@@ -109,24 +106,10 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Proximity to top & bottom detection
+  // Navbar visibility on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      if (scrollY < 50) {
-        setShowNavbar(true);
-      } else {
-        setShowNavbar(true);
-      }
-
-      if (scrollY + windowHeight >= documentHeight - 100) {
-        setShowQuickNav(true);
-      } else {
-        setShowQuickNav(true);
-      }
+      setShowNavbar(true);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -182,7 +165,6 @@ export default function App() {
 
   // Navigation handlers
   const handleNavigate = (target: string) => {
-    setIsQuickNavOpen(false);
     document.body.style.overflow = '';
     lenisRef.current?.start();
 
@@ -320,61 +302,6 @@ export default function App() {
     }
   };
 
-  // Teleportation for QuickNav with section titles
-  const SECTION_TITLES: Record<string, string> = {
-    'hero-section': 'Overview',
-    'domain-checker-section': 'Domain Audit',
-    'cryptographic-baseline': 'Cryptographic Baseline',
-    'how-it-works': 'How It Works',
-    'invoice-settle-timeline': 'Post-Payment SLA',
-    'comparison-section': 'Architectural Benchmark',
-    'prerequisites-section': 'Have These Ready',
-    'fleet-pricing-section': 'Fleet Engineering Fee',
-    'faq-section': 'Architecture FAQ',
-    'contact-section': 'Engineering Contact',
-  };
-
-  const handleSelectSection = (sectionId: string) => {
-    setIsQuickNavOpen(false);
-    document.body.style.overflow = '';
-    lenisRef.current?.start();
-
-    const title =
-      SECTION_TITLES[sectionId] ||
-      SECTIONS.find((s) => s.id === sectionId)?.label.replace(/^\d+\s*\/\/\s*/, '') ||
-      'Overview';
-
-    triggerTeleportTransition(title, () => {
-      const isAlreadyOnLanding = currentView === 'landing';
-      if (!isAlreadyOnLanding) {
-        setCurrentView('landing');
-      }
-      document.body.style.overflow = '';
-      lenisRef.current?.start();
-
-      const scrollToTarget = () => {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          if (lenisRef.current) {
-            lenisRef.current.scrollTo(el, { immediate: true });
-          } else {
-            el.scrollIntoView({ behavior: 'instant' });
-          }
-          return true;
-        }
-        return false;
-      };
-
-      if (!scrollToTarget()) {
-        requestAnimationFrame(() => {
-          if (!scrollToTarget()) {
-            setTimeout(scrollToTarget, 50);
-          }
-        });
-      }
-    });
-  };
-
   return (
     <div className="min-h-screen bg-[#08080a] rc-page-grain-08080a text-[#F4F4F2] dark select-none">
       {/* Modern Black Cursor with White Outline & Tactile Click Confirmation */}
@@ -389,21 +316,8 @@ export default function App() {
           currentView={currentView}
           onNavigate={handleNavigate}
           isLightMode={false}
-          isHidden={!showNavbar || isQuickNavOpen}
-          isQuickNavOpen={isQuickNavOpen}
+          isHidden={!showNavbar}
           activeSection={activeSection}
-        />
-      )}
-
-      {/* Compressed Bottom-Left Proximity Section Quick-Nav with Full Backdrop Blur & Teleport */}
-      {currentView === 'landing' && (
-        <QuickNav
-          sections={SECTIONS}
-          activeSection={activeSection}
-          onSelectSection={handleSelectSection}
-          isLightMode={isLightMode}
-          onNearChange={setIsQuickNavOpen}
-          isVisible={showQuickNav}
         />
       )}
 

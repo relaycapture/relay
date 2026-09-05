@@ -218,7 +218,7 @@ export function FleetPricing({
               </div>
 
               <span className="text-[10px] font-mono tracking-wider text-neutral-500 uppercase">
-                (30 – 50 emails / day / inbox)
+                (30 – 35 emails / day / inbox)
               </span>
             </div>
           </motion.div>
@@ -289,11 +289,10 @@ export function FleetPricing({
               data-cursor="grow"
               onClick={handleCheckout}
               disabled={isMintingTransaction}
-              className={`relative z-10 w-full py-4 sm:py-5 px-6 font-mono text-sm tracking-wide font-semibold transition-all duration-150 rounded-[2px] flex items-center justify-center gap-3 cursor-pointer select-none border ${
-                isMintingTransaction ? 'opacity-70 cursor-wait' : ''
-              } ${isLightMode
-                ? 'bg-black text-white hover:bg-neutral-800 border-black/30 shadow-[0_4px_16px_rgba(0,0,0,0.2)]'
-                : 'bg-white text-black hover:bg-neutral-200 border-white/60 shadow-[0_4px_24px_rgba(255,255,255,0.2),inset_0_1px_0_0_rgba(255,255,255,0.9)]'
+              className={`relative z-10 w-full py-4 sm:py-5 px-6 font-mono text-sm tracking-wide font-semibold transition-all duration-150 rounded-[2px] flex items-center justify-center gap-3 cursor-pointer select-none border ${isMintingTransaction ? 'opacity-70 cursor-wait' : ''
+                } ${isLightMode
+                  ? 'bg-black text-white hover:bg-neutral-800 border-black/30 shadow-[0_4px_16px_rgba(0,0,0,0.2)]'
+                  : 'bg-white text-black hover:bg-neutral-200 border-white/60 shadow-[0_4px_24px_rgba(255,255,255,0.2),inset_0_1px_0_0_rgba(255,255,255,0.9)]'
                 }`}
             >
               <span>Deploy {domainCount}-Domain Fleet (${engineeringFee.toLocaleString()})</span>

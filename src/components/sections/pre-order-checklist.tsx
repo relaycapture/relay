@@ -14,7 +14,17 @@ const PREREQUISITES = [
   {
     num: '1',
     title: 'Secondary Domains',
-    desc: '10 pre-registered domains inside your registrar (or purchase our recommended name list via a 1-click bulk registrar cart link).',
+    desc: (
+      <>
+        10 secondary domains added to Cloudflare with DNS zone management delegated to{' '}
+        <a
+          href="mailto:sam@relaycapture.com"
+          className="text-white underline underline-offset-2 hover:text-neutral-300 transition-colors font-mono"
+        >
+          sam@relaycapture.com
+        </a>
+      </>
+    ),
   },
   {
     num: '2',
@@ -25,6 +35,16 @@ const PREREQUISITES = [
     num: '3',
     title: 'Sequencer Access',
     desc: 'A member or API invite to your Smartlead or Instantly workspace.',
+  },
+  {
+    num: '4',
+    title: 'Domain Prefixes',
+    desc: 'First/last display names and mailbox handle rules (alex@ vs a.vance@).',
+  },
+  {
+    num: '5',
+    title: 'Catch-All Address',
+    desc: 'An active address to receive routed catch-all replies.',
   },
 ];
 

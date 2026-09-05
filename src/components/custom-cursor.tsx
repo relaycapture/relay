@@ -11,18 +11,12 @@ export function CustomCursor({ isLightMode: _isLightMode }: CustomCursorProps) {
   const rippleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Inject permanent global cursor suppression style tag into <head>
-    let styleTag = document.getElementById('force-system-cursor-hidden');
-    if (!styleTag) {
-      styleTag = document.createElement('style');
-      styleTag.id = 'force-system-cursor-hidden';
-      styleTag.innerHTML = `
-        *, *::before, *::after, html, body, button, a, input, select, textarea, [role="button"], [data-cursor], .cursor-pointer, .cursor-default, .cursor-text, .cursor-move {
-          cursor: none !important;
-        }
-      `;
-      document.head.appendChild(styleTag);
-    }
+    // Enable custom cursor suppression class on <html> only while mounted
+    document.documentElement.classList.add('custom-cursor-active');
+
+    // Clean up any old injected style tag
+    const oldStyleTag = document.getElementById('force-system-cursor-hidden');
+    if (oldStyleTag) oldStyleTag.remove();
 
     const cursor = cursorRef.current;
     const ripple = rippleRef.current;
@@ -147,6 +141,7 @@ export function CustomCursor({ isLightMode: _isLightMode }: CustomCursorProps) {
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
       cancelAnimationFrame(raf);
+      document.documentElement.classList.remove('custom-cursor-active');
     };
   }, []);
 

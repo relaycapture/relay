@@ -8,21 +8,7 @@
     --ease-teleport: cubic-bezier(0.83, 0, 0.17, 1);
   }
 
-  /* Unconditional global cursor suppression (eliminates OS cursor on all devices, including touchscreen laptops) */
-  html,
-  body,
-  button,
-  a,
-  input,
-  select,
-  textarea,
-  [role="button"],
-  iframe,
-  *,
-  *::before,
-  *::after {
-    cursor: none !important;
-  }
+
 
   html {
     font-family: var(--font-sans);
@@ -318,24 +304,26 @@
 }
 
 /* ========================================================================= */
-/* ABSOLUTE CURSOR SUPPRESSION: Zero OS Cursor Leakage Across Any Device     */
-/* Placed at root level outside cascade layers to override all browser defaults */
+/* CUSTOM CURSOR SUPPRESSION (Strictly scoped to when custom cursor is mounted) */
 /* ========================================================================= */
-html,
-body,
-*,
-*::before,
-*::after,
-button,
-a,
-input,
-select,
-textarea,
-[role="button"],
-[data-cursor],
-.cursor-pointer,
-.cursor-default,
-.cursor-text,
-.cursor-move {
+html.custom-cursor-active,
+html.custom-cursor-active body,
+html.custom-cursor-active * {
   cursor: none !important;
+}
+
+/* ========================================================================= */
+/* DEFAULT INTERACTIVE CURSOR STATES (Standard across all other views)      */
+/* ========================================================================= */
+a,
+button,
+[role="button"],
+.cursor-pointer {
+  cursor: pointer;
+}
+
+input,
+textarea,
+.cursor-text {
+  cursor: text;
 }

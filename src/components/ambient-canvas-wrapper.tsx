@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion';
 
 interface AmbientCanvasWrapperProps {
@@ -8,7 +9,10 @@ interface AmbientCanvasWrapperProps {
 }
 
 export function AmbientCanvasWrapper({ children }: AmbientCanvasWrapperProps) {
-  // Motion values for cursor coordinates
+  const pathname = usePathname();
+  const isIntakePage = pathname?.startsWith('/intake');
+
+  // Motion values for cursor coordinates (only active on main marketing pages)
   const mouseX = useMotionValue(-1000);
   const mouseY = useMotionValue(-1000);
 
@@ -18,6 +22,8 @@ export function AmbientCanvasWrapper({ children }: AmbientCanvasWrapperProps) {
   const springY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    if (isIntakePage) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -25,19 +31,21 @@ export function AmbientCanvasWrapper({ children }: AmbientCanvasWrapperProps) {
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isIntakePage]);
 
   // Soft, diffused radial spotlight smoothly tracking cursor coordinates (850px circle)
   const background = useMotionTemplate`radial-gradient(850px circle at ${springX}px ${springY}px, rgba(255, 255, 255, 0.04), transparent 75%)`;
 
   return (
     <div className="relative min-h-screen w-full bg-[#08080a] text-[#F4F4F2] overflow-x-hidden">
-      {/* Soft Diffused Radial Spotlight Tracking Cursor */}
-      <motion.div
-        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-        style={{ background }}
-        aria-hidden="true"
-      />
+      {/* Soft Diffused Radial Spotlight Tracking Cursor (Disabled on intake to preserve pure native cursor) */}
+      {!isIntakePage && (
+        <motion.div
+          className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+          style={{ background }}
+          aria-hidden="true"
+        />
+      )}
 
 
 

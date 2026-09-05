@@ -110,7 +110,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark overflow-x-hidden max-w-[100vw]">
+    <html lang="en" className="dark overflow-x-hidden max-w-[100vw]" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -125,17 +125,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Instantaneous unconditional cursor suppression on initial paint */}
-        <style
-          id="root-cursor-suppression"
-          dangerouslySetInnerHTML={{
-            __html: `
-              *, *::before, *::after, html, body, button, a, input, select, textarea, [role="button"], [data-cursor], .cursor-pointer, .cursor-default, .cursor-text, .cursor-move {
-                cursor: none !important;
-              }
-            `,
-          }}
-        />
+
       </head>
       <body className="bg-[#08080a] text-[#F4F4F2] overflow-x-hidden max-w-[100vw] w-full antialiased">
         {/* SVG glass refraction filter for custom cursor */}

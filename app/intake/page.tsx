@@ -4,7 +4,16 @@ import React, { useEffect, useState, Suspense } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ArrowLeft, ExternalLink, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  ShieldCheck,
+  Clock,
+  CheckCircle2,
+  Copy,
+  Check,
+  Maximize2,
+  Minimize2,
+} from 'lucide-react';
 
 function IntakeContent() {
   const searchParams = useSearchParams();
@@ -12,11 +21,32 @@ function IntakeContent() {
   const [customerEmail, setCustomerEmail] = useState<string>('');
   const [domainCount, setDomainCount] = useState<number>(10);
   const [orderId, setOrderId] = useState<string>('');
+  const [copied, setCopied] = useState(false);
+  const [isFocusMode, setIsFocusMode] = useState(false);
+  const [isBriefLoading, setIsBriefLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsBriefLoading(false);
+    }, 1100);
+    return () => clearTimeout(timer);
+  }, []);
+
+
 
   const txnParam = searchParams.get('txn') || searchParams.get('order_id') || '';
   const emailParam = searchParams.get('email') || '';
   const domainsParam = searchParams.get('domains') || searchParams.get('provision_domains') || '';
 
+  // 1. Authoritatively ensure clean native cursor on intake page and remove any dangling elements
+  useEffect(() => {
+    const forceHidden = document.getElementById('force-system-cursor-hidden');
+    if (forceHidden) {
+      forceHidden.remove();
+    }
+  }, []);
+
+  // 2. Authoritative parameter sync & Paddle verification check
   useEffect(() => {
     if (emailParam) setCustomerEmail(emailParam);
     if (txnParam) setOrderId(txnParam);
@@ -24,7 +54,6 @@ function IntakeContent() {
       setDomainCount(parseInt(domainsParam, 10));
     }
 
-    // If transaction ID is available, verify payment authoritatively against Paddle
     if (txnParam) {
       let attempts = 0;
       const maxAttempts = 4;
@@ -46,20 +75,29 @@ function IntakeContent() {
             }
           })
           .catch(() => {
-            // If network check errors, assume client session is legitimate
             setIsVerified(true);
           });
       };
 
       checkVerification();
     } else {
-      // Direct access without txn parameter
       setIsVerified(null);
     }
   }, [txnParam, emailParam, domainsParam]);
 
+  const handleCopyOrderId = async () => {
+    if (!orderId) return;
+    try {
+      await navigator.clipboard.writeText(orderId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (_) {}
+  };
+
   // Construct forwardable query string for Tally hidden fields
   const tallyQuery = new URLSearchParams();
+  // Ensure transparentBackground=1 is explicitly set so the website's rich canvas shines through
+  tallyQuery.set('transparentBackground', '1');
   if (customerEmail) tallyQuery.set('email', customerEmail);
   if (orderId) {
     tallyQuery.set('order_id', orderId);
@@ -67,7 +105,7 @@ function IntakeContent() {
   }
   if (domainCount) tallyQuery.set('domains', String(domainCount));
 
-  // Forward all other inbound query parameters automatically
+  // Forward all other query parameters automatically to Tally
   searchParams.forEach((value, key) => {
     if (!tallyQuery.has(key)) {
       tallyQuery.set(key, value);
@@ -76,17 +114,67 @@ function IntakeContent() {
 
   const tallyBaseUrl = 'https://tally.so/r/KYEpy8';
   const queryString = tallyQuery.toString();
-  const tallyFullUrl = queryString ? `${tallyBaseUrl}?${queryString}` : tallyBaseUrl;
-
-  const displayOrderLabel = orderId
-    ? orderId.length > 18
-      ? `${orderId.slice(0, 8)}...${orderId.slice(-6)}`
-      : orderId
-    : customerEmail || 'PENDING';
+  const tallyFullUrl = `${tallyBaseUrl}?${queryString}`;
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-[#F4F4F2] flex flex-col font-sans select-none antialiased">
-      {/* Load Tally official embed widget */}
+    <div
+      id="relay-intake-root"
+      className="h-screen w-screen overflow-hidden bg-[#08080a] text-[#F4F4F2] flex flex-col font-sans antialiased relative selection:bg-white/20 selection:text-white"
+    >
+
+      {/* High-specificity normal cursor enforcement across all elements in intake view */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            html,
+            body,
+            #relay-intake-root,
+            #relay-intake-root *,
+            header,
+            header *,
+            nav,
+            nav * {
+              cursor: auto !important;
+            }
+            a,
+            a *,
+            button,
+            button *,
+            [role="button"],
+            [role="button"] *,
+            .cursor-pointer {
+              cursor: pointer !important;
+            }
+            input,
+            textarea,
+            .cursor-text {
+              cursor: text !important;
+            }
+          `,
+        }}
+      />
+
+      {/* Atmospheric Canvas Layers Behind Transparent Form */}
+
+
+      {/* 2. Atmospheric Top Radial Vignette */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-15%,rgba(255,255,255,0.04),transparent)]"
+        aria-hidden="true"
+      />
+
+      {/* 3. Hardware-Accelerated SVG Noise Grain Texture */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 select-none mix-blend-overlay opacity-[0.038]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '160px 160px',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Official Tally Embed Widget Script */}
       <Script
         src="https://tally.so/widgets/embed.js"
         strategy="afterInteractive"
@@ -98,74 +186,149 @@ function IntakeContent() {
         }}
       />
 
-      {/* Top Telemetry & Status Bar */}
-      <header className="h-14 sm:h-16 border-b border-white/10 bg-[#09090b]/95 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between z-30 shrink-0">
-        <div className="flex items-center gap-3 sm:gap-5">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 font-mono text-xs text-neutral-400 hover:text-white transition-colors py-1 px-2 -ml-2 rounded hover:bg-white/5"
-            title="Return to Relay Capture"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden min-[480px]:inline">RELAY CAPTURE</span>
-          </Link>
+      {/* Sleek, Expensive Brief Reveal Transition */}
+      <div
+        className={`fixed inset-0 z-50 bg-[#08080a] flex flex-col items-center justify-center text-center px-6 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isBriefLoading
+            ? 'opacity-100 pointer-events-auto visible'
+            : 'opacity-0 pointer-events-none invisible'
+        }`}
+      >
+        <div className="relative z-10 max-w-md w-full">
+          <h2 className="font-sans text-3xl font-medium tracking-tight text-white mb-2">
+            Payment confirmed.
+          </h2>
+          <p className="font-sans text-sm text-neutral-400 font-normal mb-8">
+            Preparing your engineering brief.
+          </p>
+          <div className="w-48 h-[1px] bg-white/10 relative overflow-hidden mx-auto mb-6">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent animate-pulse" />
+          </div>
+          {orderId && (
+            <div className="font-mono text-xs text-neutral-500 tracking-wide">
+              Order <span className="text-neutral-300 font-medium">{orderId}</span>
+            </div>
+          )}
+        </div>
+      </div>
 
-          <span className="h-4 w-px bg-white/10 hidden min-[480px]:block" />
+      {/* Sleek, Expensive Floating Telemetry Command Bar */}
+      {!isFocusMode && (
+        <header
+          style={{ cursor: 'auto' }}
+          className="h-13 sm:h-14 border-b border-white/[0.07] bg-[#08080a]/75 backdrop-blur-2xl px-4 sm:px-6 flex items-center justify-between z-30 shrink-0 select-none relative"
+        >
+          <div className="flex items-center gap-3 sm:gap-5 overflow-hidden">
+            <Link
+              href="/"
+              style={{ cursor: 'pointer' }}
+              className="inline-flex items-center gap-2 font-mono text-xs text-neutral-400 hover:text-white transition-colors py-1.5 px-2.5 -ml-1 rounded hover:bg-white/[0.05] shrink-0 tracking-tight"
+              title="Return to Relay Capture overview"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-neutral-400" />
+              <span className="hidden min-[540px]:inline">RELAY CAPTURE</span>
+            </Link>
 
-          {/* Verification Badge */}
-          <div className="flex items-center gap-2 font-mono text-[11px] sm:text-xs">
-            {isVerified === true ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-semibold">
-                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                <span>PAYMENT VERIFIED</span>
-              </span>
-            ) : isVerified === false ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/25">
-                <span>VERIFYING SETTLEMENT</span>
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/5 text-neutral-300 border border-white/10">
-                <ShieldCheck className="w-3 h-3 text-neutral-400" />
-                <span>ENGINEERING INTAKE</span>
-              </span>
+            <span className="h-3.5 w-px bg-white/[0.08] hidden min-[540px]:block shrink-0" />
+
+            {/* Verification Status Indicator */}
+            <div className="flex items-center gap-2 font-mono text-xs shrink-0">
+              {isVerified === true ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-medium tracking-tight">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  <span>Payment confirmed</span>
+                </span>
+              ) : isVerified === false ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[11px] font-medium tracking-tight">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <span>Verifying settlement</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.04] text-neutral-300 border border-white/[0.08] text-[11px] font-medium tracking-tight">
+                  <ShieldCheck className="w-3 h-3 text-neutral-400" />
+                  <span>Engineering intake</span>
+                </span>
+              )}
+            </div>
+
+            {/* Real Authoritative Transaction Order ID with 1-Click Copy */}
+            {orderId && (
+              <div className="flex items-center gap-1.5 font-mono text-xs text-neutral-300 bg-white/[0.03] border border-white/[0.07] px-2.5 py-1 rounded max-w-[260px] sm:max-w-[400px] md:max-w-none overflow-hidden">
+                <span className="text-neutral-500 text-[11px] hidden md:inline">Order:</span>
+                <span className="text-neutral-200 tracking-tight truncate font-medium" title={orderId}>
+                  {orderId}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopyOrderId}
+                  style={{ cursor: 'pointer' }}
+                  className="ml-1 p-1 hover:bg-white/[0.08] rounded transition-colors text-neutral-400 hover:text-white shrink-0 inline-flex items-center gap-1 text-[11px]"
+                  title="Copy transaction ID to clipboard"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3 h-3 text-emerald-400" />
+                      <span className="text-emerald-400 font-medium hidden sm:inline text-[10px]">COPIED</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3 h-3" />
+                      <span className="hidden sm:inline text-[10px] text-neutral-400">COPY</span>
+                    </>
+                  )}
+                </button>
+              </div>
             )}
-
-            <span className="text-neutral-500 hidden sm:inline">•</span>
-            <span className="text-neutral-400 font-mono hidden sm:inline">
-              ORDER: <strong className="text-neutral-200">{displayOrderLabel}</strong>
-            </span>
-          </div>
-        </div>
-
-        {/* Right SLA Telemetry */}
-        <div className="flex items-center gap-3 sm:gap-4 font-mono text-[11px] sm:text-xs text-neutral-400">
-          <div className="hidden md:flex items-center gap-1.5 text-neutral-300">
-            <Clock className="w-3.5 h-3.5 text-neutral-400" />
-            <span>SLA: <strong className="text-white">48-Hour Provisioning</strong></span>
           </div>
 
-          <a
-            href={tallyFullUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-neutral-400 hover:text-white transition-colors text-[11px] py-1 px-2 rounded hover:bg-white/5"
-            title="Open brief in full window"
-          >
-            <span className="hidden sm:inline">Full Window</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
-        </div>
-      </header>
+          {/* Right Action & SLA Indicators */}
+          <div className="flex items-center gap-3 sm:gap-5 font-mono text-xs text-neutral-400 shrink-0">
+            <div className="hidden lg:flex items-center gap-1.5 text-neutral-300 text-xs">
+              <Clock className="w-3.5 h-3.5 text-neutral-400" />
+              <span>SLA: <strong className="text-white font-medium">48-Hour Provisioning</strong></span>
+            </div>
 
-      {/* Full Height Responsive Tally Iframe Embed */}
-      <main className="flex-1 relative w-full h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] bg-[#08080a] overflow-hidden">
+            {/* Focus / Fullscreen Mode Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsFocusMode(true)}
+              style={{ cursor: 'pointer' }}
+              className="inline-flex items-center gap-1.5 text-neutral-400 hover:text-white transition-colors text-xs py-1 px-2.5 rounded hover:bg-white/[0.05]"
+              title="Hide top bar for borderless full-window view"
+            >
+              <Maximize2 className="w-3 h-3" />
+              <span className="hidden sm:inline">Full Window</span>
+            </button>
+
+
+          </div>
+        </header>
+      )}
+
+      {/* Floating Restore Button when in Focus Mode */}
+      {isFocusMode && (
+        <button
+          type="button"
+          onClick={() => setIsFocusMode(false)}
+          style={{ cursor: 'pointer' }}
+          className="fixed top-4 right-4 z-50 bg-[#09090b]/80 border border-white/15 text-neutral-300 hover:text-white px-3.5 py-1.5 rounded-full text-xs font-mono backdrop-blur-xl shadow-2xl inline-flex items-center gap-1.5 hover:bg-white/10 transition-all cursor-pointer"
+          title="Restore top status bar"
+        >
+          <Minimize2 className="w-3.5 h-3.5" />
+          <span>Exit Full Window</span>
+        </button>
+      )}
+
+      {/* Full Window Transparent Tally Iframe Embed Floating on Living Website Canvas */}
+      <main className="flex-1 relative w-full h-full bg-transparent overflow-hidden z-10">
         <iframe
           data-tally-src={tallyFullUrl}
           src={tallyFullUrl}
           width="100%"
           height="100%"
-          className="absolute inset-0 w-full h-full border-0"
-          title={`Engineering Intake Brief · Order #${customerEmail || orderId || 'RELAY'}`}
+          style={{ background: 'transparent' }}
+          className="absolute inset-0 w-full h-full border-0 bg-transparent"
+          title={`Engineering Intake Brief · Order #${orderId || customerEmail || 'RELAY'}`}
         />
       </main>
     </div>
@@ -176,8 +339,11 @@ export default function IntakePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#08080a] text-neutral-400 font-mono text-xs flex items-center justify-center">
-          <span>INITIALIZING ENGINEERING INTAKE BRIEF...</span>
+        <div className="h-screen w-screen bg-[#08080a] text-neutral-400 font-sans text-sm flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span className="text-neutral-400 font-normal">Loading engineering brief...</span>
+          </div>
         </div>
       }
     >

@@ -9,7 +9,6 @@ interface NavbarProps {
   onNavigate: (view: string) => void;
   isLightMode: boolean;
   isHidden?: boolean;
-  isQuickNavOpen?: boolean;
   activeSection?: string;
 }
 
@@ -18,7 +17,6 @@ export function Navbar({
   onNavigate,
   isLightMode,
   isHidden = false,
-  isQuickNavOpen = false,
   activeSection,
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -90,7 +88,7 @@ export function Navbar({
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5 sm:w-6 sm:h-6 block"
               animate={{
-                rotate: isScrolled ? 180 : isQuickNavOpen ? 0 : -14,
+                rotate: isScrolled ? 180 : -14,
               }}
               transition={{ type: 'spring', stiffness: 260, damping: 22 }}
             >
@@ -102,13 +100,7 @@ export function Navbar({
                     ? 'text-[#1d1d1f] group-hover:text-black transition-colors duration-200'
                     : 'text-white group-hover:text-neutral-200 transition-colors duration-200'
                 }
-                animate={{
-                  d:
-                    isQuickNavOpen && !isScrolled
-                      ? 'M 4 2.5 L 8 2.5 L 8 17.5 L 4 17.5 Z'
-                      : 'M 10 1.5 L 10.2 1.5 L 10.2 18.5 L 2 18.5 Z',
-                }}
-                transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+                d="M 10 1.5 L 10.2 1.5 L 10.2 18.5 L 2 18.5 Z"
               />
               {/* Right Bar */}
               <motion.path
@@ -118,13 +110,7 @@ export function Navbar({
                     ? 'text-[#1d1d1f] group-hover:text-black transition-colors duration-200'
                     : 'text-white group-hover:text-neutral-200 transition-colors duration-200'
                 }
-                animate={{
-                  d:
-                    isQuickNavOpen && !isScrolled
-                      ? 'M 12 2.5 L 16 2.5 L 16 17.5 L 12 17.5 Z'
-                      : 'M 9.8 1.5 L 10 1.5 L 18 18.5 L 9.8 18.5 Z',
-                }}
-                transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+                d="M 9.8 1.5 L 10 1.5 L 18 18.5 L 9.8 18.5 Z"
               />
             </motion.svg>
           </button>

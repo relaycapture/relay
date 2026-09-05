@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Lock, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { HeroSection } from './sections/hero-section';
 import { DomainCheckerSection } from './sections/domain-checker-section';
 import { CryptographicBaseline } from './sections/cryptographic-baseline';
@@ -268,17 +268,21 @@ export function QuickNav({
           </nav>
         )}
 
-        {/* EXPANDED HOVER STATE: Bold editorial typography 01 to 10 */}
+        {/* EXPANDED HOVER STATE: Machined Obsidian Glass Panel */}
         {isNear && (
-          <div className="flex flex-col gap-1 animate-fade-in p-2">
-            <div className="mb-2 flex items-center gap-2 text-xs font-mono tracking-widest text-white font-bold uppercase">
-              <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.8)] animate-pulse" />
-              <span>NAVIGATION / JUMP</span>
+          <div className="flex flex-col gap-0.5 animate-fade-in p-3 bg-[#08080a]/92 border border-white/[0.1] backdrop-blur-2xl rounded-[3px] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_24px_48px_rgba(0,0,0,0.85)] min-w-[270px]">
+            <div className="mb-2 pb-2 border-b border-white/[0.07] flex items-center justify-between text-[11px] font-mono tracking-widest text-neutral-400 uppercase select-none">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+                <span className="text-white font-medium">DIRECTORY</span>
+              </div>
+              <span className="text-neutral-500 text-[10px]">10 SECTIONS</span>
             </div>
 
             {sections.map((section, index) => {
               const isSelected = currentPreviewId === section.id;
               const numStr = String(index + 1).padStart(2, '0');
+              const cleanLabel = section.label.replace(/^\d+\s*\/\/\s*/, '');
 
               return (
                 <button
@@ -286,67 +290,38 @@ export function QuickNav({
                   id={`quick-nav-btn-${section.id}`}
                   onClick={() => handleSelect(section.id)}
                   onMouseEnter={() => setHoveredSectionId(section.id)}
-                  className={`group flex items-center gap-3 py-1.5 text-left bg-transparent border-0 outline-none cursor-pointer transition-all duration-200 ${
-                    isSelected ? 'translate-x-2' : 'hover:translate-x-1'
+                  className={`group flex items-center justify-between px-2.5 py-1.5 rounded-[2px] text-left bg-transparent border-0 outline-none cursor-pointer transition-all duration-150 ${
+                    isSelected
+                      ? 'bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]'
+                      : 'text-neutral-400 hover:text-neutral-200 hover:bg-white/[0.04]'
                   }`}
                 >
-                  <div
-                    className="h-[2px] rounded-full transition-all duration-300 flex-shrink-0"
-                    style={{
-                      width: isSelected ? '28px' : '10px',
-                      backgroundColor: isSelected
-                        ? isLightMode
-                          ? '#000000'
-                          : '#ffffff'
-                        : isLightMode
-                          ? 'rgba(0, 0, 0, 0.3)'
-                          : 'rgba(255, 255, 255, 0.3)',
-                    }}
-                  />
-
-                  <div className="flex items-baseline gap-2">
+                  <div className="flex items-center gap-2.5">
                     <span
-                      className={`font-mono text-base md:text-lg font-bold transition-all duration-200 ${
-                        isSelected
-                          ? isLightMode
-                            ? 'text-black scale-105'
-                            : 'text-white scale-105'
-                          : isLightMode
-                            ? 'text-neutral-500 group-hover:text-neutral-800'
-                            : 'text-neutral-400 group-hover:text-neutral-200'
+                      className={`font-mono text-xs tabular-nums ${
+                        isSelected ? 'text-white font-semibold' : 'text-neutral-500'
                       }`}
                     >
                       {numStr}
                     </span>
-
                     <span
-                      className={`font-mono text-sm md:text-base tracking-tight transition-all duration-200 ${
-                        isSelected
-                          ? isLightMode
-                            ? 'text-black font-bold scale-[1.03]'
-                            : 'text-white font-bold scale-[1.03]'
-                          : isLightMode
-                            ? 'text-neutral-600 group-hover:text-neutral-900'
-                            : 'text-neutral-400 group-hover:text-neutral-200'
+                      className={`font-mono text-xs tracking-tight ${
+                        isSelected ? 'text-white font-medium' : 'text-neutral-300'
                       }`}
                     >
-                      // {section.label.replace(/^\d+\s*\/\/\s*/, '')}
+                      {cleanLabel}
                     </span>
                   </div>
 
                   {isSelected && (
-                    <ArrowRight
-                      className={`w-4 h-4 ml-1 flex-shrink-0 animate-pulse ${
-                        isLightMode ? 'text-black' : 'text-white'
-                      }`}
-                    />
+                    <ArrowRight className="w-3.5 h-3.5 text-white/80 shrink-0" />
                   )}
                 </button>
               );
             })}
 
-            <div className="mt-3 pt-2 text-[11px] font-mono text-neutral-400">
-              [Scroll or hover to preview • Click to jump]
+            <div className="mt-2 pt-2 border-t border-white/[0.07] text-[10px] font-mono text-neutral-500 text-center select-none">
+              CLICK TO NAVIGATE · SCROLL TO CYCLE
             </div>
           </div>
         )}
@@ -380,9 +355,9 @@ export function QuickNav({
                     key={section.id}
                     onClick={() => handleSelect(section.id)}
                     onMouseEnter={() => setHoveredSectionId(section.id)}
-                    className={`w-full rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden relative flex flex-col ${
+                    className={`w-full rounded-[3px] border transition-all duration-300 cursor-pointer overflow-hidden relative flex flex-col ${
                       isCenter
-                        ? 'scale-100 shadow-2xl z-20 ring-1 ring-white/30'
+                        ? 'scale-100 shadow-2xl z-20'
                         : isAdjacent
                           ? 'scale-[0.94] shadow-lg z-10 hover:scale-[0.96]'
                           : 'scale-[0.88] z-0'
@@ -391,52 +366,33 @@ export function QuickNav({
                       height: `${CARD_HEIGHT}px`,
                       marginBottom: `${CARD_GAP}px`,
                       opacity: 1,
-                      backgroundColor: isLightMode ? '#ffffff' : '#0d0d12',
+                      backgroundColor: '#08080a',
                       borderColor: isCenter
-                        ? isLightMode
-                          ? 'rgba(0, 0, 0, 0.25)'
-                          : 'rgba(255, 255, 255, 0.28)'
-                        : isLightMode
-                          ? 'rgba(0, 0, 0, 0.12)'
-                          : 'rgba(255, 255, 255, 0.12)',
+                        ? 'rgba(255, 255, 255, 0.22)'
+                        : 'rgba(255, 255, 255, 0.08)',
                       boxShadow: isCenter
-                        ? isLightMode
-                          ? '0 25px 60px -12px rgba(0, 0, 0, 0.28), 0 0 1px 1px rgba(0, 0, 0, 0.1)'
-                          : '0 30px 70px -12px rgba(0, 0, 0, 0.95), 0 0 1px 1px rgba(255, 255, 255, 0.18)'
-                        : isLightMode
-                          ? '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
-                          : '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                        ? '0 24px 64px -12px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+                        : '0 12px 32px rgba(0, 0, 0, 0.6)',
                       transform: 'translateZ(0)',
                     }}
                   >
-                    {/* Desktop Browser Top Frame Window Bar */}
+                    {/* Precision Telemetry Header */}
                     <div
-                      className={`h-7 px-3.5 border-b flex items-center justify-between font-mono text-[10px] select-none z-30 flex-shrink-0 ${
-                        isLightMode
-                          ? 'bg-neutral-100 border-black/10 text-neutral-600'
-                          : 'bg-black/80 border-white/10 text-neutral-400'
-                      }`}
+                      className="h-8 px-4 border-b border-white/[0.08] bg-[#0a0a0c] flex items-center justify-between font-mono text-[10px] text-neutral-400 select-none z-30 flex-shrink-0"
                     >
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-white/20 inline-block" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-white/30 inline-block" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-white/40 inline-block" />
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/40 inline-block" />
+                        <span className="text-neutral-300 tracking-wider font-medium">RELAY // ARCHITECTURE VIEWPORT</span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 opacity-90">
-                        <Lock className="w-2.5 h-2.5 text-white" />
-                        <span className="truncate max-w-[260px] font-mono text-[10px] text-neutral-400">
-                          relaycapture.com/#{section.id}
+                      <div className="flex items-center gap-2">
+                        <span className="text-neutral-500 font-mono">
+                          [{String(idx + 1).padStart(2, '0')}/10]
+                        </span>
+                        <span className="text-neutral-300 font-medium tracking-tight uppercase">
+                          {section.id.replace(/-/g, '_')}
                         </span>
                       </div>
-
-                      <span
-                        className={`text-[9px] font-bold uppercase font-mono ${
-                          isCenter ? 'text-white' : 'text-neutral-400'
-                        }`}
-                      >
-                        {String(idx + 1).padStart(2, '0')} // LIVE STREAM
-                      </span>
                     </div>
 
                     {/* Desktop Live Section Screen Body */}

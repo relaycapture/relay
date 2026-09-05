@@ -6,6 +6,8 @@ import { NextRequest, NextResponse } from 'next/server';
  * Verifies with Paddle API that a given transaction ID has been settled/completed.
  * Returns verified status, customer email, domains, and prepared Tally intake brief URL.
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -14,6 +16,14 @@ export async function GET(request: NextRequest) {
     if (!txnId) {
       return NextResponse.json(
         { error: 'Missing txn parameter' },
+        { status: 400 }
+      );
+    }
+
+    // Security Hardening: Enforce strict Paddle transaction ID format to prevent SSRF or path traversal
+    if (!/^txn_[a-zA-Z0-9]+$/.test(txnId)) {
+      return NextResponse.json(
+        { error: 'Invalid transaction ID format. Expected txn_[alphanumeric]' },
         { status: 400 }
       );
     }

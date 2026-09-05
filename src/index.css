@@ -17,22 +17,10 @@
   }
 }
 
-/* Unconditional global cursor suppression (immune to OS or touch-screen overrides) */
-html,
-body,
-*,
-*::before,
-*::after,
-button,
-a,
-input,
-select,
-textarea,
-[role="button"],
-[data-cursor],
-[data-cursor="grow"],
-.cursor-pointer,
-.cursor-default {
+/* Global cursor suppression (active strictly when custom cursor is enabled) */
+html.custom-cursor-active,
+html.custom-cursor-active body,
+html.custom-cursor-active * {
   cursor: none !important;
 }
 

@@ -20,8 +20,8 @@ const TIMELINE_EVENTS = [
   },
   {
     num: '02',
-    timeBadge: 'Minute 04',
-    title: 'The 3-Minute Handoff',
+    timeBadge: 'Minute 05',
+    title: 'The Handoff',
     description:
       'You submit three fields: your naming preferences, your sequencer workspace invite, and scoped operator invites to your Cloudflare and Workspace accounts. You never touch raw DNS records, TXT strings, or user provisioning.',
   },
