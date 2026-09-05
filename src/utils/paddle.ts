@@ -268,9 +268,14 @@ export async function openServerPaddleCheckout(domains: number): Promise<void> {
     });
   }
 
-  // Graceful fallback if server minting is unavailable
-  console.warn('[Paddle Checkout] Server transaction minting unavailable, engaging direct client checkout fallback:', result.error);
-  return openPaddleDirectCheckout(clampedDomains);
+  // Fallback only if single domain (where 1 unit = $100 exactly)
+  if (clampedDomains === 1) {
+    console.warn('[Paddle Checkout] Server transaction minting unavailable, engaging single-domain direct client checkout fallback:', result.error);
+    return openPaddleDirectCheckout(1);
+  }
+
+  console.error('[Paddle Checkout] Server transaction minting failed:', result.error);
+  throw new Error(result.error || 'Server checkout minting failed. Please verify PADDLE_API_KEY environment variable.');
 }
 
 /**

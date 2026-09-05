@@ -40,6 +40,17 @@ export async function POST(request: NextRequest) {
       .replace(/^["']|["']$/g, '')
       .trim();
 
+    // Catch incomplete key (e.g. key ID "apikey_..." without secret token)
+    if (apiKey.startsWith('apikey_') && !apiKey.includes('_', 7)) {
+      console.error('[Paddle API /api/checkout] Incomplete PADDLE_API_KEY: key ID was provided without the secret token suffix.');
+      return NextResponse.json(
+        {
+          error: 'PADDLE_API_KEY appears to be an API Key ID rather than the full secret token. Please copy the full Secret Key ("pdl_live_apikey_...") from your Paddle dashboard.',
+        },
+        { status: 500 }
+      );
+    }
+
     // Determine environment (sandbox vs production)
     const isSandbox =
       process.env.PADDLE_ENV === 'sandbox' ||

@@ -38,29 +38,12 @@ function IntakeContent() {
   const emailParam = searchParams.get('email') || '';
   const domainsParam = searchParams.get('domains') || searchParams.get('provision_domains') || '';
 
-  // 1. Authoritatively ensure clean native cursor and enforce dark scrollbar scheme matching home page
+  // 1. Authoritatively ensure clean native cursor on intake page and remove any dangling elements
   useEffect(() => {
     const forceHidden = document.getElementById('force-system-cursor-hidden');
     if (forceHidden) {
       forceHidden.remove();
     }
-
-    const enforceDarkScheme = () => {
-      const iframes = document.querySelectorAll<HTMLIFrameElement>('iframe');
-      iframes.forEach((iframe) => {
-        iframe.style.setProperty('color-scheme', 'dark', 'important');
-      });
-    };
-
-    enforceDarkScheme();
-    const observer = new MutationObserver(enforceDarkScheme);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['style'],
-    });
-    return () => observer.disconnect();
   }, []);
 
   // 2. Authoritative parameter sync & Paddle verification check
@@ -148,7 +131,7 @@ function IntakeContent() {
               overflow: hidden !important;
               height: 100% !important;
               max-height: 100vh !important;
-              color-scheme: dark !important;
+              background-color: #08080a !important;
             }
             html,
             body,
@@ -173,10 +156,6 @@ function IntakeContent() {
             textarea,
             .cursor-text {
               cursor: text !important;
-            }
-            iframe,
-            iframe[data-tally-src] {
-              color-scheme: dark !important;
             }
             * {
               scrollbar-width: thin !important;
@@ -366,13 +345,13 @@ function IntakeContent() {
       )}
 
       {/* Full Window Transparent Tally Iframe Embed Floating on Living Website Canvas */}
-      <main className="flex-1 min-h-0 relative w-full h-full bg-transparent overflow-hidden z-10">
+      <main className="flex-1 min-h-0 relative w-full h-full bg-[#08080a] overflow-hidden z-10">
         <iframe
           data-tally-src={tallyFullUrl}
           src={tallyFullUrl}
           width="100%"
           height="100%"
-          style={{ background: 'transparent', colorScheme: 'dark' }}
+          style={{ background: 'transparent' }}
           className="absolute inset-0 w-full h-full border-0 bg-transparent"
           title={`Engineering Intake Brief · Order #${orderId || customerEmail || 'RELAY'}`}
         />
